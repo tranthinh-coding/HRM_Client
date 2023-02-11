@@ -17,7 +17,7 @@ module.exports = {
         'view',
         'router',
         'store',
-        'utils'
+        'utils',
       ],
     ],
     /**
