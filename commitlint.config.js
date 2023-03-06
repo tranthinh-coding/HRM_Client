@@ -9,6 +9,8 @@ module.exports = {
       2,
       'always',
       [
+        'ci',
+        'script',
         'project',
         'core',
         'dev',
