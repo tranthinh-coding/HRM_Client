@@ -11,7 +11,7 @@ if [ "$#" -ne 1 ] || [[ $NAME =~ $re ]] || [ "$NAME" == "" ]; then
   exit 1
 fi
 
-DIRNAME="$FILE_PATH/stores/$NAME.ts"
+DIRNAME="$FILE_PATH/store/$NAME.ts"
 
 if [ -d "$DIRNAME" ]; then
   echo "$NAME store already exists, please change it"
@@ -32,7 +32,7 @@ cat > $DIRNAME <<EOF
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
-export const $STORE = defineStore('$NAME', () => {
-  return { }
+export const $STORE = defineStore('$NAME', {
+
 })
 EOF
