@@ -1,8 +1,60 @@
 {
-  "files": [],
+  "compilerOptions": {
+    "target": "ES2019",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": true,
+    "removeComments": false,
+    "jsx": "preserve",
+    "sourceMap": false,
+    "allowJs": false,
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "composite": true,
+    "esModuleInterop": true,
+    "lib": [
+      "ES2019",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ]
+    },
+    "types": [
+      "vue/macros-global",
+      "unplugin-vue-macros/macros-global",
+      "element-plus/global",
+      "vuesax-alpha/global"
+    ]
+  },
+  "vueCompilerOptions": {
+    "plugins": [
+      "@vue-macros/volar/define-model",
+      "@vue-macros/volar/define-props",
+      "@vue-macros/volar/define-props-refs",
+      "@vue-macros/volar/short-vmodel",
+      "@vue-macros/volar/define-slots",
+      "@vue-macros/volar/export-props"
+    ]
+    // ...
+  },
+  "include": [
+    "src",
+    "*"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
   "references": [
-    { "path": "./tsconfig.web.json" },
-    { "path": "./tsconfig.vite.json" },
-    { "path": "./tsconfig.node.json" }
+    {
+      "path": "./tsconfig.node.json"
+    }
   ]
 }
