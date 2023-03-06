@@ -1,0 +1,48 @@
+// import dark theme
+
+@use './reset.scss';
+@use './element/index.scss';
+
+:root {
+  --el-border-radius-large: 0.8rem;
+
+  --c-body-background: #fafaf9;
+  --c-suffer-background: #ffffff;
+}
+
+html.dark {
+  --c-body-background: #18191a;
+  --c-suffer-background: #242526;
+}
+
+html {
+  // font-size: 10px;
+}
+
+body {
+  font-size: var(--el-font-size-medium);
+  /* background-color: var(--el-bg-color-page); */
+  /* background-color: var(--el-bg-color-overlay); */
+  background-color: var(--c-body-background);
+}
+
+/* Vue transition  */
+.slide-left-enter-from {
+  opacity: 0;
+  -webkit-transform: translate(-400px, 0);
+  transform: translate(-400px, 0);
+}
+
+.slide-left-enter-active {
+  transition: all 0.24s ease-in;
+}
+
+.slide-left-leave-active {
+  transition: all 0.12s ease-out;
+}
+
+.slide-left-leave-to {
+  opacity: 0;
+  -webkit-transform: translate(400px, 0);
+  transform: translate(400px, 0);
+}
