@@ -16,7 +16,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
   includeAssets: ['favicon.ico'],
   manifest: {
     name: 'HR Manager',
-    short_name: 'HR Manager',
+    short_name: 'HR',
     theme_color: '#ffffff',
     icons: [
       {
@@ -79,7 +79,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "~/styles/element/index.scss" as *;`,
+        additionalData: `@use 'vuesax-alpha/theme-chalk/src/mixins/function.scss' as *;`,
       },
     },
   },
