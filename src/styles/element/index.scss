@@ -1,3 +1,5 @@
+@use 'element-plus/theme-chalk/src/mixins/function.scss';
+
 $--colors: (
   'primary': (
     'base': #195bff,
@@ -19,17 +21,45 @@ $--colors: (
   ),
 );
 
-// we can add this to custom namespace, default is 'el'
-// @forward 'element-plus/theme-chalk/src/mixins/config.scss' with (
-//   $namespace: 'ep'
-// );
+$--bg-color: (
+  'page': #f4f7f8,
+);
+
+// Popover
+// css3 var in element-plus/theme-chalk/src/popover
+$--popover: (
+  'border-radius': 18px,
+  'bg-color': getCssVar(bg-color),
+);
+
+// Popper
+// css3 var in element-plus/theme-chalk/src/popper
+$--popper: (
+  'border-radius': 18px,
+);
+
+// Table
+// css3 var in element-plus/theme-chalk/src/table
+$--table: (
+  // 'header-bg-color': transparent,
+  // 'border': transparent,
+  // 'current-row-bg-color': transparent,
+  // // 'row-hover-bg-color': var(--el-fill-color-lighter),
+  // 'row-hover-bg-color': #f4f6fa,
+  // 'bg-color': transparent,
+  // 'tr-bg-color': transparent,
+);
 
 // You should use them in scss, because we calculate it by sass.
 // comment next lines to use default color
 @forward 'element-plus/theme-chalk/src/common/var.scss' with (
   // do not use same name, it will override.
   $colors: $--colors,
-  $button-padding-horizontal: ('default': 50px)
+  $button-padding-horizontal: ('default': 50px),
+  $bg-color: $--bg-color,
+  $popover: $--popover,
+  $popper: $--popper,
+  $table: $--table,
 );
 
 // if you want to import all

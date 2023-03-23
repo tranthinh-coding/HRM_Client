@@ -1,30 +1,7 @@
 // import dark theme
 
-@use './reset.scss';
+@use './reset.scss' as *;
 @use './element/index.scss';
-
-:root {
-  --el-border-radius-large: 0.8rem;
-
-  --c-body-background: #fafaf9;
-  --c-suffer-background: #ffffff;
-}
-
-html.dark {
-  --c-body-background: #18191a;
-  --c-suffer-background: #242526;
-}
-
-html {
-  // font-size: 10px;
-}
-
-body {
-  font-size: var(--el-font-size-medium);
-  /* background-color: var(--el-bg-color-page); */
-  /* background-color: var(--el-bg-color-overlay); */
-  background-color: var(--c-body-background);
-}
 
 /* Vue transition  */
 .slide-left-enter-from {
@@ -45,4 +22,16 @@ body {
   opacity: 0;
   -webkit-transform: translate(400px, 0);
   transform: translate(400px, 0);
+}
+
+.fade-up-enter-from, .fade-up-leave-to {
+  transform: translateY(50%);
+}
+
+.fade-up-enter-to, .fade-up-leave-from {
+  transform: translateY(0);
+}
+
+.fade-up-enter-active, .fade-up-leave-active {
+  transition: all 0.25s ease;
 }
