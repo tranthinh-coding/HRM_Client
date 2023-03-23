@@ -1,91 +1,66 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { watch, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useOnline } from '@vueuse/core'
+import { ElNotification, NotificationHandle } from 'element-plus'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+const { t } = useI18n()
+const online = useOnline()
+
+const onl = ref<NotificationHandle>()
+const off = ref<NotificationHandle>()
+
+watch(online, () => {
+  if (online.value) {
+    off.value?.close()
+    onl.value = ElNotification({
+      message: t('network.reconnected'),
+      type: 'success',
+      duration: 5 * 100,
+      showClose: true,
+      position: 'bottom-left',
+    })
+  } else {
+    onl.value?.close()
+    off.value = ElNotification({
+      message: t('network.offline'),
+      type: 'warning',
+      duration: 0,
+      showClose: true,
+      position: 'bottom-left',
+    })
+  }
+})
 </script>
 
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@HRM/assets/logo.svg"
-      width="125"
-      height="125"
-    />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <transition name="slide-left" appear>
+    <keep-alive>
+      <component class="layout-loader" :is="route.meta.layout" />
+    </keep-alive>
+  </transition>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+<style>
+.component-loader {
+  position: absolute;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.layout-loader {
+  position: fixed;
 }
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+.component-loader,
+.layout-loader {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.component-loader-wrapper {
+  position: relative;
+  /* overflow: hidden; */
+  height: 100%;
 }
 </style>
