@@ -1,27 +1,38 @@
+import DashboardLayout from '~/layouts/app-dashboard.vue'
+import { applicantRoutes } from './applicant'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { ACCESS_TOKEN } from '~/config/app'
 import UserService from '~/services/user-service'
 import { useUser } from '~/store/user'
 import { getToken, removeToken } from '~/utils'
-import DashboardLayout from '~/layouts/app-dashboard.vue'
 import { authRoutes } from './auth'
-import { User } from '~/types'
+import { hrRoutes } from './hr'
+import NOOP_COMPONENT from '~/components/NOOP_COMPONENT.vue'
 
 export const routerAuthUser: string[] | Symbol[] = ['login', 'register']
 export const routerExceptedAuth = [...routerAuthUser]
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/',
     name: 'home',
-    component: DashboardLayout,
+    path: '',
+    component: NOOP_COMPONENT,
     meta: {
-      requireAuth: true,
-      title: 'Home',
       layout: DashboardLayout,
+      requireAuth: true,
     },
   },
   ...authRoutes,
+  ...applicantRoutes,
+  hrRoutes,
+
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    redirect: {
+      name: 'home',
+    },
+  },
 ] as any
 
 const router = createRouter({
@@ -38,22 +49,28 @@ const router = createRouter({
   },
 })
 
-router.beforeEach(async (to, _, next) => {
+router.beforeResolve(async (to, _, next) => {
   if (to.name === 'logout') return next()
 
   const user = useUser()
-  if (!user.getLoginStatus) {
+
+  if (!user.user_id) {
     // user was not logged in
     const hasToken = getToken(ACCESS_TOKEN)
     if (hasToken) {
       try {
-        const usr = await UserService.login<User, User>({
+        await UserService.login({
           [ACCESS_TOKEN]: hasToken,
         })
 
-        user.saveUser(usr)
+        if (!routerAuthUser.includes(to.name as string)) {
+          if (to.meta.requireRole) {
+            if (to.meta.requireRole === user.role) return next()
 
-        if (!routerAuthUser.includes(to.name as string)) return next()
+            return next({ name: 'home' })
+          }
+          return next()
+        }
         return next({ name: 'home' })
       } catch (error) {
         removeToken(ACCESS_TOKEN)
@@ -63,7 +80,15 @@ router.beforeEach(async (to, _, next) => {
       return next()
     return next({ name: 'login' })
   }
+
+  // is logged in. ignore auth routes
   if (routerAuthUser.includes(to.name as string)) return next({ name: 'home' })
+
+  if (to.meta.requireRole) {
+    if (to.meta.requireRole === user.role) return next()
+
+    return next({ name: 'home' })
+  }
   return next()
 })
 export default router
