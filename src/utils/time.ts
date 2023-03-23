@@ -26,13 +26,13 @@ export function parseTime(
     getSeconds: Function,
     getDay: Function,
   } as string | object | number,
-  cFormat: string
+  cFormat: string = '{y}-{m}-{d} {h}:{i}:{s}'
 ): string | null {
   if (arguments.length === 0) {
     return null
   }
 
-  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
+  const format = cFormat
   let date: any
   if (typeof time === 'object') {
     date = time
@@ -80,13 +80,16 @@ export function parseTime(
         ][value]
       }
       if (result.length > 0 && value < 10) return '0' + value
-      return '0'
+      return `${value}`
     }
   )
 }
 
-export function formatTime(time: string | number, option: string) {
-  time = +time * 1000
+export function formatTime(
+  time: string | number,
+  option: string = '{y}-{m}-{d}'
+) {
+  time = +time
   const d = new Date(time)
   const now = Date.now()
 
@@ -114,7 +117,7 @@ export function formatTime(time: string | number, option: string) {
     ' ' +
     pluralize(d.getDate(), ' day') +
     ' ' +
-    pluralize(d.getHours(), ' day') +
+    pluralize(d.getHours(), ' hour') +
     ' ' +
     pluralize(d.getMinutes(), ' minute')
   )

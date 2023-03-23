@@ -4,8 +4,8 @@ export const getToken = (key: string) => {
   return Cookies.get(key)
 }
 
-export const setToken = (key: string, token: any, time = 100 as number) => {
-  return Cookies.set(key, token, { expires: time })
+export const setToken = (key: string, token: any, options?: any) => {
+  return Cookies.set(key, token, options)
 }
 
 export const removeToken = (keys: string | string[]) => {
