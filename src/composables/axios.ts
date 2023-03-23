@@ -1,7 +1,7 @@
-import { ErrorResponse } from './../types/request'
 import axios, { AxiosResponse } from 'axios'
 import { getToken } from '~/utils/auth'
 import { ACCESS_TOKEN, API_V1 } from '~/config/app'
+import { ErrorResponse } from '~/types/request'
 
 // import nProgress from 'nprogress'
 
@@ -11,9 +11,6 @@ export const useAxios = axios.create({
   headers: {
     Accept: 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
-    'Accept-Language':
-      document.querySelector('html')?.getAttribute('lang') || 'enUS',
-    Authorization: `Bearer ${getToken(ACCESS_TOKEN)}`,
   },
   responseType: 'json',
   responseEncoding: 'utf8',
@@ -47,13 +44,30 @@ export const useAxios = axios.create({
   //   // Do whatever you want with the Axios progress event
   // },
 
-  transformResponse: [(data) => JSON.parse(data)],
+  // transformResponse: [(data) => JSON.parse(data)],
+})
+
+// always refesh token before send request
+useAxios.interceptors.request.use((config) => {
+  const token = getToken(ACCESS_TOKEN)
+  const lang = document.querySelector('html')?.getAttribute('lang') || 'en'
+  // @ts-ignore
+  Object.assign(config.headers, {
+    Authorization: `Bearer ${token}`,
+    'Accept-Language': lang,
+  })
+  return config
 })
 
 useAxios.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    return Promise.reject(error.response.data)
+    console.log({ error })
+    return Promise.reject(
+      error.response?.data || {
+        message: 'Server not responding',
+      }
+    )
   }
 )
 
