@@ -1,6 +1,6 @@
 import type { App, Component } from 'vue'
 // @ts-ignore
-import * as component from '~/components'
+import * as component from '~/components/icons'
 
 export default {
   install: (app: App) => {
