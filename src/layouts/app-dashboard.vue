@@ -3,25 +3,25 @@
     <app-sidebar />
 
     <div class="dashboard-wrapper">
-      <div class="header">
-        <app-header />
-      </div>
+      <app-header />
 
       <el-scrollbar class="main">
-        <!-- Applicant Dashboard -->
-        <template v-if="isGuest(user.role)">
-          <component :is="ApplicantDashboard" />
-        </template>
+        <div class="main-container">
+          <!-- Applicant Dashboard -->
+          <template v-if="isGuest(user.role)">
+            <component :is="ApplicantDashboard" />
+          </template>
 
-        <!-- Employee Dashboard -->
-        <template v-else-if="isEmployee(user.role)">
-          <component :is="EmployeeDashboard" />
-        </template>
+          <!-- Employee Dashboard -->
+          <template v-else-if="isEmployee(user.role)">
+            <component :is="EmployeeDashboard" />
+          </template>
 
-        <!-- HR Dashboard -->
-        <template v-else-if="isHR(user.role)">
-          <component :is="HrDashboard" />
-        </template>
+          <!-- HR Dashboard -->
+          <template v-else-if="isHR(user.role)">
+            <component :is="HrDashboard" />
+          </template>
+        </div>
       </el-scrollbar>
     </div>
   </div>
@@ -45,13 +45,9 @@ const user = useUser()
 .dashboard-container {
   height: 100vh;
   width: 100%;
-  display: flex;
 }
 .dashboard-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: calc(100% - 68px);
-  width: 100%;
+  height: 100%;
 }
 
 .header {
@@ -60,10 +56,12 @@ const user = useUser()
 }
 
 .main {
-  padding: 30px;
   height: 100%;
-  width: 100%;
   border-top-left-radius: 30px;
   background-color: getCssVar(bg-color, page);
+}
+
+.main-container {
+  padding: 30px;
 }
 </style>

@@ -61,9 +61,12 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { useQuery } from '@vue/apollo-composable'
+import gql from 'graphql-tag'
+
 import { isHR } from '~/config'
 import employeeServices from '~/services/employee-services'
 import { useUser } from '~/store'
@@ -76,6 +79,45 @@ const props = defineProps<{
   id: string
 }>()
 
+// const { result } = useQuery<{
+//   employeeProfile: {
+//     employment_of_spouse: string
+//     marital_status: string
+//   }
+// }>(
+//   gql`
+//     query Employee($user_id: String!) {
+//       user(user_id: $user_id) {
+//         name
+//         email
+//         user_id
+//         gender
+//         join_date
+//         birth_date
+//         phone_number
+//         status
+//         avatar
+//         role
+//         phone_number
+//         position
+//         department
+//         created_at
+//       }
+//       employeeProfile(user_id: $user_id) {
+//         employment_of_spouse
+//         marital_status
+//       }
+//     }
+//   `,
+//   () => ({
+//     user_id: props.id,
+//   })
+// )
+
+// watch(result, (usr) => {
+//   console.log(usr?.employeeProfile)
+// })
+
 const { t } = useI18n()
 
 const employee = ref()
@@ -87,7 +129,6 @@ const back = () => {
 const fetchProfile = async () => {
   try {
     employee.value = await employeeServices.getProfile(props.id)
-    console.log(employee.value)
   } catch (error) {
     employee.value = null
   }
@@ -162,7 +203,7 @@ img {
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: 0px 2px 30px #f1f1f1;
+    box-shadow: 0 8px 32px 1px rgba(0, 0, 0, getCssVar(shadow-opacity));
   }
 }
 </style>

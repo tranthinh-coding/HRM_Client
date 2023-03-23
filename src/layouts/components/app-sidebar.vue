@@ -19,26 +19,19 @@ const user = useUser()
 
 <style scoped lang="scss">
 .app-sidebar {
-  position: relative;
-  left: 0;
-  top: 0;
-  bottom: 0;
   width: 300px;
+  // flex-shrink: 0;
   border-radius: 0 30px 30px 0;
-  display: inline-block;
+  // display: inline-block;
   transition: all 0.25s ease;
+  float: left;
 }
 
 @media screen and (max-width: 1100px) {
   .sidebar-hide {
-    // position: fixed;
-    // top: 0;
-    // left: 0;
-    // z-index: 999;
     background-color: getColor(bg-color);
-    // transform: translateX(-100%);
-    // margin-left: -100%;
     width: 0;
+    margin-left: 300px;
   }
 }
 </style>

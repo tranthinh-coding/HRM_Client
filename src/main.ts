@@ -43,6 +43,7 @@ const cache = new InMemoryCache()
 const apolloClient = new ApolloClient({
   link: httpLink,
   cache,
+  connectToDevTools: true,
 })
 
 const app = createApp({

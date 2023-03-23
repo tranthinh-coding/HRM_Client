@@ -82,8 +82,7 @@ const { t } = useI18n()
 @import 'element-plus/theme-chalk/src/mixins/function.scss';
 
 .header-config {
-  height: 100%;
-  margin-left: auto;
+  padding: 20px;
   /* background-color: #ccc; */
 }
 

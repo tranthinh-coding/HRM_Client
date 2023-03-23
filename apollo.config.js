@@ -1,7 +1,7 @@
 module.exports = {
   client: {
     service: {
-      name: 'hr-managerment',
+      name: 'HR Managerment',
       // URL to the GraphQL API
       url: 'http://server.test/graphql',
     },
