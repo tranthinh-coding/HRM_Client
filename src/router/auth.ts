@@ -1,8 +1,7 @@
+import { ElMessage } from 'element-plus'
 import { useUser } from '~/store/user'
-import { views } from '~/utils'
 import AuthLayout from '~/layouts/auth-layout.vue'
 import { Component } from 'vue'
-import { logout } from '~/services/user-service'
 import { ACCESS_TOKEN } from '~/config/app'
 import { removeToken } from '~/utils/auth'
 
@@ -10,7 +9,7 @@ export const authRoutes = [
   {
     path: '/login',
     name: 'login',
-    component: views('auth/login-view'),
+    component: () => import('~/views/auth/login-view.vue'),
     meta: {
       requireAuth: false,
       title: 'Login',
@@ -20,7 +19,7 @@ export const authRoutes = [
   {
     path: '/register',
     name: 'register',
-    component: views('auth/register-view'),
+    component: () => import('~/views/auth/register-view.vue'),
     meta: {
       requireAuth: false,
       title: 'Register',
@@ -30,19 +29,19 @@ export const authRoutes = [
   {
     path: '/logout',
     name: 'logout',
-    async beforeEnter() {
+    beforeEnter: async () => {
       const user = useUser()
-      try {
-        await logout()
-        user.$reset()
-      } catch {
-        return { name: 'login' }
-      }
+      user.$reset()
+
+      ElMessage({
+        message: "You're logged out~",
+        type: 'success',
+        duration: 3000,
+        showClose: true,
+      })
+
       removeToken(ACCESS_TOKEN)
       return { name: 'login' }
     },
-    // meta: {
-    // requireAuth: true,
-    // },
   },
 ]
