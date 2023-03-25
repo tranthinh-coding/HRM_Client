@@ -1,18 +1,18 @@
 // @ts-nocheck
 import { createI18n } from 'vue-i18n/dist/vue-i18n.esm-bundler.js'
 
-import vi from '~/lang/vi'
+import viVN from '~/lang/vi-VN'
 
 export type Lang = {
   id: string
   label: string
 }
 
-export const DEFAULT_LANG = 'vi'
+export const DEFAULT_LANG = 'vi-VN'
 
 export const SUPPORT_LANGUAGES: Lang[] = [
-  { id: 'en', label: 'English (US)' },
-  { id: 'vi', label: 'Tiếng Việt' },
+  { id: 'en-US', label: 'English (US)' },
+  { id: 'vi-VN', label: 'Tiếng Việt' },
 ]
 export const _LOADED_LANGUAGES = [DEFAULT_LANG]
 export let _CURRENT_LANGUAGE: Lang = SUPPORT_LANGUAGES[1]
@@ -21,7 +21,7 @@ export const i18n = createI18n({
   legacy: false,
   locale: DEFAULT_LANG,
   fallbackLocale: DEFAULT_LANG,
-  messages: { vi },
+  messages: { 'vi-VN': viVN },
 })
 
 export function setI18nLanguage(language: Lang): void {

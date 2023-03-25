@@ -71,7 +71,7 @@ export default defineConfig({
       // you need to set i18n resource including paths !
       include: path.resolve(__dirname, './src/lang/**'),
     }),
-    VitePWA(pwaOptions),
+    // VitePWA(pwaOptions),
     Components({
       resolvers: [ElementPlusResolver()],
     }),
