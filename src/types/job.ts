@@ -8,7 +8,6 @@ export interface Job {
   no_of_vacancies: number // so luong tuyen
   experience: string // kinh nghiem
   age: number // tuoi
-  salary_format: string // 'USD' or 'VND'
   salary_from: number
   salary_to: number
   type: string // remote, fulltime
@@ -36,7 +35,6 @@ export type JobCreate = Required<
     | 'start_date'
     | 'expired_date'
     | 'description'
-    | 'salary_format'
   >
 >
 
@@ -45,7 +43,7 @@ export type JobTypes = {
 }
 
 export type JobPosition = {
-  position: string
+  name: string
 }
 
 export type JobFilter = {

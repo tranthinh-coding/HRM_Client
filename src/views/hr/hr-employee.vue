@@ -27,7 +27,7 @@
             <vs-option
               v-for="(position, index) in positions"
               :key="index"
-              :value="position.position"
+              :value="position.name"
             />
           </vs-select>
         </el-col>
@@ -45,7 +45,6 @@
         :sm="12"
         :md="8"
         :lg="6"
-        :xl="4"
         v-for="employee in employees"
         :key="employee.id"
       >

@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { useUser } from '~/store'
 import AppSidebar from '~/layouts/components/app-sidebar.vue'
-import AppHeader from '~/layouts/components/app-header.vue'
+import AppHeader from '~/layouts/components/app-config.vue'
 import ApplicantDashboard from '~/views/applicant-dashboard.vue'
 import EmployeeDashboard from '~/views/employee-dashboard.vue'
 import HrDashboard from '~/views/hr-dashboard.vue'
@@ -45,9 +45,11 @@ const user = useUser()
 .dashboard-container {
   height: 100vh;
   width: 100%;
+  display: flex;
 }
 .dashboard-wrapper {
   height: 100%;
+  width: 100%;
 }
 
 .header {
@@ -63,5 +65,6 @@ const user = useUser()
 
 .main-container {
   padding: 30px;
+  padding-bottom: 100px;
 }
 </style>

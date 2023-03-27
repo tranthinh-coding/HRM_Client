@@ -17,7 +17,7 @@
       </div>
       <div class="form-original">
         <vs-input
-          v-model="selectedUser.user_id"
+          :model-value="selectedUser.user_id"
           label="Employee ID"
           label-float
           disabled
@@ -34,13 +34,13 @@
           <vs-option
             v-for="(department, index) in departments"
             :key="index"
-            :value="department.department"
+            :value="department.name"
           />
         </vs-select>
       </div>
       <div class="form-original">
         <vs-input
-          v-model="selectedUser.email"
+          :model-value="selectedUser.email"
           label="Email"
           label-float
           disabled
@@ -58,7 +58,7 @@
           <vs-option
             v-for="(position, index) in positions"
             :key="index"
-            :value="position.position"
+            :value="position.name"
           />
         </vs-select>
       </div>

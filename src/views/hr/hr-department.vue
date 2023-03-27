@@ -21,7 +21,7 @@
         >
           <template #default="scope">
             <el-tag>
-              {{ scope.row.department }}
+              {{ scope.row.name }}
             </el-tag>
           </template>
         </el-table-column>
@@ -72,15 +72,15 @@
 
     <department-create
       v-model="showCreateDepartmentForm"
-      v-model:department="departmentForm.department"
-      :error="departmentFormError.department"
+      v-model:department="departmentForm.name"
+      :error="departmentFormError.name"
       @create="addNewDepartment"
     />
 
     <department-update
       v-model="showUpdateDepartmentForm"
-      v-model:department="departmentUpdateForm.department"
-      :error="departmentFormError.department"
+      v-model:department="departmentUpdateForm.name"
+      :error="departmentFormError.name"
       @update="updateDepartment"
     />
   </div>
@@ -97,7 +97,7 @@ import type { Department } from '~/types/department'
 import DepartmentCreate from '../../components/hr/department-create.vue'
 import DepartmentUpdate from '../../components/hr/department-update.vue'
 
-type DepartmentForm = Pick<Department, 'department'>
+type DepartmentForm = Pick<Department, 'name'>
 
 const { t } = useI18n()
 
@@ -109,15 +109,15 @@ const showUpdateDepartmentForm = ref(false)
 const isFetching = ref(false)
 
 const departmentForm = reactive<DepartmentForm>({
-  department: '',
+  name: '',
 })
-const departmentUpdateForm = reactive<Pick<Department, 'id' | 'department'>>({
+const departmentUpdateForm = reactive<Pick<Department, 'id' | 'name'>>({
   id: -1,
-  department: '',
+  name: '',
 })
 
 const departmentFormError = reactive<DepartmentForm>({
-  department: '',
+  name: '',
 })
 
 const filterTableDepartments = computed(
@@ -125,17 +125,17 @@ const filterTableDepartments = computed(
     departments.value?.filter(
       (department) =>
         !search.value ||
-        department.department.toLowerCase().includes(search.value.toLowerCase())
+        department.name.toLowerCase().includes(search.value.toLowerCase())
     ) || []
 )
 
 const toggleCreateForm = () => {
   showCreateDepartmentForm.value = true
-  departmentFormError.department = ''
+  departmentFormError.name = ''
 }
 const toggleUpdateForm = (department: Department) => {
   showUpdateDepartmentForm.value = true
-  departmentFormError.department = ''
+  departmentFormError.name = ''
   Object.assign(departmentUpdateForm, department)
 }
 
@@ -152,7 +152,7 @@ const refreshDepartments = async () => {
 const addNewDepartment = async () => {
   isFetching.value = true
   try {
-    if (departmentForm.department === '') {
+    if (departmentForm.name === '') {
       throw new Error(t('validate.required'))
     }
     const response = await departmentServices.create(departmentForm)
@@ -163,13 +163,13 @@ const addNewDepartment = async () => {
       type: 'success',
     })
 
-    departmentForm.department = ''
-    departmentFormError.department = ''
+    departmentForm.name = ''
+    departmentFormError.name = ''
 
     await refreshDepartments()
   } catch (e) {
     const message: string = (e as any).message
-    departmentFormError.department = message
+    departmentFormError.name = message
     ElMessage({
       message: message,
       duration: 5000,
@@ -183,7 +183,7 @@ const addNewDepartment = async () => {
 const updateDepartment = async () => {
   isFetching.value = true
   try {
-    if (departmentUpdateForm.department === '') {
+    if (departmentUpdateForm.name === '') {
       throw new Error(t('validate.required'))
     }
     const response = await departmentServices.update(departmentUpdateForm)
@@ -195,12 +195,12 @@ const updateDepartment = async () => {
       type: 'success',
     })
 
-    departmentFormError.department = ''
+    departmentFormError.name = ''
 
     await refreshDepartments()
   } catch (e) {
     const message: string = (e as any).message
-    departmentFormError.department = message
+    departmentFormError.name = message
     ElMessage({
       message: message,
       duration: 5000,

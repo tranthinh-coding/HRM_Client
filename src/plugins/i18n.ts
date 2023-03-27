@@ -24,7 +24,7 @@ export const i18n = createI18n({
   messages: { 'vi-VN': viVN },
 })
 
-export function setI18nLanguage(language: Lang): void {
+function setI18nLanguage(language: Lang): void {
   if (i18n.mode === 'legacy') {
     // @ts-ignore
     i18n.global.locale = language.id

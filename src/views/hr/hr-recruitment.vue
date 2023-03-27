@@ -237,7 +237,7 @@
                 <vs-option
                   v-for="(department, index) in departments"
                   :key="index"
-                  :value="department.department"
+                  :value="department.name"
                 />
               </vs-select>
             </div>
@@ -265,7 +265,7 @@
                 <vs-option
                   v-for="(position, index) in jobPositions"
                   :key="index"
-                  :value="position.position"
+                  :value="position.name"
                 />
               </vs-select>
             </div>
@@ -363,7 +363,6 @@ const applicantSearch = ref<string>('')
 const job = ref<JobCreate>({
   title: '',
   department: '',
-  salary_format: '$',
   salary_from: 1,
   salary_to: 1,
   age: 18,

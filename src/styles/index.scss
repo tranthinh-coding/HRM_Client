@@ -1,6 +1,7 @@
 // import dark theme
 
 @use './reset.scss' as *;
+@use './tailwind-build.css';
 @use './element/index.scss';
 
 /* Vue transition  */
