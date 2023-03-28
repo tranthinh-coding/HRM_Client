@@ -30,7 +30,7 @@ export default {
   },
   departments: {
     search: 'Search department name',
-    create: 'Create new <b>department</b>',
+    create: 'Create new department',
     update: 'Update department name',
     'create-input-placeholder': 'Department name',
   },

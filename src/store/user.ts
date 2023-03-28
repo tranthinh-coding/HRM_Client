@@ -10,6 +10,10 @@ export const useUser = defineStore('USER', {
     email: '',
     role: '',
     isLoggedIn: false,
+    join_date: '',
+    status: '',
+    created_at: '',
+    updated_at: '',
   }),
   actions: {
     saveUser({ id, user_id, name, email, role }: User) {

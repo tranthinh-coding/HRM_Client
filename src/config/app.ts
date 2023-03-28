@@ -32,7 +32,11 @@ export const JOB_API_FILTER = JOB_API + '/filter-job'
 export const DEPARTMENTS_API = 'departments'
 
 export const PAYROLL = 'payroll'
+export const PAYROLL_SAVE_SETTING = PAYROLL + '/save-setting'
 export const PAYROLL_GET_MONEY_FORMAT = PAYROLL + '/money-format'
+
+export const PAYMENT = 'payment'
+export const PAYMENT_SAVE = 'payment/save'
 
 export const SEEKERS = 'seekers'
 export const APPLICANT = 'applicants'
