@@ -274,6 +274,9 @@
             <div class="form-original">
               <el-date-picker
                 v-model="job.start_date"
+                :popper-options="{
+                  strategy: 'absolute',
+                }"
                 type="date"
                 format="YYYY/MM/DD"
                 value-format="YYYY-MM-DD"

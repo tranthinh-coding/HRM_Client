@@ -419,6 +419,19 @@ video {
   display: none;
 }
 
+:root {
+  --color-primary: 25, 91, 255;
+  --color-success: 70, 201, 58;
+  --color-danger: 255, 71, 87;
+  --color-warn: 255, 186, 0;
+  --color-dark: 30, 30, 30;
+  --color-light: 244, 247, 248;
+  --color-theme-bg: 244, 247, 248;
+  --color-theme-bg2: 238, 242, 245;
+  --color-theme-color: 44, 62, 80;
+  --color-theme-layout: 255, 255, 255;
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -625,6 +638,30 @@ video {
   border-width: 1px;
 }
 
+.bg-primary {
+  --tw-bg-opacity: 1;
+  background-color: rgba(var(--color-primary), var(--tw-bg-opacity));
+}
+
+.bg-theme-bg {
+  --tw-bg-opacity: 1;
+  background-color: rgba(var(--color-theme-bg), var(--tw-bg-opacity));
+}
+
+.bg-light {
+  --tw-bg-opacity: 1;
+  background-color: rgba(var(--color-light), var(--tw-bg-opacity));
+}
+
+.bg-theme-layout {
+  --tw-bg-opacity: 1;
+  background-color: rgba(var(--color-theme-layout), var(--tw-bg-opacity));
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -663,6 +700,19 @@ video {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+}
+
+.dark {
+  --color-primary: 25, 91, 255;
+  --color-success: 70, 201, 58;
+  --color-danger: 255, 71, 87;
+  --color-warn: 255, 186, 0;
+  --color-dark: 244, 247, 248;
+  --color-light: 30, 30, 30;
+  --color-theme-bg: 24, 25, 28;
+  --color-theme-bg2: 20, 20, 23;
+  --color-theme-color: 255, 255, 255;
+  --color-theme-layout: 30, 32, 35;
 }
 
 @media (min-width: 768px) {

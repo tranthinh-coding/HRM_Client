@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.dark {
+  --color-primary: 25, 91, 255;
+  --color-success: 70, 201, 58;
+  --color-danger: 255, 71, 87;
+  --color-warn: 255, 186, 0;
+  --color-dark: 244, 247, 248;
+  --color-light: 30, 30, 30;
+
+  --color-theme-bg: 24, 25, 28;
+  --color-theme-bg2: 20, 20, 23;
+  --color-theme-color: 255, 255, 255;
+  --color-theme-layout: 30, 32, 35;
+}
+
+@layer base {
+  :root {
+    --color-primary: 25, 91, 255;
+    --color-success: 70, 201, 58;
+    --color-danger: 255, 71, 87;
+    --color-warn: 255, 186, 0;
+    --color-dark: 30, 30, 30;
+    --color-light: 244, 247, 248;
+
+    --color-theme-bg: 244, 247, 248;
+    --color-theme-bg2: 238, 242, 245;
+    --color-theme-color: 44, 62, 80;
+    --color-theme-layout: 255, 255, 255;
+  }
+}
