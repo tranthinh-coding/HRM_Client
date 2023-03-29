@@ -1,5 +1,5 @@
 <template>
-  <div>Timekeeping</div>
+  <div>Thông tin chấm công</div>
 </template>
 
 <script setup lang="ts"></script>

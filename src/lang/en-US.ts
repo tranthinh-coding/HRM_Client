@@ -10,6 +10,8 @@ export default {
       project: 'Project',
       payroll: 'Payroll',
       timekeeping: 'Timekeeping',
+      timeoff: 'Time off',
+      salary: 'Salary',
     },
     department: 'Department',
     action: 'Action',

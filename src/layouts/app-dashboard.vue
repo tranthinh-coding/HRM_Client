@@ -50,6 +50,13 @@ const user = useUser()
 .dashboard-wrapper {
   height: 100%;
   width: 100%;
+  max-width: calc(100% - 300px);
+}
+
+@media screen and (max-width: 1100px) {
+  .dashboard-wrapper {
+    max-width: unset;
+  }
 }
 
 .header {

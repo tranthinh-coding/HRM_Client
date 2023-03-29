@@ -382,7 +382,7 @@ const jobSortCreatedTime = computed(() => {
 })
 
 const disabledDate = (time: Date) => {
-  return time.getTime() < new Date().getTime() - 60 * 60 * 3600
+  return time.getTime() < new Date().getTime() - 1000 * 60 * 60 * 24
 }
 
 // const filterJobs = computed(() =>
@@ -507,7 +507,8 @@ const updateApplicantStatus = async (applicant: Applicant) => {
       type: 'success',
       duration: 3000,
     })
-    Promise.all([applicantRefetch(), getApplicantsOffered()])
+    applicantRefetch()
+    getApplicantsOffered()
   } catch {
     ElMessage({
       message: 'Cập nhật trạng thái thất bại',
@@ -518,17 +519,15 @@ const updateApplicantStatus = async (applicant: Applicant) => {
 }
 
 onBeforeMount(() => {
-  Promise.all([
-    jobRefetch(),
-    departmentRefetch(),
-    getJobTypes(),
-    getJobPositions(),
-    applicantRefetch(),
-    getApplicantStatus(),
-    refetchSeekers(),
-    refetchEmployees(),
-    getApplicantsOffered(),
-  ])
+  jobRefetch()
+  departmentRefetch()
+  getJobTypes()
+  getJobPositions()
+  applicantRefetch()
+  getApplicantStatus()
+  refetchSeekers()
+  refetchEmployees()
+  getApplicantsOffered()
 })
 </script>
 

@@ -80,7 +80,7 @@ import { provide, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import SidebarItem from './hr-sidebar-item.vue'
-import { SidebarContext, sidebarContextKey } from './token'
+import { SidebarContext, sidebarContextKey } from '../token'
 
 const { t } = useI18n()
 
