@@ -6,6 +6,7 @@ import {
   EMPLOYEE_API_CREATE,
   EMPLOYEE_SEARCH,
   EMPLOYEE_PROFILE,
+  EMPLOYEE_SAVE_PROFILE,
 } from '~/config'
 import type { SuccessResponse } from '~/types/request'
 import type { User } from '~/types/user'
@@ -24,10 +25,14 @@ export const search = (form: any) =>
 export const getProfile = (id: string) =>
   useAxios.post(EMPLOYEE_PROFILE, { user_id: id })
 
+export const saveProfile = (form: any) =>
+  useAxios.post<SuccessResponse, SuccessResponse>(EMPLOYEE_SAVE_PROFILE, form)
+
 export default {
   getAll,
   create,
   infoCreate,
   search,
   getProfile,
+  saveProfile,
 }

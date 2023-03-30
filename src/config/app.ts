@@ -48,6 +48,7 @@ export const APPLICANT_STATUS = 'applicants/status'
 
 export const EMPLOYEE_API = 'employees'
 export const EMPLOYEE_PROFILE = EMPLOYEE_API + '/profile'
+export const EMPLOYEE_SAVE_PROFILE = EMPLOYEE_API + '/save-profile'
 export const EMPLOYEE_SEARCH = EMPLOYEE_API + '/search'
 export const EMPLOYE_INFO_CREATE = 'employees' + '/info-create'
 export const EMPLOYEE_API_CREATE = EMPLOYEE_API + '/create'

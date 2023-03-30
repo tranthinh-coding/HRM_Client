@@ -5,8 +5,13 @@
       <h1 class="text-lg">Cài đặt bảng lương</h1>
       <vs-tooltip>
         <template #content>Chỉnh sửa</template>
-        <vs-button icon color="dribbble" type="transparent">
-          <el-icon size="18" @click="editable = !editable">
+        <vs-button
+          @click="toggleEditable"
+          icon
+          color="dribbble"
+          type="transparent"
+        >
+          <el-icon size="18">
             <edit />
           </el-icon>
         </vs-button>
@@ -50,7 +55,7 @@
     />
 
     <template v-if="editable">
-      <div class="flex items-center justify-end">
+      <div class="flex items-center justify-end gap-2">
         <vs-button @click="cancelChanges" type="transparent">Huỷ</vs-button>
         <vs-button @click="saveChanges" :loading="uploading">
           Lưu cài đặt
@@ -61,12 +66,11 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, reactive, ref, watch } from 'vue'
+import { inject, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import PayrollServices from '~/services/payroll-services'
 import { ElMessage } from 'element-plus'
-import { getResponseError } from '~/composables'
 
 type PayrollSetting = {
   base_salary: number
@@ -94,13 +98,6 @@ const salarySettings = reactive<PayrollSetting>({
   allowance: 0,
   paid_time_off: 0,
 })
-
-onMounted(() => {
-  refetch(() => ({
-    user_id: employee?.employee_id,
-  }))
-})
-
 const { result, refetch } = useQuery<{
   payroll: PayrollSetting
 }>(
@@ -120,6 +117,13 @@ const { result, refetch } = useQuery<{
   })
 )
 
+const toggleEditable = () => {
+  if (editable.value) {
+    return cancelChanges()
+  }
+  editable.value = true
+}
+
 const saveChanges = async () => {
   uploading.value = true
   try {
@@ -136,16 +140,13 @@ const saveChanges = async () => {
       type: 'success',
       duration: 3000,
     })
-    await refetch({
+
+    refetch({
       user_id: employee?.employee_id,
-    })
-    resetSalarySetting()
+    })?.then(resetSalarySetting)
   } catch (e) {
-    const error = getResponseError(e)
     ElMessage({
-      message:
-        error.message ||
-        'Cài đặt bảng lương không thành công, liên hệ bộ phận kĩ thuật!',
+      message: 'Cài đặt bảng lương không thành công, liên hệ bộ phận kĩ thuật!',
       type: 'error',
       duration: 3000,
     })
@@ -172,13 +173,10 @@ watch(result, () => {
   resetSalarySetting()
 })
 
-watch(salarySettings, (val) => {
-  editable.value = Object.keys(salarySettings).some((key: unknown) => {
-    if (key === '__typename') return false
-    let _key = key as unknown as keyof PayrollSetting
-    // if (isNil(result.value?.payroll?.[_key]) || isNil(val[_key])) return false
-    return Number(result.value?.payroll?.[_key]) != Number(val[_key])
-  })
+onBeforeMount(() => {
+  refetch(() => ({
+    user_id: employee?.employee_id,
+  }))
 })
 </script>
 

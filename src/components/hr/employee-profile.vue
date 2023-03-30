@@ -3,12 +3,7 @@
     <h1 class="text-lg">Thông tin cá nhân</h1>
     <vs-tooltip>
       <template #content>Chỉnh sửa</template>
-      <vs-button
-        @click="editable = !editable"
-        type="transparent"
-        color="danger"
-        icon
-      >
+      <vs-button @click="toggleEditable" type="transparent" color="danger" icon>
         <el-icon size="18">
           <edit />
         </el-icon>
@@ -129,7 +124,7 @@
           :model-value="profile.position"
           disabled
         />
-        <vs-select v-else v-model="updateForm.position">
+        <vs-select v-else v-model="updateForm.position" :disabled="!editable">
           <vs-option
             v-for="(position, index) in result?.positions"
             :key="index"
@@ -142,11 +137,11 @@
 
   <template v-if="editable">
     <div class="mt-4 w-full flex items-center justify-end gap-2">
-      <vs-button @click="cancelUpdate" block type="transparent" color="danger">
+      <vs-button @click="cancelChanges" block type="transparent" color="danger">
         Huỷ
       </vs-button>
       <vs-button
-        @click="updateProfile"
+        @click="saveChanges"
         type="flat"
         block
         :disabled="!isProfileChange"
@@ -158,10 +153,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, reactive, ref, watch } from 'vue'
+import { computed, inject, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { isNil } from 'lodash-unified'
+import EmployeeServices from '~/services/employee-services'
 
 import { isEmployee } from '~/config'
 import { useUser } from '~/store'
@@ -173,6 +169,7 @@ import {
   User,
   UserStatus,
 } from '~/types'
+import { ElMessage } from 'element-plus'
 
 type ProfileState = Pick<Employee, 'department' | 'position'> &
   Pick<User, 'status' | 'email'> &
@@ -256,11 +253,38 @@ const profile = computed<ProfileState>(() =>
   )
 )
 
-const updateProfile = () => {
-  console.log(updateForm)
+const saveChanges = async () => {
+  try {
+    const response = await EmployeeServices.saveProfile({
+      ...updateForm,
+      user_id: employee?.employee_id,
+    })
+    ElMessage({
+      message: response.message || 'Save employee information success',
+      duration: 3000,
+      type: 'success',
+    })
+    await refetch(() => ({
+      user_id: employee?.employee_id,
+    }))
+    resetProfile()
+  } catch (e) {
+    ElMessage({
+      message: 'Error saving changes',
+      duration: 3000,
+      type: 'error',
+    })
+  }
 }
 
-const cancelUpdate = () => {
+const toggleEditable = () => {
+  if (editable.value) {
+    return cancelChanges()
+  }
+  editable.value = true
+}
+
+const cancelChanges = () => {
   editable.value = false
   resetProfile()
 }
@@ -304,7 +328,7 @@ watch(updateForm, (val) => {
   })
 })
 
-onMounted(() => {
+onBeforeMount(() => {
   refetch(() => ({
     user_id: employee?.employee_id,
   }))

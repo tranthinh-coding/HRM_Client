@@ -3,8 +3,13 @@
     <h1 class="text-lg">Thông tin thanh toán</h1>
     <vs-tooltip>
       <template #content>Chỉnh sửa</template>
-      <vs-button icon color="dribbble" type="transparent">
-        <el-icon size="18" @click="editable = !editable">
+      <vs-button
+        icon
+        color="dribbble"
+        type="transparent"
+        @click="toggleEditable"
+      >
+        <el-icon size="18">
           <edit />
         </el-icon>
       </vs-button>
@@ -50,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, reactive, ref, watch } from 'vue'
+import { inject, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { isNil } from 'lodash-unified'
@@ -131,6 +136,13 @@ const saveChanges = async () => {
   uploading.value = false
 }
 
+const toggleEditable = () => {
+  if (editable.value) {
+    return cancelChanges()
+  }
+  editable.value = true
+}
+
 const cancelChanges = () => {
   editable.value = false
   resetBankForm()
@@ -161,7 +173,7 @@ watch(bankForm, (val) => {
   })
 })
 
-onMounted(() => {
+onBeforeMount(() => {
   refetch(() => ({
     user_id: employee?.employee_id,
   }))

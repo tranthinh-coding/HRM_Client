@@ -3,7 +3,7 @@ import { EMPLOYEE } from '~/config'
 import DashboardLayout from '~/layouts/app-dashboard.vue'
 
 export const employeeRoutes: RouteRecordRaw = {
-  path: '/',
+  path: '/employee',
   name: 'employee',
   component: () => import('~/views/employee-dashboard.vue'),
   meta: {
@@ -14,17 +14,17 @@ export const employeeRoutes: RouteRecordRaw = {
   },
   children: [
     {
-      path: '',
+      path: 'dashboard',
       name: 'employee/dashboard',
       component: () => import('~/views/employee/employee-dashboard.vue'),
     },
     {
-      path: '',
+      path: 'salary',
       name: 'employee/salary',
       component: () => import('~/views/employee/employee-salary.vue'),
     },
     {
-      path: '',
+      path: 'time',
       name: 'employee/timeoff',
       component: () => import('~/views/employee/employee-timeoff.vue'),
     },
