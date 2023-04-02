@@ -26,7 +26,7 @@ export const employeeRoutes: RouteRecordRaw = {
     {
       path: 'time',
       name: 'employee/timeoff',
-      component: () => import('~/views/employee/employee-timeoff.vue'),
+      component: () => import('~/views/employee/employee-time.vue'),
     },
   ],
 }

@@ -12,6 +12,7 @@ export default {
       timekeeping: 'Chấm công',
       timeoff: 'Thời gian nghỉ',
       salary: 'Thông tin lương',
+      request: 'Yêu cầu',
     },
     department: 'Phòng ban',
     action: 'Hành động',

@@ -52,3 +52,5 @@ export const EMPLOYEE_SAVE_PROFILE = EMPLOYEE_API + '/save-profile'
 export const EMPLOYEE_SEARCH = EMPLOYEE_API + '/search'
 export const EMPLOYE_INFO_CREATE = 'employees' + '/info-create'
 export const EMPLOYEE_API_CREATE = EMPLOYEE_API + '/create'
+// timeoff
+export const EMPLOYEE_REQUEST_TIMEOFF = EMPLOYEE_API + '/request-timeoff'

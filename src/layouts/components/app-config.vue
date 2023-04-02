@@ -48,12 +48,12 @@
         </div>
 
         <template #content>
-          <div
+          <!-- <div
             class="tooltip-option"
             @click="$router.push({ name: 'profile' })"
           >
             {{ t('user.see-info') }}
-          </div>
+          </div> -->
           <div class="tooltip-option" @click="$router.push({ name: 'logout' })">
             {{ t('auth.logout') }}
           </div>

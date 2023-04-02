@@ -6,7 +6,7 @@ import VueMacros from 'unplugin-vue-macros/vite'
 // import type { VitePWAOptions } from 'vite-plugin-pwa'
 // import { VitePWA } from 'vite-plugin-pwa'
 import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+// import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/unplugin-vue-i18n/vite'
 import path from 'path'
 
@@ -73,9 +73,7 @@ export default defineConfig({
       include: path.resolve(__dirname, './src/lang/**'),
     }),
     // VitePWA(pwaOptions),
-    Components({
-      resolvers: [ElementPlusResolver()],
-    }),
+    Components(),
   ],
   css: {
     preprocessorOptions: {

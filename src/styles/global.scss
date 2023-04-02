@@ -1,0 +1,56 @@
+@use 'vuesax-alpha/theme-chalk/src/mixins/function.scss' as *;
+
+.el-table {
+  --el-table-row-hover-bg-color: rgba(var(--vs-gray-1), 0.75);
+}
+.el-table-filter {
+  box-shadow: 0 0 32px 4px rgba(0, 0, 0, 0.02);
+}
+.el-table__column-filter-trigger i {
+  color: var(--el-color);
+}
+.date.is-selected {
+  background: getColor(primary);
+  color: getColor(light);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+}
+
+.divider {
+  background-color: getColor(gray-4);
+}
+
+.el-popper {
+  overflow: hidden;
+}
+
+.el-input,
+.el-input__wrapper {
+  width: 100% !important;
+  height: unset !important;
+}
+.el-input__wrapper {
+  width: 100%;
+  padding: 6px 10px;
+  background: getColor(gray-2);
+  border-radius: 13px;
+  border: none !important;
+  box-shadow: none !important;
+
+  .el-input__inner {
+    transition: all 0.25s ease;
+  }
+  &.is-focus {
+    .el-input__inner {
+      padding-left: 4px;
+    }
+  }
+}
+
+.vs-select {
+  max-width: unset;
+}

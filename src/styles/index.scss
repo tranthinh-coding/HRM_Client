@@ -3,6 +3,7 @@
 @use './reset.scss' as *;
 @use './tailwind-build.css';
 @use './element/index.scss';
+@use './global.scss';
 
 /* Vue transition  */
 .slide-left-enter-from {

@@ -146,7 +146,7 @@ const { result, refetch } = useQuery<{
       }
     }
   `,
-  () => searchForm
+  () => ({ employee_id: '', name: '', position: '' })
 )
 
 const users = computed(() => result.value?.allUsers || [])

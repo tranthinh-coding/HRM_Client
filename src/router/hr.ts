@@ -60,5 +60,10 @@ export const hrRoutes: RouteRecordRaw = {
       name: 'hr/timekeeping',
       component: () => import('~/views/hr/hr-timekeeping.vue'),
     },
+    {
+      path: 'request',
+      name: 'hr/request',
+      component: () => import('~/views/hr/hr-request.vue'),
+    },
   ],
 }

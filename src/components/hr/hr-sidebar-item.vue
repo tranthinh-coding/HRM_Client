@@ -30,7 +30,6 @@ const emit = defineEmits({
 
 const clickItem = async () => {
   const navigate = await router.push(props.to)
-  console.log(navigate?.message)
   if (!navigate) emit('active', props.id)
 }
 

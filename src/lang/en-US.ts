@@ -12,6 +12,7 @@ export default {
       timekeeping: 'Timekeeping',
       timeoff: 'Time off',
       salary: 'Salary',
+      request: 'Request',
     },
     department: 'Department',
     action: 'Action',

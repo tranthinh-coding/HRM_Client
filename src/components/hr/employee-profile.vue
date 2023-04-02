@@ -300,8 +300,8 @@ const resetProfile = () => {
   updateForm.gender = result.value.profile?.gender
   updateForm.email = result.value.user.email
   updateForm.status = result.value.user.status
-  updateForm.position = result.value.employee.position
-  updateForm.department = result.value.employee.department
+  updateForm.position = result.value.employee?.position
+  updateForm.department = result.value.employee?.department
 
   Object.keys(updateForm).forEach((key: unknown) => {
     let _key = key as keyof ProfileState

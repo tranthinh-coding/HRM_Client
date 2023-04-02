@@ -72,6 +72,15 @@
       <el-icon size="26"> <calender /> </el-icon>
       {{ t('page.sidebar.timekeeping') }}
     </sidebar-item>
+    <!-- <sidebar-item
+      class="menu-item"
+      id="9"
+      :to="{ name: 'hr/request' }"
+      @active="activeItem"
+    >
+      <el-icon size="26"> <sms-notification /> </el-icon>
+      {{ t('page.sidebar.request') }}
+    </sidebar-item> -->
   </menu>
 </template>
 
