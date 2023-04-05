@@ -17,6 +17,9 @@ import Vuesax from 'vuesax-alpha'
 import 'vuesax-alpha/theme-chalk/index.css'
 import 'vuesax-alpha/theme-chalk/dark/css-vars.css'
 
+import '@unocss/reset/tailwind.css'
+import 'virtual:uno.css'
+
 import i18n from '~/plugins/i18n'
 /**
  * Service Worker https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps

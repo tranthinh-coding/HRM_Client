@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
+import UnoCSS from 'unocss/vite'
 // @ts-ignore
 import VueMacros from 'unplugin-vue-macros/vite'
 // import type { VitePWAOptions } from 'vite-plugin-pwa'
@@ -74,6 +75,7 @@ export default defineConfig({
     }),
     // VitePWA(pwaOptions),
     Components(),
+    UnoCSS(),
   ],
   css: {
     preprocessorOptions: {
