@@ -17,7 +17,7 @@
       </div>
       <div class="form-original">
         <vs-input
-          v-model="selectedUser.user_id"
+          :model-value="selectedUser.user_id"
           label="Employee ID"
           label-float
           disabled
@@ -34,13 +34,13 @@
           <vs-option
             v-for="(department, index) in departments"
             :key="index"
-            :value="department.department"
+            :value="department.name"
           />
         </vs-select>
       </div>
       <div class="form-original">
         <vs-input
-          v-model="selectedUser.email"
+          :model-value="selectedUser.email"
           label="Email"
           label-float
           disabled
@@ -58,7 +58,7 @@
           <vs-option
             v-for="(position, index) in positions"
             :key="index"
-            :value="position.position"
+            :value="position.name"
           />
         </vs-select>
       </div>
@@ -83,38 +83,50 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, PropType, reactive, ref } from 'vue'
+import { PropType, reactive, ref } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
-import { useDepartment } from '~/store'
-import { JobPosition, User } from '~/types'
+import { Department, JobPosition, User } from '~/types'
 import EmployeeServices from '~/services/employee-services'
 import { getResponseError } from '~/composables'
-import { refetch as refetchEmployees } from '~/store/employees'
 
 const props = defineProps({
   open: {
     type: Boolean,
     default: false,
   },
+  users: {
+    type: Array as PropType<User[]>,
+    default: () => [],
+  },
   positions: {
     type: Array as PropType<JobPosition[]>,
-    required: true,
+    default: () => [],
+  },
+  departments: {
+    type: Array as PropType<Department[]>,
+    default: () => [],
   },
 })
 
 const emit = defineEmits({
   'update:open': () => true,
+  'update:employee': () => true,
 })
 const isOpen = useVModel(props, 'open', emit)
 const { t } = useI18n()
 
-const users = ref<User[]>([])
 // @ts-ignore
-const selectedUser = ref<User>({})
-
-const { departments, refetch: refetchDepartments } = useDepartment()
+const selectedUser = ref<{
+  user_id: string
+  email: string
+  user_name: string
+}>({
+  user_id: '',
+  email: '',
+  user_name: '',
+})
 
 const employeeForm = reactive<{
   department: string
@@ -139,9 +151,10 @@ const addNewEmployee = async () => {
     })
 
     Object.assign(employeeForm, { department: '', position: '', gender: '' })
+
     // @ts-ignore
     selectedUser.value = {}
-    refetchEmployees()
+    emit('update:employee')
   } catch (error) {
     const _e = getResponseError(error)
 
@@ -153,18 +166,6 @@ const addNewEmployee = async () => {
     })
   }
 }
-
-const fetchUsers = async () => {
-  try {
-    users.value = await EmployeeServices.infoCreate()
-  } catch (error) {
-    users.value = []
-  }
-}
-
-onBeforeMount(() => {
-  Promise.all([refetchDepartments(), fetchUsers()])
-})
 </script>
 
 <style lang="scss">

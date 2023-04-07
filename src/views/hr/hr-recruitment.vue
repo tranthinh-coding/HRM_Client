@@ -237,7 +237,7 @@
                 <vs-option
                   v-for="(department, index) in departments"
                   :key="index"
-                  :value="department.department"
+                  :value="department.name"
                 />
               </vs-select>
             </div>
@@ -265,7 +265,7 @@
                 <vs-option
                   v-for="(position, index) in jobPositions"
                   :key="index"
-                  :value="position.position"
+                  :value="position.name"
                 />
               </vs-select>
             </div>
@@ -274,6 +274,9 @@
             <div class="form-original">
               <el-date-picker
                 v-model="job.start_date"
+                :popper-options="{
+                  strategy: 'absolute',
+                }"
                 type="date"
                 format="YYYY/MM/DD"
                 value-format="YYYY-MM-DD"
@@ -363,7 +366,6 @@ const applicantSearch = ref<string>('')
 const job = ref<JobCreate>({
   title: '',
   department: '',
-  salary_format: '$',
   salary_from: 1,
   salary_to: 1,
   age: 18,
@@ -383,7 +385,7 @@ const jobSortCreatedTime = computed(() => {
 })
 
 const disabledDate = (time: Date) => {
-  return time.getTime() < new Date().getTime() - 60 * 60 * 3600
+  return time.getTime() < new Date().getTime() - 1000 * 60 * 60 * 24
 }
 
 // const filterJobs = computed(() =>
@@ -508,7 +510,8 @@ const updateApplicantStatus = async (applicant: Applicant) => {
       type: 'success',
       duration: 3000,
     })
-    Promise.all([applicantRefetch(), getApplicantsOffered()])
+    applicantRefetch()
+    getApplicantsOffered()
   } catch {
     ElMessage({
       message: 'Cập nhật trạng thái thất bại',
@@ -519,17 +522,15 @@ const updateApplicantStatus = async (applicant: Applicant) => {
 }
 
 onBeforeMount(() => {
-  Promise.all([
-    jobRefetch(),
-    departmentRefetch(),
-    getJobTypes(),
-    getJobPositions(),
-    applicantRefetch(),
-    getApplicantStatus(),
-    refetchSeekers(),
-    refetchEmployees(),
-    getApplicantsOffered(),
-  ])
+  jobRefetch()
+  departmentRefetch()
+  getJobTypes()
+  getJobPositions()
+  applicantRefetch()
+  getApplicantStatus()
+  refetchSeekers()
+  refetchEmployees()
+  getApplicantsOffered()
 })
 </script>
 

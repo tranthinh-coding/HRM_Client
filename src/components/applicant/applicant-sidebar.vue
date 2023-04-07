@@ -48,7 +48,7 @@
         <vs-option
           v-for="(position, index) in positions"
           :key="index"
-          :value="position.position"
+          :value="position.name"
         />
       </vs-select>
     </div>

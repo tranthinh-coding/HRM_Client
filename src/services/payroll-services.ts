@@ -1,8 +1,24 @@
+import {
+  PAYROLL_GET_MONEY_FORMAT,
+  PAYMENT_SAVE,
+  PAYROLL_SAVE_SETTING,
+} from '~/config'
 import { useAxios } from '~/composables'
-import { PAYROLL_GET_MONEY_FORMAT } from '~/config'
+import { SuccessResponse } from '~/types/request'
 
-const getAll = () => useAxios.get<string[], string[]>(PAYROLL_GET_MONEY_FORMAT)
+const moneyFormats = () =>
+  useAxios.get<string[], string[]>(PAYROLL_GET_MONEY_FORMAT)
 
-export const PayrollServices = { getAll }
+const saveEmployeePayment = (form: any) =>
+  useAxios.post<SuccessResponse, SuccessResponse>(PAYMENT_SAVE, form)
 
-export default PayrollServices
+const savePayrollSetting = (form: any) =>
+  useAxios.post<SuccessResponse, SuccessResponse>(PAYROLL_SAVE_SETTING, form)
+
+export const PayrollService = {
+  moneyFormats,
+  saveEmployeePayment,
+  savePayrollSetting,
+}
+
+export default PayrollService

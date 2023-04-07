@@ -2,6 +2,7 @@
 
 @use './reset.scss' as *;
 @use './element/index.scss';
+@use './global.scss';
 
 /* Vue transition  */
 .slide-left-enter-from {
@@ -24,14 +25,17 @@
   transform: translate(400px, 0);
 }
 
-.fade-up-enter-from, .fade-up-leave-to {
+.fade-up-enter-from,
+.fade-up-leave-to {
   transform: translateY(50%);
 }
 
-.fade-up-enter-to, .fade-up-leave-from {
+.fade-up-enter-to,
+.fade-up-leave-from {
   transform: translateY(0);
 }
 
-.fade-up-enter-active, .fade-up-leave-active {
+.fade-up-enter-active,
+.fade-up-leave-active {
   transition: all 0.25s ease;
 }

@@ -23,14 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import { Job } from '~/types/job'
 
 defineProps<{
   jobs: Job[]
 }>()
-
-const { t } = useI18n()
 
 const emit = defineEmits({
   openDetail: (job: Job) => job,

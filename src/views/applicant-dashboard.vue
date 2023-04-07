@@ -49,8 +49,8 @@ const filterJobs = computed(
     ) || []
 )
 
-onMounted(async () => {
-  await refetchJobs()
+onMounted(() => {
+  refetchJobs()
 })
 </script>
 

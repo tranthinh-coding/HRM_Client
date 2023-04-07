@@ -27,14 +27,6 @@
         clearable
       ></el-input>
     </el-form-item>
-    <el-form-item prop="phone_number" :error="formErrors.phone_number">
-      <el-input
-        v-model="form.phone_number"
-        label="phone"
-        :placeholder="t('form.phone-number')"
-        clearable
-      ></el-input>
-    </el-form-item>
     <el-form-item prop="password" :error="formErrors.password">
       <el-input
         type="password"
@@ -96,7 +88,6 @@ interface FormState {
   email: string
   password: string
   password_confirmation: string
-  phone_number: string
 }
 
 const { t } = useI18n()
@@ -107,7 +98,6 @@ const form = reactive<FormState>({
   email: 'tranthinh.own@gmail.com',
   password: '123123123',
   password_confirmation: '123123123',
-  phone_number: '',
 })
 const isFetching = ref<boolean>(false)
 const formErrors = reactive<FormState>({
@@ -115,7 +105,6 @@ const formErrors = reactive<FormState>({
   name: '',
   password: '',
   password_confirmation: '',
-  phone_number: '',
 })
 const formRules = reactive<FormRules>({
   name: [
@@ -152,13 +141,6 @@ const formRules = reactive<FormRules>({
     },
     {
       validator: formRule_validatePass2,
-      trigger: 'blur',
-    },
-  ],
-  phone_number: [
-    {
-      required: true,
-      message: t('validate.required'),
       trigger: 'blur',
     },
   ],
@@ -207,7 +189,6 @@ const submit = () => {
 
       if (_error.errors) {
         formErrors.email = _error.errors.email?.[0] || ''
-        formErrors.phone_number = _error.errors.phone_number?.[0] || ''
         formErrors.name = _error.errors.name?.[0] || ''
         formErrors.password = _error.errors.password?.[0] || ''
         formErrors.password_confirmation =

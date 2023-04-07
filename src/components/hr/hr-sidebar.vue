@@ -72,6 +72,15 @@
       <el-icon size="26"> <calender /> </el-icon>
       {{ t('page.sidebar.timekeeping') }}
     </sidebar-item>
+    <!-- <sidebar-item
+      class="menu-item"
+      id="9"
+      :to="{ name: 'hr/request' }"
+      @active="activeItem"
+    >
+      <el-icon size="26"> <sms-notification /> </el-icon>
+      {{ t('page.sidebar.request') }}
+    </sidebar-item> -->
   </menu>
 </template>
 
@@ -80,7 +89,7 @@ import { provide, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import SidebarItem from './hr-sidebar-item.vue'
-import { SidebarContext, sidebarContextKey } from './token'
+import { SidebarContext, sidebarContextKey } from '../token'
 
 const { t } = useI18n()
 

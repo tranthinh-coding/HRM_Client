@@ -7,7 +7,11 @@
     <div class="search-form">
       <el-row :gutter="30">
         <el-col :xs="24" :sm="6" class="search-column">
-          <vs-input v-model="searchForm.id" label="Employee ID" label-float />
+          <vs-input
+            v-model="searchForm.employee_id"
+            label="Employee ID"
+            label-float
+          />
         </el-col>
         <el-col :xs="24" :sm="6" class="search-column">
           <vs-input
@@ -27,13 +31,13 @@
             <vs-option
               v-for="(position, index) in positions"
               :key="index"
-              :value="position.position"
+              :value="position.name"
             />
           </vs-select>
         </el-col>
 
         <el-col :xs="24" :sm="6" class="search-column">
-          <vs-button block @click="searchEmployees">
+          <vs-button block @click="refetch(searchForm)">
             {{ t('employee.search') }}
           </vs-button>
         </el-col>
@@ -45,16 +49,15 @@
         :sm="12"
         :md="8"
         :lg="6"
-        :xl="4"
-        v-for="employee in employees"
-        :key="employee.id"
+        v-for="(employee, index) in employees"
+        :key="index"
       >
         <employee-card
           :employee="employee"
           @open-detail="
             $router.push({
               name: 'hr/employee/detail',
-              params: { id: employee.user_id },
+              params: { id: employee.employee_id },
             })
           "
         />
@@ -63,62 +66,100 @@
 
     <employee-create
       :positions="positions"
+      :departments="departments"
+      :users="users"
+      @update:employee="refetch"
       v-model:open="openCreateEmployeeForm"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
-import { onBeforeMount, reactive, ref } from 'vue'
+import { computed, onBeforeMount, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getResponseError } from '~/composables'
-import EmployeeServices from '~/services/employee-services'
-import JobsService from '~/services/jobs-service'
-import { employees, refetch as refetchEmployees } from '~/store/employees'
-import { JobPosition } from '~/types'
+import { Department, Employee, JobPosition, User } from '~/types'
 import employeeCreate from '~/components/hr/employee-create.vue'
 import employeeCard from '~/components/hr/employee-card.vue'
+import { useQuery } from '@vue/apollo-composable'
+import gql from 'graphql-tag'
 
 const { t } = useI18n()
 const openCreateEmployeeForm = ref(false)
 
 const searchForm = reactive<{
-  id: string
+  employee_id: string
   name: string
   position: string
-}>({ id: '', name: '', position: '' })
+}>({ employee_id: '', name: '', position: '' })
 
-const positions = ref<JobPosition[]>([])
+const { result, refetch } = useQuery<{
+  employees: {
+    data: Employee[]
+    paginatorInfo: {
+      count: number
+      currentPage: number
+      hasMorePages: boolean
+      lastPage: number
+      perPage: number
+      total: number
+    }
+  }
+  allUsers: User[]
+  positions: JobPosition[]
+  departments: Department[]
+}>(
+  gql`
+    query Employees($employee_id: String, $position: String, $name: String) {
+      employees(
+        first: 10
+        page: 1
+        name: $name
+        employee_id: $employee_id
+        position: $position
+      ) {
+        data {
+          name
+          email
+          employee_id
+          position
+        }
+        paginatorInfo {
+          count
+          currentPage
+          hasMorePages
+          lastPage
+          perPage
+          total
+        }
+      }
+      allUsers(role: "Guest") {
+        user_id
+        email
+        name
+        status
+      }
+      positions {
+        name
+      }
+      departments {
+        name
+      }
+    }
+  `,
+  () => ({ employee_id: '', name: '', position: '' })
+)
 
-const searchEmployees = async () => {
-  try {
-    employees.value = await EmployeeServices.search(searchForm)
-  } catch (error) {
-    const _e = getResponseError(error)
-    ElMessage({
-      message: _e.message,
-      type: 'error',
-      duration: 3000,
-    })
-  }
-}
-const fetchPositions = async () => {
-  try {
-    positions.value = await JobsService.positions()
-  } catch (error) {
-    positions.value = []
-  }
-}
+const users = computed(() => result.value?.allUsers || [])
+const employees = computed(() => result.value?.employees.data || [])
+const positions = computed(() => result.value?.positions || [])
+const departments = computed(() => result.value?.departments || [])
 
 onBeforeMount(() => {
-  Promise.all([refetchEmployees(), fetchPositions()])
+  refetch()
 })
 </script>
 
 <style scoped lang="scss">
-@use 'vuesax-alpha/theme-chalk/src/mixins/function.scss' as *;
-
 .employee-dashboard {
   margin-top: 10px;
 }

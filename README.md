@@ -2,20 +2,25 @@
 
 Vue 3 + Vite + Typescript
 
-## Customize configuration
+# Khởi chạy Client
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+📌 Đảm bảo biết dùng `git` và các câu lệnh cơ bản của `terminal`
+
+# Cài đặt môi trường
+
+  ## Yêu cầu
+  - [x] Cài đặt [Nodejs](https://nodejs.org/en/download)
+  
+## Cài đặt
+
+- Tương tự như `HRM_Server`, clone repo này vào `www` (hay nơi nào tuỳ ý, nếu là người mới thì nên để trong `wwww` mặc dùng nó chả có tác dụng gì :v)
 
 ## Project Setup
 
+- Cài đặt các dependences
+
 ```sh
 pnpm install
-```
-
-## Format
-
-```sh
-pnpm format
 ```
 
 ### Compile and Hot-Reload for Development
@@ -23,15 +28,4 @@ pnpm format
 ```sh
 pnpm dev
 ```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-pnpm build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-pnpm lint
-```
+- .... Lúc này host của Client sẽ được 

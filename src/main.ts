@@ -10,11 +10,15 @@ import {
 import App from './App.vue'
 import router from './router'
 
+import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 import Vuesax from 'vuesax-alpha'
 import 'vuesax-alpha/theme-chalk/index.css'
 import 'vuesax-alpha/theme-chalk/dark/css-vars.css'
+
+import '@unocss/reset/tailwind.css'
+import 'virtual:uno.css'
 
 import i18n from '~/plugins/i18n'
 /**
@@ -60,6 +64,9 @@ const app = createApp({
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+app.use(ElementPlus, {
+  zIndex: 9000,
+})
 
 app.use(createPinia())
 

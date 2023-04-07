@@ -1,6 +1,6 @@
 export interface Department {
   id: number
-  department: string
+  name: string
   created_at: string
   updated_at: string
 }

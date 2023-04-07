@@ -31,20 +31,14 @@ export const hrRoutes: RouteRecordRaw = {
     },
     {
       path: 'employee',
-      component: () => import('~/views/hr/hr-employee-dashboard.vue'),
-      children: [
-        {
-          path: '',
-          name: 'hr/employee',
-          component: () => import('~/views/hr/hr-employee.vue'),
-        },
-        {
-          path: 'detail/:id',
-          name: 'hr/employee/detail',
-          component: () => import('~/views/hr/employee-detail.vue'),
-          props: (route) => ({ id: route.params.id }),
-        },
-      ],
+      name: 'hr/employee',
+      component: () => import('~/views/hr/hr-employee.vue'),
+    },
+    {
+      path: 'employee/detail/:id',
+      name: 'hr/employee/detail',
+      component: () => import('~/views/hr/employee-detail.vue'),
+      props: (route) => ({ id: route.params.id }),
     },
     {
       path: 'report',
@@ -64,7 +58,12 @@ export const hrRoutes: RouteRecordRaw = {
     {
       path: 'timekeeping',
       name: 'hr/timekeeping',
-      component: () => import('~/views/hr/timekeeping.vue'),
+      component: () => import('~/views/hr/hr-timekeeping.vue'),
+    },
+    {
+      path: 'request',
+      name: 'hr/request',
+      component: () => import('~/views/hr/hr-request.vue'),
     },
   ],
 }

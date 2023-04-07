@@ -7,68 +7,41 @@
       <h1 class="page-title">Employee Profile</h1>
     </div>
 
-    <div class="profile">
-      <div class="">
-        <el-row :gutter="40">
-          <el-col :xs="24" :sm="12" :lg="8">
-            <div style="display: flex">
-              <vs-avatar size="100">
-                <img src="https://source.unsplash.com/random" alt="" />
-              </vs-avatar>
-              <div class="general-info">
-                <span class="field"> {{ employee?.name }} </span>
-                <span class="field"> Join date {{ employee?.join_date }} </span>
-                <el-tag>{{ employee?.position }}</el-tag>
-              </div>
-            </div>
-          </el-col>
-          <el-col :xs="24" :sm="12" :lg="8">
-            <div class="general-col">
-              <div class="general-field">
-                <h3 class="field-title">{{ t('employee.email') }}</h3>
-                <span class="field-description">{{ employee?.email }}</span>
-              </div>
-              <div class="general-field">
-                <h3 class="field-title">{{ t('employee.address') }}</h3>
-                <span class="field-description">{{ employee?.address }}</span>
-              </div>
-            </div>
-          </el-col>
-          <el-col :xs="24" :sm="12" :lg="8">
-            <div class="general-col">
-              <div class="general-field">
-                <h3 class="field-title">{{ t('employee.birthdate') }}</h3>
-                <span class="field-description">{{ employee?.birthday }}</span>
-              </div>
-              <div class="general-field">
-                <h3 class="field-title">{{ t('employee.gender') }}</h3>
-                <span class="field-description">{{ employee?.gender }}</span>
-              </div>
-            </div>
-          </el-col>
-        </el-row>
+    <div class="mt-8 flex gap-8 flex-wrap md:flex-nowrap">
+      <div class="profile flex-1 md:flex-auto">
+        <div class="general-profile">
+          <vs-avatar size="100">
+            {{ employee?.avatar ?? employee?.name }}
+          </vs-avatar>
+          <div class="general-info">
+            <span style="font-size: 20px">
+              {{ employee?.name }}
+            </span>
+            <el-tag size="small"> {{ employee?.position }} </el-tag>
+          </div>
+          <el-divider />
+          <employee-profile />
+        </div>
       </div>
-
-      <el-tabs>
-        <el-tab-pane label="Persional information"> 1 </el-tab-pane>
-        <el-tab-pane lazy label="Payment setting">2</el-tab-pane>
-        <el-tab-pane lazy v-if="isHR(user.role)" label="Payroll (Admin only)">
-          3
-        </el-tab-pane>
-      </el-tabs>
+      <div class="payment-setting flex-1 md:flex-auto">
+        <employee-payment />
+        <employee-payroll v-if="isHR(user.role)" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { computed, provide } from 'vue'
 import { useRouter } from 'vue-router'
+
+import EmployeePayment from '~/components/hr/employee-payment.vue'
+import EmployeePayroll from '~/components/hr/employee-payroll.vue'
+import EmployeeProfile from '~/components/hr/employee-profile.vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 
 import { isHR } from '~/config'
-import employeeServices from '~/services/employee-services'
 import { useUser } from '~/store'
 
 const router = useRouter()
@@ -79,64 +52,51 @@ const props = defineProps<{
   id: string
 }>()
 
-// const { result } = useQuery<{
-//   employeeProfile: {
-//     employment_of_spouse: string
-//     marital_status: string
-//   }
-// }>(
-//   gql`
-//     query Employee($user_id: String!) {
-//       user(user_id: $user_id) {
-//         name
-//         email
-//         user_id
-//         gender
-//         join_date
-//         birth_date
-//         phone_number
-//         status
-//         avatar
-//         role
-//         phone_number
-//         position
-//         department
-//         created_at
-//       }
-//       employeeProfile(user_id: $user_id) {
-//         employment_of_spouse
-//         marital_status
-//       }
-//     }
-//   `,
-//   () => ({
-//     user_id: props.id,
-//   })
-// )
+const { result } = useQuery<{
+  user: {
+    id: Number
+    name: String
+    email: String
+    join_date: String
+    user_id: String
+    status: String
+    avatar: String
+  }
+  employee: {
+    position: String
+    department: String
+  }
+}>(
+  gql`
+    query EmployeeDetail($user_id: String!) {
+      user(user_id: $user_id) {
+        id
+        name
+        email
+        join_date
+        user_id
+        status
+        avatar
+      }
+      employee(employee_id: $user_id) {
+        position
+        department
+      }
+    }
+  `,
+  () => ({ user_id: props.id })
+)
 
-// watch(result, (usr) => {
-//   console.log(usr?.employeeProfile)
-// })
-
-const { t } = useI18n()
-
-const employee = ref()
+const employee = computed(() => {
+  const profile = Object.assign({}, result.value?.user, result.value?.employee)
+  return profile
+})
 
 const back = () => {
   router.push({ name: 'hr/employee' })
 }
 
-const fetchProfile = async () => {
-  try {
-    employee.value = await employeeServices.getProfile(props.id)
-  } catch (error) {
-    employee.value = null
-  }
-}
-
-onBeforeMount(() => {
-  Promise.all([fetchProfile()])
-})
+provide<{ employee_id: string }>('employee-detail', { employee_id: props.id })
 </script>
 
 <style scoped lang="scss">
@@ -145,17 +105,49 @@ onBeforeMount(() => {
   position: relative;
 }
 
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 30px;
+}
+
 .page-title {
   font-size: 24px;
   padding-top: 6px;
   margin-left: 60px;
 }
-
+.payment-setting {
+  padding: 20px;
+  flex: 1;
+  // min-width: 400px;
+  height: max-content;
+  border-radius: 20px;
+  background-color: getColor(bg-color);
+}
+.payroll-setting {
+  padding: 20px;
+  // width: 100%;
+  flex: 1;
+  height: max-content;
+  border-radius: 20px;
+  background-color: getColor(bg-color);
+}
 .profile {
+  flex: 1;
+  // min-width: 300px;
+  height: max-content;
+  width: 100%;
   background: getColor(bg-color);
   padding: 20px;
-  margin-top: 10px;
   border-radius: 20px;
+}
+
+.general-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 img {
@@ -164,9 +156,10 @@ img {
 
 .general-info {
   display: flex;
-  gap: 10px;
+  gap: 4px;
+  align-items: center;
   flex-direction: column;
-  margin-left: 20px;
+  margin-bottom: 20px;
 }
 .general-col {
   display: flex;

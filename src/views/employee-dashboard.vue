@@ -1,1 +1,3 @@
-<template>Employee dashboard</template>
+<template>
+  <router-view />
+</template>

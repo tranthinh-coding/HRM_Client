@@ -1,5 +1,5 @@
 <template>
-  <div class="header-config">
+  <div class="config">
     <div class="btn-group-right">
       <el-tooltip effect="light" :enterable="false">
         <el-button link>
@@ -48,12 +48,12 @@
         </div>
 
         <template #content>
-          <div
+          <!-- <div
             class="tooltip-option"
             @click="$router.push({ name: 'profile' })"
           >
             {{ t('user.see-info') }}
-          </div>
+          </div> -->
           <div class="tooltip-option" @click="$router.push({ name: 'logout' })">
             {{ t('auth.logout') }}
           </div>
@@ -81,8 +81,8 @@ const { t } = useI18n()
 <style scoped lang="scss">
 @import 'element-plus/theme-chalk/src/mixins/function.scss';
 
-.header-config {
-  padding: 20px;
+.config {
+  padding: 10px;
   /* background-color: #ccc; */
 }
 

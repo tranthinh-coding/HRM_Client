@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 export function pluralize(time: number, label: string): string {
   if (time === 1) {
     return time + label
@@ -121,4 +123,10 @@ export function formatTime(
     ' ' +
     pluralize(d.getMinutes(), ' minute')
   )
+}
+
+export const diffTime = (startTime: string, endTime: string) => {
+  const _startTime = dayjs(`2023-04-01T${startTime}:00`)
+  const _endTime = dayjs(`2023-04-01T${endTime}:00`)
+  return _endTime.diff(_startTime, 'hours', true)
 }

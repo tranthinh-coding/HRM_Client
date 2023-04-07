@@ -8,6 +8,7 @@ import { getToken, removeToken } from '~/utils'
 import { authRoutes } from './auth'
 import { hrRoutes } from './hr'
 import NOOP_COMPONENT from '~/components/NOOP_COMPONENT.vue'
+import { employeeRoutes } from './employee'
 
 export const routerAuthUser: string[] | Symbol[] = ['login', 'register']
 export const routerExceptedAuth = [...routerAuthUser]
@@ -25,6 +26,7 @@ const routes: RouteRecordRaw[] = [
   ...authRoutes,
   ...applicantRoutes,
   hrRoutes,
+  employeeRoutes,
 
   {
     path: '/:pathMatch(.*)*',

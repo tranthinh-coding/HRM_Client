@@ -10,7 +10,7 @@
       </div>
       <div class="employee__info">
         <p>{{ employee.name }}</p>
-        <p>{{ employee.user_id }}</p>
+        <p>{{ employee.employee_id }}</p>
       </div>
       <div class="more-info">
         <el-icon size="20" @click="openEmployeeDetails">
@@ -24,16 +24,12 @@
         <el-icon style="flex-shrink: 0" size="20"><email /></el-icon>
         {{ employee.email }}
       </p>
-      <p v-if="employee.phone_number" @click="copyInfo(employee.phone_number)">
-        <el-icon style="flex-shrink: 0" size="20"><call-calling /></el-icon>
-        {{ employee.phone_number }}
-      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { isNumber, useClipboard } from '@vueuse/core'
+import { isString, useClipboard } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
 import { Employee } from '~/types'
 
@@ -42,13 +38,13 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits({
-  openDetail: (id: number) => isNumber(id),
+  openDetail: (id: string) => isString(id),
 })
 
 const { copy, isSupported } = useClipboard()
 
 const openEmployeeDetails = () => {
-  emit('openDetail', props.employee.id)
+  emit('openDetail', props.employee.employee_id)
 }
 
 const copyInfo = (text?: string | number) => {
@@ -65,7 +61,6 @@ const copyInfo = (text?: string | number) => {
 </script>
 
 <style scoped lang="scss">
-@use 'vuesax-alpha/theme-chalk/src/mixins/function.scss' as *;
 .card {
   padding: 14px 20px;
   border-radius: 16px;

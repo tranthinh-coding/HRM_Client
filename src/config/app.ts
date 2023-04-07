@@ -32,7 +32,11 @@ export const JOB_API_FILTER = JOB_API + '/filter-job'
 export const DEPARTMENTS_API = 'departments'
 
 export const PAYROLL = 'payroll'
+export const PAYROLL_SAVE_SETTING = PAYROLL + '/save-setting'
 export const PAYROLL_GET_MONEY_FORMAT = PAYROLL + '/money-format'
+
+export const PAYMENT = 'payment'
+export const PAYMENT_SAVE = 'payment/save'
 
 export const SEEKERS = 'seekers'
 export const APPLICANT = 'applicants'
@@ -44,6 +48,9 @@ export const APPLICANT_STATUS = 'applicants/status'
 
 export const EMPLOYEE_API = 'employees'
 export const EMPLOYEE_PROFILE = EMPLOYEE_API + '/profile'
+export const EMPLOYEE_SAVE_PROFILE = EMPLOYEE_API + '/save-profile'
 export const EMPLOYEE_SEARCH = EMPLOYEE_API + '/search'
 export const EMPLOYE_INFO_CREATE = 'employees' + '/info-create'
 export const EMPLOYEE_API_CREATE = EMPLOYEE_API + '/create'
+// timeoff
+export const EMPLOYEE_REQUEST_TIMEOFF = EMPLOYEE_API + '/request-timeoff'
