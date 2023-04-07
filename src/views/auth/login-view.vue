@@ -143,7 +143,6 @@ const submit = () => {
 </script>
 
 <style scoped lang="scss">
-@import 'element-plus/theme-chalk/src/mixins/function.scss';
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');
 
 .form {
