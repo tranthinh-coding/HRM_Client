@@ -1,8 +1,9 @@
 // import dark theme
 
 @use './reset.scss' as *;
-@use './element/index.scss';
-@use './global.scss';
+@use './element/index.scss' as *;
+@use './vuesax-old/index.scss' as *;
+@use './global.scss' as *;
 
 /* Vue transition  */
 .slide-left-enter-from {

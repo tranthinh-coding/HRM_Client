@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import HrEmployeeTimekeeping from '~/components/hr/hr-employee-timekeeping.vue'
+import HrEmployeeTimekeeping from '~/components/hr/timekeeping/hr-employee-timekeeping.vue'
 import EmployeeTimeoff from '~/components/employee/employee-timeoff.vue'
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'

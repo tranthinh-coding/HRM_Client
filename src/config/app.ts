@@ -52,5 +52,7 @@ export const EMPLOYEE_SAVE_PROFILE = EMPLOYEE_API + '/save-profile'
 export const EMPLOYEE_SEARCH = EMPLOYEE_API + '/search'
 export const EMPLOYE_INFO_CREATE = 'employees' + '/info-create'
 export const EMPLOYEE_API_CREATE = EMPLOYEE_API + '/create'
+export const EMPLOYEE_CREATE_TIMEKEEPING = `${EMPLOYEE_API}/timekeeping/${CREATE_API}`
+export const EMPLOYEE_UPDATE_TIMEKEEPING = `${EMPLOYEE_API}/timekeeping/${UPDATE_API}`
 // timeoff
 export const EMPLOYEE_REQUEST_TIMEOFF = EMPLOYEE_API + '/request-timeoff'

@@ -1,4 +1,4 @@
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 
 export function pluralize(time: number, label: string): string {
   if (time === 1) {
@@ -130,3 +130,6 @@ export const diffTime = (startTime: string, endTime: string) => {
   const _endTime = dayjs(`2023-04-01T${endTime}:00`)
   return _endTime.diff(_startTime, 'hours', true)
 }
+
+export const isCurrentDate = (date: string | number | Dayjs | Date) =>
+  dayjs().format('YYYY-MM-DD') === dayjs(date).format('YYYY-MM-DD')
