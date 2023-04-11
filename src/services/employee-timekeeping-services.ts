@@ -5,15 +5,17 @@ import {
   EMPLOYEE_UPDATE_TIMEKEEPING,
 } from '~/config'
 
-export const createShift = (form: Omit<Timekeeping, 'id'>) =>
+export const createTimekeeping = (form: Omit<Timekeeping, 'id'>) =>
   useAxios.post<Timekeeping, Timekeeping>(EMPLOYEE_CREATE_TIMEKEEPING, form)
 
-export const updateShift = (form: Timekeeping) =>
+export const updateTimekeeping = (form: Timekeeping) =>
   useAxios.patch<Timekeeping, Timekeeping>(EMPLOYEE_UPDATE_TIMEKEEPING, form)
 
-export const EmployeeShiftServices = {
-  createShift,
-  updateShift,
+// export const getAllTimekeeping = (form: Timekeeping) =>
+
+export const EmployeeTimekeepingServices = {
+  createTimekeeping,
+  updateTimekeeping,
 }
 
-export default EmployeeShiftServices
+export default EmployeeTimekeepingServices

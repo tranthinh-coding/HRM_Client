@@ -1,5 +1,9 @@
 import type { User } from './user'
 
+export const dateFormat = /^\d{4}[/-](0?[1-9]|1[012])[/-](0?[1-9]|[12][0-9]|3[01])$/
+
+export type DateFormat = typeof dateFormat
+
 export interface Timeoff {
   id: number
   day_request: string

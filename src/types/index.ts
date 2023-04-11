@@ -1,6 +1,7 @@
 export * from './applicant'
 export * from './department'
 export * from './employee'
+export * from './graphql'
 export * from './job'
 export * from './request'
 export * from './shift'

@@ -133,3 +133,6 @@ export const diffTime = (startTime: string, endTime: string) => {
 
 export const isCurrentDate = (date: string | number | Dayjs | Date) =>
   dayjs().format('YYYY-MM-DD') === dayjs(date).format('YYYY-MM-DD')
+
+export const lastDayOfTheWeek = (date?: string | number | Dayjs | Date) =>
+  dayjs(date).endOf('w').add(-6, 'day').format('YYYY-MM-DD')

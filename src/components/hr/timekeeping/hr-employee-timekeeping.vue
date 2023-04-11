@@ -62,7 +62,7 @@
           <date-column
             :date="dayjs(date)"
             :employee="row"
-            :shift="employeesShift[row.employee_id]"
+            :timekeeping="timekeepings[row.employee_id]"
             @open-timekeeping-form="openTimekeepingForm"
             @open-list-timekeeping="openListTimekeeping"
             @open-edit-form="onOpenEditForm"
@@ -81,7 +81,7 @@
           <date-column
             :date="dayjs(date).add(1, 'day')"
             :employee="row"
-            :shift="employeesShift[row.employee_id]"
+            :timekeeping="timekeepings[row.employee_id]"
             @open-timekeeping-form="openTimekeepingForm"
             @open-list-timekeeping="openListTimekeeping"
             @open-edit-form="onOpenEditForm"
@@ -100,7 +100,7 @@
           <date-column
             :date="dayjs(date).add(2, 'days')"
             :employee="row"
-            :shift="employeesShift[row.employee_id]"
+            :timekeeping="timekeepings[row.employee_id]"
             @open-timekeeping-form="openTimekeepingForm"
             @open-list-timekeeping="openListTimekeeping"
             @open-edit-form="onOpenEditForm"
@@ -119,7 +119,7 @@
           <date-column
             :date="dayjs(date).add(3, 'day')"
             :employee="row"
-            :shift="employeesShift[row.employee_id]"
+            :timekeeping="timekeepings[row.employee_id]"
             @open-timekeeping-form="openTimekeepingForm"
             @open-list-timekeeping="openListTimekeeping"
             @open-edit-form="onOpenEditForm"
@@ -138,7 +138,7 @@
           <date-column
             :date="dayjs(date).add(4, 'day')"
             :employee="row"
-            :shift="employeesShift[row.employee_id]"
+            :timekeeping="timekeepings[row.employee_id]"
             @open-timekeeping-form="openTimekeepingForm"
             @open-list-timekeeping="openListTimekeeping"
             @open-edit-form="onOpenEditForm"
@@ -157,7 +157,7 @@
           <date-column
             :date="dayjs(date).add(5, 'day')"
             :employee="row"
-            :shift="employeesShift[row.employee_id]"
+            :timekeeping="timekeepings[row.employee_id]"
             @open-timekeeping-form="openTimekeepingForm"
             @open-list-timekeeping="openListTimekeeping"
             @open-edit-form="onOpenEditForm"
@@ -176,7 +176,7 @@
           <date-column
             :date="dayjs(date).add(6, 'day')"
             :employee="row"
-            :shift="employeesShift[row.employee_id]"
+            :timekeeping="timekeepings[row.employee_id]"
             @open-timekeeping-form="openTimekeepingForm"
             @open-list-timekeeping="openListTimekeeping"
             @open-edit-form="onOpenEditForm"
@@ -185,7 +185,7 @@
       </el-table-column>
     </el-table>
 
-    <vs-dialog v-model="isCreateShift" prevent-close>
+    <vs-dialog v-model="isCreateTimekeeping" prevent-close scroll>
       <template #header>
         <h2 class="text-lg">
           {{ tempEmployeeOpened?.name }}: Ngày
@@ -203,17 +203,24 @@
         <div>
           <p
             class="flex items-center gap-2 ml-2"
-            v-if="tempShiftTime?.time_from && tempShiftTime?.time_to"
+            v-if="
+              tempTimekeepingTime?.time_from && tempTimekeepingTime?.time_to
+            "
           >
-            {{ diffTime(tempShiftTime.time_from, tempShiftTime.time_to) }}
+            {{
+              diffTime(
+                tempTimekeepingTime.time_from,
+                tempTimekeepingTime.time_to
+              )
+            }}
             tiếng
           </p>
 
           <div class="flex items-center gap-1 justify-start">
             <el-time-select
-              :model-value="tempShiftTime?.time_from"
-              @update:model-value="(e) => updateTempShift('time_from', e)"
-              :max-time="tempShiftTime?.time_to"
+              :model-value="tempTimekeepingTime?.time_from"
+              @update:model-value="(e) => updateTempTimekeeping('time_from', e)"
+              :max-time="tempTimekeepingTime?.time_to"
               placeholder="Start time"
               start="00:00"
               step="00:30"
@@ -221,9 +228,9 @@
             />
             -
             <el-time-select
-              :model-value="tempShiftTime?.time_to"
-              :min-time="tempShiftTime?.time_from"
-              @update:model-value="(e) => updateTempShift('time_to', e)"
+              :model-value="tempTimekeepingTime?.time_to"
+              :min-time="tempTimekeepingTime?.time_from"
+              @update:model-value="(e) => updateTempTimekeeping('time_to', e)"
               placeholder="End time"
               start="00:00"
               step="00:30"
@@ -232,7 +239,7 @@
           </div>
         </div>
         <vs-select
-          :model-value="`${tempShiftTime?.type_of_time} - ${tempShiftTime?.coefficient}`"
+          :model-value="`${tempTimekeepingTime?.type_of_time} - ${tempTimekeepingTime?.coefficient}`"
           @change="changeEmployeeTypeOfTime"
           label="Ca làm việc"
         >
@@ -270,29 +277,42 @@
     </vs-dialog>
 
     <vs-dialog
-      v-model="isEditShift"
-      @vnode-unmounted="tempShiftEdit = null"
+      v-model="isEditTimekeeping"
+      @vnode-unmounted="tempTimekeepingEdit = null"
       scroll
     >
       <template #header>Chỉnh sửa thông tin</template>
 
       <div class="flex flex-col gap-4">
-        <vs-input disabled label="ID" :model-value="tempShiftEdit?.user_id" />
+        <vs-input
+          disabled
+          label="ID"
+          :model-value="tempTimekeepingEdit?.user_id"
+        />
 
         <div>
           <p
             class="flex items-center gap-2 ml-2"
-            v-if="tempShiftEdit?.time_from && tempShiftEdit?.time_to"
+            v-if="
+              tempTimekeepingEdit?.time_from && tempTimekeepingEdit?.time_to
+            "
           >
-            {{ diffTime(tempShiftEdit.time_from, tempShiftEdit.time_to) }}
+            {{
+              diffTime(
+                tempTimekeepingEdit.time_from,
+                tempTimekeepingEdit.time_to
+              )
+            }}
             tiếng
           </p>
 
           <div class="flex items-center gap-1 justify-start">
             <el-time-select
-              :model-value="tempShiftEdit?.time_from"
-              @update:model-value="(e) => updateTempEditShift('time_from', e)"
-              :max-time="tempShiftEdit?.time_to"
+              :model-value="tempTimekeepingEdit?.time_from"
+              @update:model-value="
+                (e) => updateTempEditTimekeeping('time_from', e)
+              "
+              :max-time="tempTimekeepingEdit?.time_to"
               placeholder="Start time"
               start="00:00"
               step="00:30"
@@ -300,9 +320,11 @@
             />
             -
             <el-time-select
-              :model-value="tempShiftEdit?.time_to"
-              :min-time="tempShiftEdit?.time_from"
-              @update:model-value="(e) => updateTempEditShift('time_to', e)"
+              :model-value="tempTimekeepingEdit?.time_to"
+              :min-time="tempTimekeepingEdit?.time_from"
+              @update:model-value="
+                (e) => updateTempEditTimekeeping('time_to', e)
+              "
               placeholder="End time"
               start="00:00"
               step="00:30"
@@ -312,7 +334,7 @@
         </div>
         <vs-select
           @change="changeEmployeeEditTypeOfTime"
-          :model-value="`${tempShiftEdit?.type_of_time} - ${tempShiftEdit?.coefficient}`"
+          :model-value="`${tempTimekeepingEdit?.type_of_time} - ${tempTimekeepingEdit?.coefficient}`"
           label="Ca làm việc"
         >
           <vs-option
@@ -332,7 +354,7 @@
         </vs-select>
       </div>
 
-      <shift-history :shift="tempShiftEdit!" />
+      <timekeeping-history :timekeeping="tempTimekeepingEdit!" />
 
       <template #footer>
         <div class="flex w-full justify-end items-center gap-2">
@@ -346,7 +368,7 @@
       </template>
     </vs-dialog>
 
-    <vs-dialog v-model="isOpenListShift" not-close>
+    <vs-dialog v-model="isOpenListTimekeeping" not-close>
       <template #header>
         <h3 class="text-lg">
           Danh sách ca làm việc của
@@ -356,14 +378,14 @@
       </template>
       <el-row :gutter="20">
         <el-col
-          v-for="(shift, index) in listTimekeepingOfEmployee"
+          v-for="(timekeeping, index) in listTimekeepingOfEmployee"
           :key="index"
           :xs="24"
           :sm="12"
           class="mb-16px"
         >
-          <shift-button
-            :shift="shift"
+          <timekeeping-button
+            :timekeeping="timekeeping"
             :is-nested="true"
             :employee="currentEmployeeOpenListTimekeeping!"
             :date="dayjs(openDate)"
@@ -388,35 +410,34 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useQuery } from '@vue/apollo-composable'
 import { gql } from 'graphql-tag'
 import dayjs, { Dayjs } from 'dayjs'
-import { isArray, castArray, assign } from 'lodash-unified'
+import { castArray } from 'lodash-unified'
 import { getResponseError } from '~/composables'
 import { diffTime, isCurrentDate } from '~/utils'
-import EmployeeShiftServices from '~/services/employee-shift-services'
+import EmployeeTimekeepingServices from '~/services/employee-timekeeping-services'
 import { useHourlyWageCoefficientsStore } from '~/store/hourlyWageCoefficients'
 // @ts-ignore
 import viVN from 'element-plus/dist/locale/vi.min.js'
-import ShiftHistory from '~/components/shift-history.vue'
+import TimekeepingHistory from '~/components/timekeeping-history.vue'
 import DateColumn from './date-column.vue'
 import HeaderColumn from './header-column.vue'
-import ShiftButton from './shift-button.vue'
+import TimekeepingButton from './timekeeping-button.vue'
 import UntimedButton from './untimed-button.vue'
 import { notification } from 'vuesax-old'
 
-import type {
-  Employee,
-  HourlyWageCoefficient,
-  Timekeeping,
-  EmployeeTimekeepings,
-} from '~/types'
+import type { Employee, HourlyWageCoefficient, Timekeeping } from '~/types'
+import { useEmployeeTimekeepingStore } from '~/store/timekeeping'
 
 const { hourlyWageCoefficients } = storeToRefs(useHourlyWageCoefficientsStore())
 
-const defaultShift = (): Pick<
+const employeeTimekeepingStore = useEmployeeTimekeepingStore()
+const { timekeepings } = storeToRefs(employeeTimekeepingStore)
+
+const defaultTimekeeping = (): Pick<
   Timekeeping,
   'time_from' | 'time_to' | 'type_of_time' | 'coefficient'
 > => ({
@@ -446,16 +467,23 @@ const { result } = useQuery<{
   `
 )
 
+/**
+ * The last date of the prev week - the first day of the current week
+ *
+ * Format (YYYY-MM-DD)
+ * */
 const date = ref(dayjs().endOf('w').add(-6, 'day').format('YYYY-MM-DD'))
 
-/** Dayjs Format (YYYY-MM-DD) */
+/**
+ * current date opening in timekeeping form
+ *
+ * Dayjs Format (YYYY-MM-DD)
+ * */
 const openDate = ref(dayjs().format('YYYY-MM-DD'))
 
-const tempShiftTime = ref<ReturnType<typeof defaultShift> | null>(null)
-
-const employeesShift = ref<{
-  [eid: string]: EmployeeTimekeepings
-}>({})
+const tempTimekeepingTime = ref<ReturnType<typeof defaultTimekeeping> | null>(
+  null
+)
 
 const employees = computed(() => result.value?.employees.data || [])
 
@@ -464,55 +492,49 @@ const jumpToCurrentWeek = () => {
 }
 
 /** Create Timekeeping */
-const isCreateShift = ref<boolean>(false)
+const isCreateTimekeeping = ref<boolean>(false)
 const tempEmployeeOpened = ref<Employee | null>(null)
-
-const updateTempShift = (
-  key: keyof ReturnType<typeof defaultShift>,
+const updateTempTimekeeping = (
+  key: keyof ReturnType<typeof defaultTimekeeping>,
   val: unknown
 ) => {
-  if (tempShiftTime.value) tempShiftTime.value[key] = val as never
+  if (tempTimekeepingTime.value) tempTimekeepingTime.value[key] = val as never
 }
+const clearTempCreate = () => {
+  isCreateTimekeeping.value = false
 
-const createEmployeeShift = async () => {
-  const tempAttd: Omit<Timekeeping, 'id'> = {
-    user_id: tempEmployeeOpened.value!.employee_id,
-    name: tempEmployeeOpened.value!.name,
-    time_from: tempShiftTime.value!.time_from,
-    time_to: tempShiftTime.value!.time_to,
-    type_of_time: tempShiftTime.value!.type_of_time,
-    coefficient: tempShiftTime.value!.coefficient,
-    date: openDate.value,
-  }
-
+  tempEmployeeOpened.value = null
+  tempTimekeepingTime.value = null
+}
+const acceptCreate = async () => {
   // send request to server
   try {
-    const res = await EmployeeShiftServices.createShift(tempAttd)
-    const employeeShiftsCached = employeesShift.value[res.user_id]
+    await EmployeeTimekeepingServices.createTimekeeping({
+      user_id: tempEmployeeOpened.value!.employee_id,
+      name: tempEmployeeOpened.value!.name,
+      time_from: tempTimekeepingTime.value!.time_from,
+      time_to: tempTimekeepingTime.value!.time_to,
+      type_of_time: tempTimekeepingTime.value!.type_of_time,
+      coefficient: tempTimekeepingTime.value!.coefficient,
+      date: openDate.value,
+    })
 
-    const wasHadAShift = employeesShift.value[res.user_id]?.[openDate.value]
-
-    let setOpenDateShift: any = res
-
-    if (wasHadAShift) {
-      if (isArray(wasHadAShift)) {
-        setOpenDateShift = [...wasHadAShift, res]
-      } else {
-        setOpenDateShift = [wasHadAShift, res]
+    employeeTimekeepingStore.refetch(
+      { date, force: true },
+      {
+        from: date.value,
+        to: dayjs(date.value).add(6, 'days').format('YYYY-MM-DD'),
       }
-    }
+    )
 
-    employeesShift.value[res.user_id] = {
-      ...employeeShiftsCached,
-      [openDate.value]: setOpenDateShift,
-    }
     notification({
       title: 'Timekeeping',
       position: 'top-center',
-      text: 'Create employee shift successfully',
+      text: 'Create employee timekeeping successfully',
       border: 'success',
       duration: 3000,
     })
+    clearTempCreate()
   } catch (error) {
     const e = getResponseError(error)
     notification({
@@ -524,89 +546,62 @@ const createEmployeeShift = async () => {
     })
   }
 }
-
-const clearTempCreate = () => {
-  isCreateShift.value = false
-
-  tempEmployeeOpened.value = null
-  tempShiftTime.value = null
-}
-
-const acceptCreate = () => {
-  createEmployeeShift()
-  clearTempCreate()
-}
-
 const openTimekeepingForm = (row: Employee, date: Dayjs) => {
   tempEmployeeOpened.value = row
   const stringDate = dayjs(date).format('YYYY-MM-DD')
 
   openDate.value = stringDate
 
-  tempShiftTime.value = defaultShift()
+  tempTimekeepingTime.value = defaultTimekeeping()
 
-  isCreateShift.value = true
+  isCreateTimekeeping.value = true
 }
-
 const changeEmployeeTypeOfTime = (typeOfTime: HourlyWageCoefficient) => {
-  updateTempShift('type_of_time', typeOfTime.type_of_time)
-  updateTempShift('coefficient', typeOfTime.coefficient)
+  updateTempTimekeeping('type_of_time', typeOfTime.type_of_time)
+  updateTempTimekeeping('coefficient', typeOfTime.coefficient)
 }
 
 /** Edit FORM */
-const isEditShift = ref<boolean>(false)
-const tempShiftEdit = ref<Timekeeping | null>(null)
+const isEditTimekeeping = ref<boolean>(false)
+const tempTimekeepingEdit = ref<Timekeeping | null>(null)
 
-const onOpenEditForm = (shift: Timekeeping) => {
-  tempShiftEdit.value = shift
-  isEditShift.value = true
+const onOpenEditForm = (timekeeping: Timekeeping) => {
+  tempTimekeepingEdit.value = { ...timekeeping }
+  isEditTimekeeping.value = true
 }
-
 const changeEmployeeEditTypeOfTime = (typeOfTime: HourlyWageCoefficient) => {
-  updateTempEditShift('type_of_time', typeOfTime.type_of_time)
-  updateTempEditShift('coefficient', typeOfTime.coefficient)
+  updateTempEditTimekeeping('type_of_time', typeOfTime.type_of_time)
+  updateTempEditTimekeeping('coefficient', typeOfTime.coefficient)
 }
-
-const updateTempEditShift = (key: keyof Timekeeping, val: unknown) => {
-  if (tempShiftEdit.value) tempShiftEdit.value[key] = val as never
+const updateTempEditTimekeeping = (
+  key: keyof Timekeeping,
+  val: string | number
+) => {
+  if (tempTimekeepingEdit.value) {
+    tempTimekeepingEdit.value[key] = val as never
+  }
 }
-
-const isOpenListShift = ref<boolean>(false)
-const currentEmployeeOpenListTimekeeping = ref<Employee | null>(null)
-
-const listTimekeepingOfEmployee = computed<Timekeeping[]>(
-  () =>
-    castArray(
-      employeesShift.value[
-        currentEmployeeOpenListTimekeeping.value?.employee_id!
-      ][openDate.value]
-    ) || []
-)
-
 const acceptEdit = async () => {
   // send request to the server
   try {
-    if (!tempShiftEdit.value) {
-      throw new Error('Cannot update shift of null')
+    if (!tempTimekeepingEdit.value) {
+      throw new Error('Cannot update timekeeping of null')
     }
-    const res = await EmployeeShiftServices.updateShift(tempShiftEdit.value)
-
-    let shiftOfDate = employeesShift.value[res.user_id][res.date]
-
-    let setOpenDateShift: any = res
-
-    // find the shift in the history
-    if (isArray(shiftOfDate)) {
-      const shift = shiftOfDate.find((shift) => shift.id === res.id)
-      assign(shift, res)
-    } else {
-      employeesShift.value[res.user_id][res.date] = setOpenDateShift
-    }
+    await EmployeeTimekeepingServices.updateTimekeeping(
+      tempTimekeepingEdit.value
+    )
+    employeeTimekeepingStore.refetch(
+      { date, force: true },
+      {
+        from: date.value,
+        to: dayjs(date.value).add(6, 'days').format('YYYY-MM-DD'),
+      }
+    )
 
     notification({
       title: 'Timekeeping',
       position: 'top-center',
-      text: 'Update employee shift successfully',
+      text: 'Update employee timekeeping successfully',
       border: 'success',
       duration: 3000,
     })
@@ -622,23 +617,43 @@ const acceptEdit = async () => {
     })
   }
 }
-
 const clearEdit = () => {
-  tempShiftEdit.value = null
-  isEditShift.value = false
+  tempTimekeepingEdit.value = null
+  isEditTimekeeping.value = false
 }
 
+/** List Open */
+const isOpenListTimekeeping = ref<boolean>(false)
+const currentEmployeeOpenListTimekeeping = ref<Employee | null>(null)
+
+const listTimekeepingOfEmployee = computed<Timekeeping[]>(
+  () =>
+    castArray(
+      timekeepings.value[
+        currentEmployeeOpenListTimekeeping.value?.employee_id!
+      ][openDate.value]
+    ) || []
+)
 const openListTimekeeping = (employee: Employee, date: Dayjs) => {
   currentEmployeeOpenListTimekeeping.value = employee
   const stringDate = dayjs(date).format('YYYY-MM-DD')
   openDate.value = stringDate
-  isOpenListShift.value = true
+  isOpenListTimekeeping.value = true
 }
-
 /** Column's Classes */
 const tableColumnClassName = computed(() =>
   isCurrentDate(date.value) ? 'bg-gray-3 bg-opacity-10' : ''
 )
+
+watch(date, (val) => {
+  employeeTimekeepingStore.refetch(
+    { date: val },
+    {
+      from: val,
+      to: dayjs(val).add(6, 'days').format('YYYY-MM-DD'),
+    }
+  )
+})
 </script>
 
 <style scoped lang="scss"></style>

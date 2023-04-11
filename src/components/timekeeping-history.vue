@@ -1,14 +1,14 @@
 <template>
-  <div>History Of The Shift</div>
+  <div>History Of The Timekeeping</div>
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@vue/apollo-composable';
-import gql from 'graphql-tag';
+// import { useQuery } from '@vue/apollo-composable'
+// import gql from 'graphql-tag'
 import { Timekeeping } from '~/types'
 
 defineProps<{
-  shift: Timekeeping
+  timekeeping: Timekeeping
 }>()
 
 // const { result } = useQuery(

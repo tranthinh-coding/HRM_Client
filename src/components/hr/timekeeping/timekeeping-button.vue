@@ -2,9 +2,9 @@
   <button
     class="w-full relative cursor-default rounded-xl py4 px5 flex items-center flex-col justify-center border-dashed border-2 group"
   >
-    <p class="whitespace-nowrap">{{ shift.type_of_time }}</p>
+    <p class="whitespace-nowrap">{{ timekeeping.type_of_time }}</p>
     <p class="whitespace-nowrap text-xs">
-      {{ shift.time_from }} - {{ shift.time_to }}
+      {{ timekeeping.time_from }} - {{ timekeeping.time_to }}
     </p>
 
     <div
@@ -49,7 +49,7 @@ const props = defineProps({
     type: Object as PropType<Dayjs>,
     required: true,
   },
-  shift: {
+  timekeeping: {
     type: Object as PropType<Timekeeping>,
     required: true,
   },
@@ -60,12 +60,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (event: 'openEditForm', shift: Timekeeping): void
+  (event: 'openEditForm', timekeeping: Timekeeping): void
   (event: 'openTimekeepingForm', employee: Employee, date: Dayjs): void
 }>()
 
 const openEditForm = () => {
-  emit('openEditForm', props.shift)
+  emit('openEditForm', props.timekeeping)
 }
 
 const openTimekeepingForm = () => {

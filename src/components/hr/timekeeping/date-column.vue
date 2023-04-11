@@ -1,5 +1,8 @@
 <template>
-  <div v-if="!shift" class="w-full h-full flex items-center justify-center">
+  <div
+    v-if="!timekeeping"
+    class="w-full h-full flex items-center justify-center"
+  >
     <untimed-button
       :employee="employee"
       :date="date"
@@ -8,17 +11,17 @@
   </div>
   <template v-else>
     <div
-      v-if="isArray(shift)"
+      v-if="isArray(timekeeping)"
       class="cursor-pointer h-full p-14px"
       @click="openListTimekeeping"
     >
-      {{ shift.length }} Ca
+      {{ timekeeping.length }} Ca
     </div>
-    <shift-button
+    <timekeeping-button
       v-else
       :employee="employee"
       :date="date"
-      :shift="shift"
+      :timekeeping="timekeeping"
       @open-timekeeping-form="openTimekeepingForm"
       @open-edit-form="onOpenEditForm"
     />
@@ -29,7 +32,7 @@
 import { computed } from 'vue'
 import dayjs from 'dayjs'
 import { isArray } from 'lodash-unified'
-import ShiftButton from './shift-button.vue'
+import TimekeepingButton from './timekeeping-button.vue'
 import UntimedButton from './untimed-button.vue'
 
 import type { Dayjs } from 'dayjs'
@@ -38,12 +41,12 @@ import type { Employee, Timekeeping, EmployeeTimekeepings } from '~/types'
 const props = defineProps<{
   employee: Employee
   date: Dayjs
-  shift?: EmployeeTimekeepings
+  timekeeping?: EmployeeTimekeepings
 }>()
 
 const emit = defineEmits<{
   (event: 'openTimekeepingForm', employee: Employee, date: Dayjs): void
-  (event: 'openEditForm', shift: Timekeeping): void
+  (event: 'openEditForm', timekeeping: Timekeeping): void
   (event: 'openListTimekeeping', employee: Employee, date: Dayjs): void
 }>()
 
@@ -54,13 +57,13 @@ const openListTimekeeping = () => {
   emit('openListTimekeeping', props.employee, props.date)
 }
 
-const onOpenEditForm = (shift: Timekeeping) => {
-  emit('openEditForm', shift)
+const onOpenEditForm = (timekeeping: Timekeeping) => {
+  emit('openEditForm', timekeeping)
 }
 
 const dateString = computed(() => dayjs(props.date).format('YYYY-MM-DD'))
 
-const shift = computed(() => props.shift?.[dateString.value])
+const timekeeping = computed(() => props.timekeeping?.[dateString.value])
 </script>
 
 <style scoped></style>
