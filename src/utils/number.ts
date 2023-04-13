@@ -22,3 +22,24 @@ export const ordinalSuffix = (value: number | string) => {
   if (j == 3 && k != 13) return value + 'rd'
   return value + 'th'
 }
+
+export const formatCurrencyInWords = (_num: number) => {
+  if (typeof _num !== 'number') {
+    throw new Error(
+      '[HR Warn](formatCurrencyInWords): Invalid currency, expect type number, got string'
+    )
+  }
+  const num = Number(_num)
+
+  if (num >= 1000000000) {
+    return (num / 1000000000).toFixed(2).replace(/\.0+$/, '') + ' tỷ'
+  }
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(2).replace(/\.0+$/, '') + ' triệu'
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(2).replace(/\.0+$/, '') + ' nghìn'
+  }
+
+  return num.toString()
+}
