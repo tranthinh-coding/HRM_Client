@@ -6,6 +6,6 @@ module.exports = {
       url: 'http://hrm_server.test/graphql',
     },
     // Files processed by the extension
-    includes: ['src/**/*.vue', 'src/**/*.js'],
+    includes: ['src/**/*.vue', 'src/**/*.ts'],
   },
 }
