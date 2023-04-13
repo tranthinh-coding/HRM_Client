@@ -14,10 +14,11 @@
 import ApplicantSidebar from '~/components/applicant/applicant-sidebar.vue'
 import HrSidebar from '~/components/hr/hr-sidebar.vue'
 import EmployeeSidebar from '~/components/employee/employee-sidebar.vue'
-import { useUser } from '~/store'
+import { useUserStore } from '~/store'
 import { isEmployee, isGuest, isHR } from '~/config'
+import { storeToRefs } from 'pinia'
 
-const user = useUser()
+const { user } = storeToRefs(useUserStore())
 </script>
 
 <style scoped lang="scss">

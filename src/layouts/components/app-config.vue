@@ -69,18 +69,17 @@ import { useI18n } from 'vue-i18n'
 import { isDark } from '~/composables'
 import { REPO_LINK } from '~/config'
 import { loadLanguageAsync, SUPPORT_LANGUAGES } from '~/plugins/i18n'
-import { useUser } from '~/store'
+import { useUserStore } from '~/store'
 import IconCode from '~/components/icons/code.vue'
 import IconLanguage from '~/components/icons/language.vue'
+import { storeToRefs } from 'pinia'
 
-const user = useUser()
+const { user } = storeToRefs(useUserStore())
 
 const { t } = useI18n()
 </script>
 
 <style scoped lang="scss">
-@import 'element-plus/theme-chalk/src/mixins/function.scss';
-
 .config {
   padding: 10px;
   /* background-color: #ccc; */
@@ -109,7 +108,7 @@ const { t } = useI18n()
 }
 
 .tooltip-option:hover {
-  background-color: getCssVar(bg-color, page);
+  background-color: getColor(bg-color, page);
 }
 
 .user-info {
