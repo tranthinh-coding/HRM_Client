@@ -1,9 +1,10 @@
+import { storeToRefs } from 'pinia'
 import DashboardLayout from '~/layouts/app-dashboard.vue'
 import { applicantRoutes } from './applicant'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { ACCESS_TOKEN } from '~/config/app'
 import UserService from '~/services/user-service'
-import { useUser } from '~/store/user'
+import { useUserStore } from '~/store'
 import { getToken, removeToken } from '~/utils'
 import { authRoutes } from './auth'
 import { hrRoutes } from './hr'
@@ -54,9 +55,9 @@ const router = createRouter({
 router.beforeResolve(async (to, _, next) => {
   if (to.name === 'logout') return next()
 
-  const user = useUser()
+  const { user, isLoggedIn } = storeToRefs(useUserStore())
 
-  if (!user.user_id) {
+  if (!isLoggedIn.value) {
     // user was not logged in
     const hasToken = getToken(ACCESS_TOKEN)
     if (hasToken) {
@@ -67,7 +68,7 @@ router.beforeResolve(async (to, _, next) => {
 
         if (!routerAuthUser.includes(to.name as string)) {
           if (to.meta.requireRole) {
-            if (to.meta.requireRole === user.role) return next()
+            if (to.meta.requireRole === user.value?.role) return next()
 
             return next({ name: 'home' })
           }
@@ -87,7 +88,7 @@ router.beforeResolve(async (to, _, next) => {
   if (routerAuthUser.includes(to.name as string)) return next({ name: 'home' })
 
   if (to.meta.requireRole) {
-    if (to.meta.requireRole === user.role) return next()
+    if (to.meta.requireRole === user.value?.role) return next()
 
     return next({ name: 'home' })
   }

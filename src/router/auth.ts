@@ -1,5 +1,5 @@
 import { ElMessage } from 'element-plus'
-import { useUser } from '~/store/user'
+import { useUserStore } from '~/store'
 import AuthLayout from '~/layouts/auth-layout.vue'
 import { Component } from 'vue'
 import { ACCESS_TOKEN } from '~/config/app'
@@ -30,8 +30,8 @@ export const authRoutes = [
     path: '/logout',
     name: 'logout',
     beforeEnter: async () => {
-      const user = useUser()
-      user.$reset()
+      const user = useUserStore()
+      user.reset()
 
       ElMessage({
         message: "You're logged out~",
