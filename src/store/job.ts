@@ -1,36 +1,56 @@
-import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
-import { JobsService } from '~/services/jobs-service'
+import { gql } from 'graphql-tag'
+import { useQuery } from '@vue/apollo-composable'
+import { defineStore } from 'pinia'
+import { computed } from 'vue'
 
-import { Job, JobFilter } from '~/types/job'
+import type { Job } from '~/types'
 
-const jobs = ref<Job[]>([])
+type QueryResponse = {
+  jobs: Job[]
+}
 
-export const useJob = () => {
-  const refetch = async () => {
-    try {
-      jobs.value = await JobsService.getAll()
-    } catch (e) {
-      ElMessage({
-        message: `${(e as any).message}`,
-        duration: 3000,
-        type: 'error',
-      })
-      jobs.value = []
-    }
+type QueryParams = {
+  position?: string
+  type?: string
+  salary_to?: {
+    from: number
+    to: number
   }
+}
 
-  const filter = async (filter: JobFilter) => {
-    try {
-      jobs.value = await JobsService.filter(filter)
-    } catch (error) {
-      jobs.value = []
-    }
+export const useJobsStore = defineStore('JOBS', () => {
+  const { result, refetch: _refetch } = useQuery<QueryResponse, QueryParams>(
+    gql`
+      query JOBS {
+        jobs {
+          title
+          expired_date
+          description
+          count
+          position
+          no_of_vacancies
+          experience
+          age
+          salary_from
+          salary_to
+          type
+          status
+          start_date
+          created_at
+          updated_at
+        }
+      }
+    `
+  )
+
+  const jobs = computed(() => result.value?.jobs || [])
+
+  const refetch = async (filter?: QueryParams) => {
+    await _refetch(filter)
   }
 
   return {
     jobs,
     refetch,
-    filter,
   }
-}
+})

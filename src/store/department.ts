@@ -1,19 +1,30 @@
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { defineStore } from 'pinia'
+import { useQuery } from '@vue/apollo-composable'
+import gql from 'graphql-tag'
+
 import type { Department } from '~/types'
-import departmentServices from '~/services/department-services'
 
-const departments = ref<Department[]>([])
+type QueryResponse = {
+  departments: Department[]
+}
 
-export const useDepartment = () => {
-  const refetch = async () => {
-    try {
-      const response = await departmentServices.departments()
+export const useDepartmentStore = defineStore('Department', () => {
+  const { result, refetch } = useQuery<QueryResponse>(
+    gql`
+      query departments {
+        departments {
+          id
+          name
+          description
+          created_at
+          updated_at
+        }
+      }
+    `
+  )
 
-      departments.value = response
-    } catch {
-      departments.value = []
-    }
-  }
+  const departments = computed(() => result.value?.departments || [])
 
   return { departments, refetch }
-}
+})

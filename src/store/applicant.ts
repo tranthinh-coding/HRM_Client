@@ -1,27 +1,42 @@
-import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { useQuery } from '@vue/apollo-composable'
+import { defineStore } from 'pinia'
+import { computed } from 'vue'
+import gql from 'graphql-tag'
+import { Applicant } from '~/types'
 
-import { ApplicantServices } from '~/services/applicant-services'
-import { Applicant } from '~/types/applicant'
+type QueryResponse = {
+  applicants: Applicant[]
+}
 
-const applicants = ref<Applicant[]>([])
+export const useApplicantsStore = defineStore('APPLICANTS', () => {
+  const { result, refetch } = useQuery<QueryResponse>(
+    gql`
+      query APPLICANTS {
+        applicants {
+          user_id
+          job_id
+          message
+          status
 
-export const useApplicant = () => {
-  const refetch = async () => {
-    try {
-      applicants.value = await ApplicantServices.getAll()
-    } catch (e) {
-      ElMessage({
-        message: `${(e as any).message}`,
-        duration: 3000,
-        type: 'error',
-      })
-      applicants.value = []
-    }
-  }
+          user {
+            name
+            user_id
+            email
+          }
+
+          job {
+            title
+            description
+          }
+        }
+      }
+    `
+  )
+
+  const applicants = computed(() => result.value?.applicants || [])
 
   return {
     applicants,
     refetch,
   }
-}
+})
