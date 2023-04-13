@@ -1,5 +1,7 @@
 #! /bin/bash
 
+echo "REM is the best girl"
+
 NAME=$1
 
 FILE_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")/../src" && pwd)
