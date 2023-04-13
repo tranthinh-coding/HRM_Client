@@ -1,5 +1,4 @@
-import { Job } from '~/types/job'
-import { User } from '~/types/user'
+import type { Job, User } from '~/types'
 
 export type Applicant = {
   id: number
