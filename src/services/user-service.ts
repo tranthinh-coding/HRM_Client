@@ -1,5 +1,5 @@
 import { setToken } from '~/utils/auth'
-import { useUser } from '~/store/user'
+import { useUserStore } from '~/store'
 import {
   ACCESS_TOKEN,
   LOGIN_API,
@@ -19,7 +19,7 @@ export const login = async <D = any>(form: D): Promise<User> => {
     LOGIN_API,
     form
   )
-  useUser().saveUser(user)
+  useUserStore().saveUser(user)
   setToken(ACCESS_TOKEN, user.token)
   return user
 }
@@ -33,7 +33,7 @@ export const register = async <D = any>(form: D): Promise<User> => {
     REGISTER_API,
     form
   )
-  useUser().saveUser(user)
+  useUserStore().saveUser(user)
 
   setToken(ACCESS_TOKEN, user.token)
   return user
