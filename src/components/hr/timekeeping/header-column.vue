@@ -15,5 +15,3 @@ defineProps<{
   weekday: string
 }>()
 </script>
-
-<style scoped></style>

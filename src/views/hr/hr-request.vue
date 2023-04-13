@@ -4,7 +4,9 @@
       <el-tab-pane name="1">
         <template #label>
           <div class="pt-4">
-            <el-badge :value="timeoffs.length" :max="99"> Tất cả </el-badge>
+            <el-badge :value="timeoffsArray.length" :max="99">
+              Tất cả
+            </el-badge>
           </div>
         </template>
       </el-tab-pane>
@@ -31,36 +33,18 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
+import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { Timeoff } from '~/types'
+import { useEmployeeTimeoffStore } from '~/store'
 
-const { result } = useQuery<{
-  timeoffs: Timeoff[]
-}>(
-  gql`
-    query HrRequest {
-      timeoffs {
-        id
-        day_request
-        time_from
-        status
-        user {
-          user_id
-          name
-        }
-      }
-    }
-  `
-)
+const timeoffStore = useEmployeeTimeoffStore()
+const { timeoffsArray } = storeToRefs(timeoffStore)
 
-const timeoffs = computed(() => result.value?.timeoffs || [])
 const timeoffsResolved = computed(
-  () => result.value?.timeoffs.filter((e) => e.status === 'Resolved') || []
+  () => timeoffsArray.value.filter((e) => e.status === 'Resolved') || []
 )
 const timeoffsRejected = computed(
-  () => result.value?.timeoffs.filter((e) => e.status === 'Rejected') || []
+  () => timeoffsArray.value.filter((e) => e.status === 'Rejected') || []
 )
 </script>
 

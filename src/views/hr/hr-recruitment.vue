@@ -18,7 +18,7 @@
             </el-statistic>
           </el-col>
           <el-col :xs="24" :sm="12" :md="6">
-            <el-statistic title="Job seeker" :value="seekders">
+            <el-statistic title="Job seeker" :value="seekers.length">
               <template #suffix>
                 <el-icon style="vertical-align: -0.125em">
                   <people />
@@ -331,7 +331,7 @@
 
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TinyEditor from '@tinymce/tinymce-vue'
 import { saveAs } from 'file-saver'
@@ -339,21 +339,35 @@ import { saveAs } from 'file-saver'
 import JobsService from '~/services/jobs-service'
 import { isDark } from '~/composables'
 import { formatTime } from '~/utils'
-import { useDepartment } from '~/store'
-import { useJob } from '~/store/job'
-import { useApplicant } from '~/store/applicant'
+import {
+  useDepartmentStore,
+  useJobsStore,
+  useApplicantsStore,
+  useUsersStore,
+  useEmployeesStore,
+} from '~/store'
 import ApplicantServices from '~/services/applicant-services'
-import { seekders, refetch as refetchSeekers } from '~/store/seeker'
-import { employees, refetch as refetchEmployees } from '~/store/employees'
 
 import type { JobCreate, JobTypes, JobPosition } from '~/types/job'
 import type { Applicant } from '~/types'
+import { storeToRefs } from 'pinia'
 
 const { t } = useI18n()
 
-const { departments, refetch: departmentRefetch } = useDepartment()
-const { jobs, refetch: jobRefetch } = useJob()
-const { applicants, refetch: applicantRefetch } = useApplicant()
+const departmentsStore = useDepartmentStore()
+const { departments } = storeToRefs(departmentsStore)
+
+const jobsStore = useJobsStore()
+const { jobs } = storeToRefs(jobsStore)
+
+const applicantsStore = useApplicantsStore()
+const { applicants } = storeToRefs(applicantsStore)
+
+const employeesStore = useEmployeesStore()
+const { employees } = storeToRefs(employeesStore)
+
+const usersStore = useUsersStore()
+const { seekers } = storeToRefs(usersStore)
 
 const jobTypes = ref<JobTypes[]>([])
 const jobPositions = ref<JobPosition[]>([])
@@ -379,7 +393,7 @@ const job = ref<JobCreate>({
 })
 
 const jobSortCreatedTime = computed(() => {
-  const _jobs = jobs.value
+  const _jobs = [...jobs.value]
   _jobs.sort((a, b) => b.id - a.id)
   return _jobs
 })
@@ -387,19 +401,6 @@ const jobSortCreatedTime = computed(() => {
 const disabledDate = (time: Date) => {
   return time.getTime() < new Date().getTime() - 1000 * 60 * 60 * 24
 }
-
-// const filterJobs = computed(() =>
-//   jobs.value.filter(
-//     (job) =>
-//       job.title.toLowerCase().includes(search.value.toLowerCase()) ||
-//       job.description.toLowerCase().includes(search.value.toLowerCase()) ||
-//       job.department.toLowerCase().includes(search.value.toLowerCase()) ||
-//       job.position.toLowerCase().includes(search.value.toLowerCase()) ||
-//       job.type.toLowerCase().includes(search.value.toLowerCase()) ||
-//       job.salary_from.toLowerCase().includes(search.value.toLowerCase()) ||
-//       job.salary_to.toLowerCase().includes(search.value.toLowerCase())
-//   )
-// )
 
 const getApplicantStatus = async () => {
   try {
@@ -453,7 +454,7 @@ const createJob = async () => {
       type: 'success',
       duration: 3000,
     })
-    await jobRefetch()
+    jobsStore.refetch()
   } catch (error) {
     ElMessage({
       message: `${(error as any).message}`,
@@ -510,7 +511,7 @@ const updateApplicantStatus = async (applicant: Applicant) => {
       type: 'success',
       duration: 3000,
     })
-    applicantRefetch()
+    applicantsStore.refetch()
     getApplicantsOffered()
   } catch {
     ElMessage({
@@ -521,22 +522,13 @@ const updateApplicantStatus = async (applicant: Applicant) => {
   }
 }
 
-onBeforeMount(() => {
-  jobRefetch()
-  departmentRefetch()
-  getJobTypes()
-  getJobPositions()
-  applicantRefetch()
-  getApplicantStatus()
-  refetchSeekers()
-  refetchEmployees()
-  getApplicantsOffered()
-})
+getJobTypes()
+getJobPositions()
+getApplicantStatus()
+getApplicantsOffered()
 </script>
 
 <style scoped lang="scss">
-@import 'vuesax-alpha/theme-chalk/src/mixins/function.scss';
-
 .el-col {
   text-align: center;
 }

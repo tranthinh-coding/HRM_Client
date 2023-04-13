@@ -19,10 +19,6 @@
 import { Dayjs } from 'dayjs'
 import { Employee } from '~/types'
 
-// defineOptions({
-//   inheritAttrs: false,
-// })
-
 const props = defineProps<{
   employee: Employee
   date: Dayjs

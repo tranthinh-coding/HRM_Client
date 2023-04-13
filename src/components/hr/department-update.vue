@@ -1,5 +1,5 @@
 <template>
-  <vs-dialog v-model="showDialog">
+  <vs-dialog v-model="modelValue">
     <template #header>
       <h4 v-html="t('departments.update')"></h4>
     </template>
@@ -27,7 +27,6 @@
 
 <script setup lang="ts">
 import { isBoolean, isString, useVModel } from '@vueuse/core'
-import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -49,15 +48,7 @@ const emit = defineEmits({
 
 const department = useVModel(props, 'department')
 
-// const department = computed({
-//   get: () => props.department,
-//   set: (value: string) => emit('update:department', value),
-// })
-
-const showDialog = computed({
-  get: () => props.modelValue,
-  set: (value: boolean) => emit('update:modelValue', value),
-})
+const modelValue = useVModel(props, 'modelValue')
 
 const addNewDepartment = () => emit('update')
 </script>

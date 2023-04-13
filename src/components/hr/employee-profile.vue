@@ -87,7 +87,7 @@
         <h3 class="info-label">Trạng thái</h3>
 
         <vs-input
-          v-if="isEmployee(currentUser.role)"
+          v-if="isEmployee(currentUser?.role)"
           class="info-content"
           disabled
           :model-value="profile.status"
@@ -103,7 +103,7 @@
       <div class="info-group">
         <h3 class="info-label">Phòng ban</h3>
         <vs-input
-          v-if="isEmployee(currentUser.role)"
+          v-if="isEmployee(currentUser?.role)"
           class="info-content"
           disabled
           :model-value="profile.department"
@@ -119,7 +119,7 @@
       <div class="info-group">
         <h3 class="info-label">Chức vụ</h3>
         <vs-input
-          v-if="isEmployee(currentUser.role)"
+          v-if="isEmployee(currentUser?.role)"
           class="info-content"
           :model-value="profile.position"
           disabled
@@ -160,7 +160,7 @@ import { isNil } from 'lodash-unified'
 import EmployeeServices from '~/services/employee-services'
 
 import { isEmployee } from '~/config'
-import { useUser } from '~/store'
+import { useUserStore } from '~/store'
 import {
   Department,
   Employee,
@@ -170,6 +170,7 @@ import {
   UserStatus,
 } from '~/types'
 import { ElMessage } from 'element-plus'
+import { storeToRefs } from 'pinia'
 
 type ProfileState = Pick<Employee, 'department' | 'position'> &
   Pick<User, 'status' | 'email'> &
@@ -184,7 +185,7 @@ type ProfileQuery = {
   positions: JobPosition[]
 }
 
-const currentUser = useUser()
+const { user: currentUser } = storeToRefs(useUserStore())
 
 const editable = ref(false)
 const employee = inject<{ employee_id: string }>('employee-detail')

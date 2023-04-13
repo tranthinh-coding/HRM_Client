@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { Job } from '~/types/job'
+import { formatCurrencyInWords } from '~/utils'
 
 defineProps<{
   jobs: Job[]
@@ -36,32 +37,16 @@ const emit = defineEmits({
 const seeJobDetail = (job: Job) => {
   emit('openDetail', job)
 }
-
-function formatCurrencyInWords(num: number) {
-  if (num >= 1000000000) {
-    return (num / 1000000000).toFixed(2).replace(/\.0+$/, '') + ' tỷ'
-  }
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(2).replace(/\.0+$/, '') + ' triệu'
-  }
-  if (num >= 1000) {
-    return (num / 1000).toFixed(2).replace(/\.0+$/, '') + ' nghìn'
-  }
-
-  return num.toString()
-}
 </script>
 
 <style scoped lang="scss">
-@import 'element-plus/theme-chalk/src/mixins/function.scss';
-
 .jobs {
   margin-top: 20px;
   width: 100%;
 }
 .job {
   border-radius: 16px;
-  background-color: getCssVar(bg-color);
+  background-color: getColor(bg-color);
   padding: 30px 30px;
   margin-bottom: 20px;
 
@@ -81,7 +66,7 @@ function formatCurrencyInWords(num: number) {
       // white-space: nowrap;
     }
     .bookmark {
-      color: getCssVar(fill-color, darker);
+      color: getColor(fill-color, darker);
     }
   }
 

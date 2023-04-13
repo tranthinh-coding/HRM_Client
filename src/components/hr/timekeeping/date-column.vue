@@ -26,6 +26,7 @@
       @open-edit-form="onOpenEditForm"
     />
   </template>
+  <timeoff-info-off-date-column :employee="employee" />
 </template>
 
 <script setup lang="ts">
@@ -34,6 +35,7 @@ import dayjs from 'dayjs'
 import { isArray } from 'lodash-unified'
 import TimekeepingButton from './timekeeping-button.vue'
 import UntimedButton from './untimed-button.vue'
+import TimeoffInfoOffDateColumn from './timeoff-info-off-date-column.vue'
 
 import type { Dayjs } from 'dayjs'
 import type { Employee, Timekeeping, EmployeeTimekeepings } from '~/types'

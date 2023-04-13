@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Department, Employee, JobPosition, User } from '~/types'
 import employeeCreate from '~/components/hr/employee-create.vue'
@@ -153,10 +153,6 @@ const users = computed(() => result.value?.allUsers || [])
 const employees = computed(() => result.value?.employees.data || [])
 const positions = computed(() => result.value?.positions || [])
 const departments = computed(() => result.value?.departments || [])
-
-onBeforeMount(() => {
-  refetch()
-})
 </script>
 
 <style scoped lang="scss">

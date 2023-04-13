@@ -87,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeMount, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 
@@ -141,9 +141,7 @@ const toggleUpdateForm = (department: Department) => {
 
 const refreshDepartments = async () => {
   try {
-    const response = await departmentServices.departments()
-
-    departments.value = response
+    departments.value = await departmentServices.departments()
   } catch {
     departments.value = []
   }
@@ -166,7 +164,7 @@ const addNewDepartment = async () => {
     departmentForm.name = ''
     departmentFormError.name = ''
 
-    await refreshDepartments()
+    refreshDepartments()
   } catch (e) {
     const message: string = (e as any).message
     departmentFormError.name = message
@@ -197,7 +195,7 @@ const updateDepartment = async () => {
 
     departmentFormError.name = ''
 
-    await refreshDepartments()
+    refreshDepartments()
   } catch (e) {
     const message: string = (e as any).message
     departmentFormError.name = message
@@ -221,7 +219,7 @@ const removeDepartment = async (department: Department) => {
       type: 'success',
       duration: 2000,
     })
-    await refreshDepartments()
+    refreshDepartments()
   } catch (e: unknown) {
     ElMessage({
       message: 'Delete department failure',
@@ -232,14 +230,12 @@ const removeDepartment = async (department: Department) => {
   isFetching.value = false
 }
 
-onMounted(async () => {
-  await refreshDepartments()
+onBeforeMount(() => {
+  refreshDepartments()
 })
 </script>
 
 <style scoped lang="scss">
-@import 'element-plus/theme-chalk/src/mixins/function.scss';
-
 .department-dashboard {
   padding: 20px 10px;
   height: 100%;
@@ -248,7 +244,7 @@ onMounted(async () => {
   margin-bottom: 10px;
 }
 .department-table {
-  background-color: getCssVar(bg-color);
+  background-color: getColor(bg-color);
   border-radius: 20px;
   height: 100%;
   overflow: hidden;

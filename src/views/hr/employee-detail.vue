@@ -25,7 +25,7 @@
       </div>
       <div class="payment-setting flex-1 md:flex-auto">
         <employee-payment />
-        <employee-payroll v-if="isHR(user.role)" />
+        <employee-payroll v-if="isHR(user?.role)" />
       </div>
     </div>
   </div>
@@ -34,19 +34,18 @@
 <script setup lang="ts">
 import { computed, provide } from 'vue'
 import { useRouter } from 'vue-router'
-
+import { storeToRefs } from 'pinia'
+import { useQuery } from '@vue/apollo-composable'
+import gql from 'graphql-tag'
+import { isHR } from '~/config'
+import { useUserStore } from '~/store'
 import EmployeePayment from '~/components/hr/employee-payment.vue'
 import EmployeePayroll from '~/components/hr/employee-payroll.vue'
 import EmployeeProfile from '~/components/hr/employee-profile.vue'
-import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
-
-import { isHR } from '~/config'
-import { useUser } from '~/store'
 
 const router = useRouter()
 
-const user = useUser()
+const { user } = storeToRefs(useUserStore())
 
 const props = defineProps<{
   id: string

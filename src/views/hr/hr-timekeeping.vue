@@ -1,8 +1,8 @@
 <template>
   <div class="p-6 rounded-2xl boxes">
-    <el-statistic :value="timeoffs.length">
+    <el-statistic :value="timeoffsArray.length">
       <template #title>
-        <div class="flex items-center">Nhân viên xin nghỉ hôm nay</div>
+        <div class="flex items-center">Số yêu cầu nghỉ hôm nay</div>
       </template>
     </el-statistic>
 
@@ -20,40 +20,14 @@
 </template>
 
 <script setup lang="ts">
+import { useEmployeeTimeoffStore } from '~/store'
+
 import HrEmployeeTimekeeping from '~/components/hr/timekeeping/hr-employee-timekeeping.vue'
 import EmployeeTimeoff from '~/components/employee/employee-timeoff.vue'
-import gql from 'graphql-tag'
-import { useQuery } from '@vue/apollo-composable'
-import dayjs from 'dayjs'
-import { computed, onBeforeMount } from 'vue'
-import { Timeoff } from '~/types'
+import { storeToRefs } from 'pinia'
 
-const { result, refetch } = useQuery<{
-  timeoffs: Timeoff[]
-}>(
-  gql`
-    query EmployeeTimeoff($day_request: String) {
-      timeoffs(day_request: $day_request) {
-        id
-        day_request
-        time_from
-        time_to
-        reason
-        type_timeoff
-        status
-      }
-    }
-  `,
-  () => ({
-    day_request: dayjs().format('YYYY-MM-DD'),
-  })
-)
-
-const timeoffs = computed(() => result.value?.timeoffs || [])
-
-onBeforeMount(() => {
-  refetch()
-})
+const timeoffStore = useEmployeeTimeoffStore()
+const { timeoffsArray } = storeToRefs(timeoffStore)
 </script>
 
 <style scoped lang="scss">

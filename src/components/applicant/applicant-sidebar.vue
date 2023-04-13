@@ -9,11 +9,11 @@
         label="Chọn mức lương"
         style="margin-top: 30px"
       >
-        <vs-option :value="{ min: 0, max: 0 }" label="Chọn mức lương" />
+        <vs-option :value="{ from: 0, to: 0 }" label="Chọn mức lương" />
         <vs-option
           v-for="(sl, index) in rangeSalary"
           :key="index"
-          :value="{ min: sl.min, max: sl.max }"
+          :value="{ from: sl.from, to: sl.to }"
           :label="sl.label"
         />
       </vs-select>
@@ -56,24 +56,24 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import JobsServices from '~/services/jobs-service'
-import { useJob } from '~/store/job'
+import { useJobsStore } from '~/store'
 import type { JobTypes, JobPosition } from '~/types/job'
 
 const { t } = useI18n()
 
-const { filter } = useJob()
+const { refetch } = useJobsStore()
 
 const rangeSalary = [
-  { min: 0, max: 3000000, label: 'Dưới 3 triệu' },
-  { min: 3000000, max: 5000000, label: '3 - 10 triệu' },
-  { min: 10000000, max: 25000000, label: '10 - 25 triệu' },
-  { min: 25000000, max: 0, label: 'Trên 25 triệu' },
+  { from: 0, to: 3000000, label: 'Dưới 3 triệu' },
+  { from: 3000000, to: 5000000, label: '3 - 10 triệu' },
+  { from: 10000000, to: 25000000, label: '10 - 25 triệu' },
+  { from: 25000000, to: 0, label: 'Trên 25 triệu' },
 ]
 
-const filterSalary = ref<{ min: number; max: number }>()
+const filterSalary = ref<{ from: number; to: number }>()
 const filterJobType = ref<string>()
 const filterPosition = ref<string>()
 
@@ -81,8 +81,8 @@ const jobTypes = ref<JobTypes[]>([])
 const positions = ref<JobPosition[]>()
 
 watchEffect(() => {
-  filter({
-    salaryRange: filterSalary.value,
+  refetch({
+    salary_to: filterSalary.value,
     position: filterPosition.value,
     type: filterJobType.value,
   })
@@ -104,13 +104,11 @@ const getJobPositions = async () => {
   }
 }
 
-onMounted(() => {
-  Promise.all([getJobTypes(), getJobPositions()])
-})
+getJobTypes()
+getJobPositions()
 </script>
 
 <style scoped lang="scss">
-// @use "element-plus/theme-chalk/src/mixins/function.scss";
 .menu {
   padding: 20px;
   padding-bottom: 40px;

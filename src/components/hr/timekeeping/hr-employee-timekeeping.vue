@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex justify-start gap-6 my-4">
+  <div class="w-full flex justify-start gap-3 my-4">
     <el-config-provider :locale="viVN">
       <el-date-picker
         v-model="date"
@@ -11,431 +11,423 @@
         :clearable="false"
       />
     </el-config-provider>
-    <vs-button type="transparent" @click="jumpToCurrentWeek">
-      Tuần này
-    </vs-button>
+    <vs-button type="flat" @click="jumpToCurrentWeek"> Tuần này </vs-button>
   </div>
-  <div>
-    <el-table :data="employees" table-layout="fixed" border>
-      <el-table-column align="center" min-width="150" fixed="left">
-        <template #default="{ row }: { row: Employee }">
-          <vs-tooltip>
-            <template #content>
-              <div class="flex flex-col items-start gap-1">
-                <div class="flex gap-2 items-center">
-                  <el-icon size="18"><building-outline /></el-icon>
-                  {{ row.department }}
-                </div>
-                <div class="flex gap-2 items-center">
-                  <el-icon size="18"><email /></el-icon>
-                  {{ row.email }}
-                </div>
-                <div class="flex gap-2 items-center">
-                  <el-icon size="18"><people /></el-icon>
-                  {{ row.employee_id }}
-                </div>
-                <div class="flex gap-2 items-center">
-                  <el-icon size="18"><user-octagon-outline /></el-icon>
-                  {{ row.position }}
-                </div>
+  <el-table :data="employees" table-layout="fixed" border>
+    <el-table-column align="center" min-width="150" fixed="left">
+      <template #default="{ row }: { row: Employee }">
+        <vs-tooltip>
+          <template #content>
+            <div class="flex flex-col items-start gap-1">
+              <div class="flex gap-2 items-center">
+                <el-icon size="18"><building-outline /></el-icon>
+                {{ row.department }}
               </div>
-            </template>
-            <div class="flex items-center gap-2">
-              <vs-avatar>
-                {{ row.name }}
-              </vs-avatar>
-              <span class="whitespace-nowrap">{{ row.name }}</span>
+              <div class="flex gap-2 items-center">
+                <el-icon size="18"><email /></el-icon>
+                {{ row.email }}
+              </div>
+              <div class="flex gap-2 items-center">
+                <el-icon size="18"><people /></el-icon>
+                {{ row.employee_id }}
+              </div>
+              <div class="flex gap-2 items-center">
+                <el-icon size="18"><user-octagon-outline /></el-icon>
+                {{ row.position }}
+              </div>
             </div>
-          </vs-tooltip>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        min-width="150"
-        align="center"
-        class-name="bg-gray-3 bg-opacity-11"
-      >
-        <template #header>
-          <header-column :date="dayjs(date)" weekday="CN" />
-        </template>
-        <template #default="{ row }: { row: Employee }">
-          <date-column
-            :date="dayjs(date)"
-            :employee="row"
-            :timekeeping="timekeepings[row.employee_id]"
-            @open-timekeeping-form="openTimekeepingForm"
-            @open-list-timekeeping="openListTimekeeping"
-            @open-edit-form="onOpenEditForm"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        min-width="150"
-        align="center"
-        :class-name="tableColumnClassName"
-      >
-        <template #header>
-          <header-column :date="dayjs(date).add(1, 'day')" weekday="T2" />
-        </template>
-        <template #default="{ row }: { row: Employee }">
-          <date-column
-            :date="dayjs(date).add(1, 'day')"
-            :employee="row"
-            :timekeeping="timekeepings[row.employee_id]"
-            @open-timekeeping-form="openTimekeepingForm"
-            @open-list-timekeeping="openListTimekeeping"
-            @open-edit-form="onOpenEditForm"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        min-width="150"
-        align="center"
-        :class-name="tableColumnClassName"
-      >
-        <template #header>
-          <header-column :date="dayjs(date).add(2, 'days')" weekday="T3" />
-        </template>
-        <template #default="{ row }: { row: Employee }">
-          <date-column
-            :date="dayjs(date).add(2, 'days')"
-            :employee="row"
-            :timekeeping="timekeepings[row.employee_id]"
-            @open-timekeeping-form="openTimekeepingForm"
-            @open-list-timekeeping="openListTimekeeping"
-            @open-edit-form="onOpenEditForm"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        min-width="150"
-        align="center"
-        :class-name="tableColumnClassName"
-      >
-        <template #header>
-          <header-column :date="dayjs(date).add(3, 'days')" weekday="T4" />
-        </template>
-        <template #default="{ row }: { row: Employee }">
-          <date-column
-            :date="dayjs(date).add(3, 'day')"
-            :employee="row"
-            :timekeeping="timekeepings[row.employee_id]"
-            @open-timekeeping-form="openTimekeepingForm"
-            @open-list-timekeeping="openListTimekeeping"
-            @open-edit-form="onOpenEditForm"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        min-width="150"
-        align="center"
-        :class-name="tableColumnClassName"
-      >
-        <template #header>
-          <header-column :date="dayjs(date).add(4, 'days')" weekday="T5" />
-        </template>
-        <template #default="{ row }: { row: Employee }">
-          <date-column
-            :date="dayjs(date).add(4, 'day')"
-            :employee="row"
-            :timekeeping="timekeepings[row.employee_id]"
-            @open-timekeeping-form="openTimekeepingForm"
-            @open-list-timekeeping="openListTimekeeping"
-            @open-edit-form="onOpenEditForm"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        min-width="150"
-        align="center"
-        :class-name="tableColumnClassName"
-      >
-        <template #header>
-          <header-column :date="dayjs(date).add(5, 'days')" weekday="T6" />
-        </template>
-        <template #default="{ row }: { row: Employee }">
-          <date-column
-            :date="dayjs(date).add(5, 'day')"
-            :employee="row"
-            :timekeeping="timekeepings[row.employee_id]"
-            @open-timekeeping-form="openTimekeepingForm"
-            @open-list-timekeeping="openListTimekeeping"
-            @open-edit-form="onOpenEditForm"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        min-width="150"
-        align="center"
-        :class-name="tableColumnClassName"
-      >
-        <template #header>
-          <header-column :date="dayjs(date).add(6, 'days')" weekday="T7" />
-        </template>
-        <template #default="{ row }: { row: Employee }">
-          <date-column
-            :date="dayjs(date).add(6, 'day')"
-            :employee="row"
-            :timekeeping="timekeepings[row.employee_id]"
-            @open-timekeeping-form="openTimekeepingForm"
-            @open-list-timekeeping="openListTimekeeping"
-            @open-edit-form="onOpenEditForm"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <vs-dialog v-model="isCreateTimekeeping" prevent-close scroll>
-      <template #header>
-        <h2 class="text-lg">
-          {{ tempEmployeeOpened?.name }}: Ngày
-          {{ openDate }}
-        </h2>
-      </template>
-
-      <div class="flex flex-col gap-4">
-        <vs-input
-          disabled
-          label="ID"
-          :model-value="tempEmployeeOpened?.employee_id"
-        />
-
-        <div>
-          <p
-            class="flex items-center gap-2 ml-2"
-            v-if="
-              tempTimekeepingTime?.time_from && tempTimekeepingTime?.time_to
-            "
-          >
-            {{
-              diffTime(
-                tempTimekeepingTime.time_from,
-                tempTimekeepingTime.time_to
-              )
-            }}
-            tiếng
-          </p>
-
-          <div class="flex items-center gap-1 justify-start">
-            <el-time-select
-              :model-value="tempTimekeepingTime?.time_from"
-              @update:model-value="(e) => updateTempTimekeeping('time_from', e)"
-              :max-time="tempTimekeepingTime?.time_to"
-              placeholder="Start time"
-              start="00:00"
-              step="00:30"
-              end="23:30"
-            />
-            -
-            <el-time-select
-              :model-value="tempTimekeepingTime?.time_to"
-              :min-time="tempTimekeepingTime?.time_from"
-              @update:model-value="(e) => updateTempTimekeeping('time_to', e)"
-              placeholder="End time"
-              start="00:00"
-              step="00:30"
-              end="23:30"
-            />
+          </template>
+          <div class="flex items-center gap-2">
+            <vs-avatar>
+              {{ row.name }}
+            </vs-avatar>
+            <span class="whitespace-nowrap">{{ row.name }}</span>
           </div>
-        </div>
-        <vs-select
-          :model-value="`${tempTimekeepingTime?.type_of_time} - ${tempTimekeepingTime?.coefficient}`"
-          @change="changeEmployeeTypeOfTime"
-          label="Ca làm việc"
-        >
-          <vs-option
-            v-for="(h, index) in hourlyWageCoefficients"
-            :key="index"
-            :value="h"
-            :label="h.type_of_time"
-          >
-            <div class="flex justify-between w-full">
-              <p class="text-sm">{{ h.type_of_time }}</p>
-              <p>
-                <span class="text-xs">HS lương</span>
-                {{ h.coefficient }}
-              </p>
-            </div>
-          </vs-option>
-        </vs-select>
-      </div>
-
-      <template #footer>
-        <div class="flex w-full justify-end items-center gap-2">
-          <vs-button @click="acceptCreate" type="transparent">
-            Xác nhận
-          </vs-button>
-          <vs-button
-            @click="clearTempCreate"
-            type="transparent"
-            color="google-plus"
-          >
-            Huỷ
-          </vs-button>
-        </div>
+        </vs-tooltip>
       </template>
-    </vs-dialog>
+    </el-table-column>
 
-    <vs-dialog
-      v-model="isEditTimekeeping"
-      @vnode-unmounted="tempTimekeepingEdit = null"
-      scroll
+    <el-table-column
+      min-width="150"
+      align="center"
+      class-name="bg-gray-3 bg-opacity-11"
     >
-      <template #header>Chỉnh sửa thông tin</template>
-
-      <div class="flex flex-col gap-4">
-        <vs-input
-          disabled
-          label="ID"
-          :model-value="tempTimekeepingEdit?.user_id"
-        />
-
-        <div>
-          <p
-            class="flex items-center gap-2 ml-2"
-            v-if="
-              tempTimekeepingEdit?.time_from && tempTimekeepingEdit?.time_to
-            "
-          >
-            {{
-              diffTime(
-                tempTimekeepingEdit.time_from,
-                tempTimekeepingEdit.time_to
-              )
-            }}
-            tiếng
-          </p>
-
-          <div class="flex items-center gap-1 justify-start">
-            <el-time-select
-              :model-value="tempTimekeepingEdit?.time_from"
-              @update:model-value="
-                (e) => updateTempEditTimekeeping('time_from', e)
-              "
-              :max-time="tempTimekeepingEdit?.time_to"
-              placeholder="Start time"
-              start="00:00"
-              step="00:30"
-              end="23:30"
-            />
-            -
-            <el-time-select
-              :model-value="tempTimekeepingEdit?.time_to"
-              :min-time="tempTimekeepingEdit?.time_from"
-              @update:model-value="
-                (e) => updateTempEditTimekeeping('time_to', e)
-              "
-              placeholder="End time"
-              start="00:00"
-              step="00:30"
-              end="23:30"
-            />
-          </div>
-        </div>
-        <vs-select
-          @change="changeEmployeeEditTypeOfTime"
-          :model-value="`${tempTimekeepingEdit?.type_of_time} - ${tempTimekeepingEdit?.coefficient}`"
-          label="Ca làm việc"
-        >
-          <vs-option
-            v-for="(h, index) in hourlyWageCoefficients"
-            :key="index"
-            :value="h"
-            :label="h.type_of_time"
-          >
-            <div class="flex justify-between w-full">
-              <p class="text-sm">{{ h.type_of_time }}</p>
-              <p>
-                <span class="text-xs">HS lương</span>
-                {{ h.coefficient }}
-              </p>
-            </div>
-          </vs-option>
-        </vs-select>
-      </div>
-
-      <timekeeping-history :timekeeping="tempTimekeepingEdit!" />
-
-      <template #footer>
-        <div class="flex w-full justify-end items-center gap-2">
-          <vs-button @click="acceptEdit" type="transparent">
-            Xác nhận
-          </vs-button>
-          <vs-button @click="clearEdit" type="transparent" color="google-plus">
-            Huỷ
-          </vs-button>
-        </div>
-      </template>
-    </vs-dialog>
-
-    <vs-dialog v-model="isOpenListTimekeeping" not-close>
       <template #header>
-        <h3 class="text-lg">
-          Danh sách ca làm việc của
-          {{ currentEmployeeOpenListTimekeeping?.name }} -
-          {{ currentEmployeeOpenListTimekeeping?.employee_id }}
-        </h3>
+        <header-column :date="dayjs(date)" weekday="CN" />
       </template>
-      <el-row :gutter="20">
-        <el-col
-          v-for="(timekeeping, index) in listTimekeepingOfEmployee"
-          :key="index"
-          :xs="24"
-          :sm="12"
-          class="mb-16px"
+      <template #default="{ row }: { row: Employee }">
+        <date-column
+          :date="dayjs(date)"
+          :employee="row"
+          :timekeeping="timekeepings[row.employee_id]"
+          @open-timekeeping-form="openTimekeepingForm"
+          @open-list-timekeeping="openListTimekeeping"
+          @open-edit-form="onOpenEditForm"
+        />
+      </template>
+    </el-table-column>
+    <el-table-column
+      min-width="150"
+      align="center"
+      :class-name="tableColumnClassName"
+    >
+      <template #header>
+        <header-column :date="dayjs(date).add(1, 'day')" weekday="T2" />
+      </template>
+      <template #default="{ row }: { row: Employee }">
+        <date-column
+          :date="dayjs(date).add(1, 'day')"
+          :employee="row"
+          :timekeeping="timekeepings[row.employee_id]"
+          @open-timekeeping-form="openTimekeepingForm"
+          @open-list-timekeeping="openListTimekeeping"
+          @open-edit-form="onOpenEditForm"
+        />
+      </template>
+    </el-table-column>
+    <el-table-column
+      min-width="150"
+      align="center"
+      :class-name="tableColumnClassName"
+    >
+      <template #header>
+        <header-column :date="dayjs(date).add(2, 'days')" weekday="T3" />
+      </template>
+      <template #default="{ row }: { row: Employee }">
+        <date-column
+          :date="dayjs(date).add(2, 'days')"
+          :employee="row"
+          :timekeeping="timekeepings[row.employee_id]"
+          @open-timekeeping-form="openTimekeepingForm"
+          @open-list-timekeeping="openListTimekeeping"
+          @open-edit-form="onOpenEditForm"
+        />
+      </template>
+    </el-table-column>
+    <el-table-column
+      min-width="150"
+      align="center"
+      :class-name="tableColumnClassName"
+    >
+      <template #header>
+        <header-column :date="dayjs(date).add(3, 'days')" weekday="T4" />
+      </template>
+      <template #default="{ row }: { row: Employee }">
+        <date-column
+          :date="dayjs(date).add(3, 'day')"
+          :employee="row"
+          :timekeeping="timekeepings[row.employee_id]"
+          @open-timekeeping-form="openTimekeepingForm"
+          @open-list-timekeeping="openListTimekeeping"
+          @open-edit-form="onOpenEditForm"
+        />
+      </template>
+    </el-table-column>
+    <el-table-column
+      min-width="150"
+      align="center"
+      :class-name="tableColumnClassName"
+    >
+      <template #header>
+        <header-column :date="dayjs(date).add(4, 'days')" weekday="T5" />
+      </template>
+      <template #default="{ row }: { row: Employee }">
+        <date-column
+          :date="dayjs(date).add(4, 'day')"
+          :employee="row"
+          :timekeeping="timekeepings[row.employee_id]"
+          @open-timekeeping-form="openTimekeepingForm"
+          @open-list-timekeeping="openListTimekeeping"
+          @open-edit-form="onOpenEditForm"
+        />
+      </template>
+    </el-table-column>
+    <el-table-column
+      min-width="150"
+      align="center"
+      :class-name="tableColumnClassName"
+    >
+      <template #header>
+        <header-column :date="dayjs(date).add(5, 'days')" weekday="T6" />
+      </template>
+      <template #default="{ row }: { row: Employee }">
+        <date-column
+          :date="dayjs(date).add(5, 'day')"
+          :employee="row"
+          :timekeeping="timekeepings[row.employee_id]"
+          @open-timekeeping-form="openTimekeepingForm"
+          @open-list-timekeeping="openListTimekeeping"
+          @open-edit-form="onOpenEditForm"
+        />
+      </template>
+    </el-table-column>
+    <el-table-column
+      min-width="150"
+      align="center"
+      :class-name="tableColumnClassName"
+    >
+      <template #header>
+        <header-column :date="dayjs(date).add(6, 'days')" weekday="T7" />
+      </template>
+      <template #default="{ row }: { row: Employee }">
+        <date-column
+          :date="dayjs(date).add(6, 'day')"
+          :employee="row"
+          :timekeeping="timekeepings[row.employee_id]"
+          @open-timekeeping-form="openTimekeepingForm"
+          @open-list-timekeeping="openListTimekeeping"
+          @open-edit-form="onOpenEditForm"
+        />
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <vs-dialog v-model="isCreateTimekeeping" prevent-close scroll>
+    <template #header>
+      <h2 class="text-lg">
+        {{ tempEmployeeOpened?.name }}: Ngày
+        {{ openDate }}
+      </h2>
+    </template>
+
+    <div class="flex flex-col gap-4">
+      <vs-input
+        disabled
+        label="ID"
+        :model-value="tempEmployeeOpened?.employee_id"
+      />
+
+      <div>
+        <p
+          class="flex items-center gap-2 ml-2"
+          v-if="tempTimekeepingTime?.time_from && tempTimekeepingTime?.time_to"
         >
-          <timekeeping-button
-            :timekeeping="timekeeping"
-            :is-nested="true"
-            :employee="currentEmployeeOpenListTimekeeping!"
-            :date="dayjs(openDate)"
-            @open-edit-form="onOpenEditForm"
+          {{
+            diffTime(tempTimekeepingTime.time_from, tempTimekeepingTime.time_to)
+          }}
+          tiếng
+        </p>
+
+        <div class="flex items-center gap-1 justify-start">
+          <el-time-select
+            :model-value="tempTimekeepingTime?.time_from"
+            @update:model-value="(e) => updateTempTimekeeping('time_from', e)"
+            :max-time="tempTimekeepingTime?.time_to"
+            placeholder="Start time"
+            start="00:00"
+            step="00:30"
+            end="23:30"
           />
-        </el-col>
-        <el-col :xs="24" :sm="12">
-          <untimed-button
-            :employee="currentEmployeeOpenListTimekeeping!"
-            :date="dayjs(openDate)"
-            @open-timekeeping-form="openTimekeepingForm"
-            class="!w-full"
-          >
-            <el-icon size="32">
-              <finger-scan />
-            </el-icon>
-          </untimed-button>
-        </el-col>
-      </el-row>
-    </vs-dialog>
-  </div>
+          -
+          <el-time-select
+            :model-value="tempTimekeepingTime?.time_to"
+            :min-time="tempTimekeepingTime?.time_from"
+            @update:model-value="(e) => updateTempTimekeeping('time_to', e)"
+            placeholder="End time"
+            start="00:00"
+            step="00:30"
+            end="23:30"
+          />
+        </div>
+      </div>
+      <vs-select
+        :model-value="`${tempTimekeepingTime?.type_of_time} - ${tempTimekeepingTime?.coefficient}`"
+        @change="changeEmployeeTypeOfTime"
+        label="Ca làm việc"
+      >
+        <vs-option
+          v-for="(h, index) in hourlyWageCoefficients"
+          :key="index"
+          :value="h"
+          :label="h.type_of_time"
+        >
+          <div class="flex justify-between w-full">
+            <p class="text-sm">{{ h.type_of_time }}</p>
+            <p>
+              <span class="text-xs">HS lương</span>
+              {{ h.coefficient }}
+            </p>
+          </div>
+        </vs-option>
+      </vs-select>
+    </div>
+
+    <template #footer>
+      <div class="flex w-full justify-end items-center gap-2">
+        <vs-button @click="acceptCreate" type="transparent">
+          Xác nhận
+        </vs-button>
+        <vs-button
+          @click="clearTempCreate"
+          type="transparent"
+          color="google-plus"
+        >
+          Huỷ
+        </vs-button>
+      </div>
+    </template>
+  </vs-dialog>
+
+  <vs-dialog
+    v-model="isEditTimekeeping"
+    @vnode-unmounted="tempTimekeepingEdit = null"
+    scroll
+  >
+    <template #header>Chỉnh sửa thông tin</template>
+
+    <div class="flex flex-col gap-4">
+      <vs-input
+        disabled
+        label="ID"
+        :model-value="tempTimekeepingEdit?.user_id"
+      />
+
+      <div>
+        <p
+          class="flex items-center gap-2 ml-2"
+          v-if="tempTimekeepingEdit?.time_from && tempTimekeepingEdit?.time_to"
+        >
+          {{
+            diffTime(tempTimekeepingEdit.time_from, tempTimekeepingEdit.time_to)
+          }}
+          tiếng
+        </p>
+
+        <div class="flex items-center gap-1 justify-start">
+          <el-time-select
+            :model-value="tempTimekeepingEdit?.time_from"
+            @update:model-value="
+              (e) => updateTempEditTimekeeping('time_from', e)
+            "
+            :max-time="tempTimekeepingEdit?.time_to"
+            placeholder="Start time"
+            start="00:00"
+            step="00:30"
+            end="23:30"
+          />
+          -
+          <el-time-select
+            :model-value="tempTimekeepingEdit?.time_to"
+            :min-time="tempTimekeepingEdit?.time_from"
+            @update:model-value="(e) => updateTempEditTimekeeping('time_to', e)"
+            placeholder="End time"
+            start="00:00"
+            step="00:30"
+            end="23:30"
+          />
+        </div>
+      </div>
+      <vs-select
+        @change="changeEmployeeEditTypeOfTime"
+        :model-value="`${tempTimekeepingEdit?.type_of_time} - ${tempTimekeepingEdit?.coefficient}`"
+        label="Ca làm việc"
+      >
+        <vs-option
+          v-for="(h, index) in hourlyWageCoefficients"
+          :key="index"
+          :value="h"
+          :label="h.type_of_time"
+        >
+          <div class="flex justify-between w-full">
+            <p class="text-sm">{{ h.type_of_time }}</p>
+            <p>
+              <span class="text-xs">HS lương</span>
+              {{ h.coefficient }}
+            </p>
+          </div>
+        </vs-option>
+      </vs-select>
+    </div>
+
+    <timekeeping-history :timekeeping="tempTimekeepingEdit!" />
+
+    <template #footer>
+      <div class="flex w-full justify-end items-center gap-2">
+        <vs-button @click="acceptEdit" type="transparent"> Xác nhận </vs-button>
+        <vs-button @click="clearEdit" type="transparent" color="google-plus">
+          Huỷ
+        </vs-button>
+      </div>
+    </template>
+  </vs-dialog>
+
+  <vs-dialog v-model="isOpenListTimekeeping" not-close>
+    <template #header>
+      <h3 class="text-lg">
+        Danh sách ca làm việc của
+        {{ currentEmployeeOpenListTimekeeping?.name }} -
+        {{ currentEmployeeOpenListTimekeeping?.employee_id }}
+      </h3>
+    </template>
+    <el-row :gutter="20">
+      <el-col
+        v-for="(timekeeping, index) in listTimekeepingOfEmployee"
+        :key="index"
+        :xs="24"
+        :sm="12"
+        class="mb-16px"
+      >
+        <timekeeping-button
+          :timekeeping="timekeeping"
+          :is-nested="true"
+          :employee="currentEmployeeOpenListTimekeeping!"
+          :date="dayjs(openDate)"
+          @open-edit-form="onOpenEditForm"
+        />
+      </el-col>
+      <el-col :xs="24" :sm="12">
+        <untimed-button
+          :employee="currentEmployeeOpenListTimekeeping!"
+          :date="dayjs(openDate)"
+          @open-timekeeping-form="openTimekeepingForm"
+          class="!w-full"
+        >
+          <el-icon size="32">
+            <finger-scan />
+          </el-icon>
+        </untimed-button>
+      </el-col>
+    </el-row>
+  </vs-dialog>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useQuery } from '@vue/apollo-composable'
-import { gql } from 'graphql-tag'
 import dayjs, { Dayjs } from 'dayjs'
 import { castArray } from 'lodash-unified'
+import { notification } from 'vuesax-old'
+// @ts-ignore
+import viVN from 'element-plus/dist/locale/vi.min.js'
+
+import {
+  useHourlyWageCoefficientsStore,
+  useEmployeeTimekeepingStore,
+  useEmployeesStore,
+} from '~/store'
 import { getResponseError } from '~/composables'
 import { diffTime, isCurrentDate } from '~/utils'
 import EmployeeTimekeepingServices from '~/services/employee-timekeeping-services'
-import { useHourlyWageCoefficientsStore } from '~/store/hourlyWageCoefficients'
-// @ts-ignore
-import viVN from 'element-plus/dist/locale/vi.min.js'
+// import { createReusableTemplate } from 'vue-reuse-template'
 import TimekeepingHistory from '~/components/timekeeping-history.vue'
 import DateColumn from './date-column.vue'
 import HeaderColumn from './header-column.vue'
 import TimekeepingButton from './timekeeping-button.vue'
 import UntimedButton from './untimed-button.vue'
-import { notification } from 'vuesax-old'
 
 import type { Employee, HourlyWageCoefficient, Timekeeping } from '~/types'
-import { useEmployeeTimekeepingStore } from '~/store/timekeeping'
+
+// const [DefineTableColumn, ReuseTableColumn] = createReusableTemplate<{
+//   date: Dayjs
+//   weekday: string
+// }>()
 
 const { hourlyWageCoefficients } = storeToRefs(useHourlyWageCoefficientsStore())
 
 const employeeTimekeepingStore = useEmployeeTimekeepingStore()
 const { timekeepings } = storeToRefs(employeeTimekeepingStore)
+const employeesStore = useEmployeesStore()
+const { employees } = storeToRefs(employeesStore)
 
 const defaultTimekeeping = (): Pick<
   Timekeeping,
@@ -446,26 +438,6 @@ const defaultTimekeeping = (): Pick<
   type_of_time: 'Hành chính',
   coefficient: 1,
 })
-
-const { result } = useQuery<{
-  employees: {
-    data: Employee[]
-  }
-}>(
-  gql`
-    query ListOfTimekeepers {
-      employees {
-        data {
-          name
-          email
-          position
-          department
-          employee_id
-        }
-      }
-    }
-  `
-)
 
 /**
  * The last date of the prev week - the first day of the current week
@@ -484,8 +456,6 @@ const openDate = ref(dayjs().format('YYYY-MM-DD'))
 const tempTimekeepingTime = ref<ReturnType<typeof defaultTimekeeping> | null>(
   null
 )
-
-const employees = computed(() => result.value?.employees.data || [])
 
 const jumpToCurrentWeek = () => {
   date.value = dayjs().endOf('w').add(-6, 'day').format('YYYY-MM-DD')
@@ -655,5 +625,3 @@ watch(date, (val) => {
   )
 })
 </script>
-
-<style scoped lang="scss"></style>

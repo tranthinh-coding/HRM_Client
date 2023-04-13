@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-if="isEmployee(currentUser.role)"
+      v-if="isEmployee(currentUser?.role)"
       class="flex items-center justify-end"
     >
       <vs-button
@@ -15,28 +15,11 @@
 
     <el-table
       max-height="calc(100vh - 250px)"
-      :data="result?.timeoffs"
+      :data="timeoffsArray"
       class="w-full mt-4"
       :default-sort="{ prop: 'day_request', order: 'descending' }"
     >
-      <template v-if="isHR(currentUser.role)">
-        <el-table-column type="expand" fixed="left">
-          <template #default="{ row }: { row: Timeoff }">
-            <el-table :data="[row]">
-              <el-table-column
-                align="center"
-                prop="time_from"
-                label="Thời gian bắt đầu"
-              />
-              <el-table-column
-                align="center"
-                prop="time_to"
-                label="Thời gian kết thúc"
-              />
-              <el-table-column align="center" prop="reason" label="Lý do" />
-            </el-table>
-          </template>
-        </el-table-column>
+      <template v-if="isHR(currentUser?.role)">
         <el-table-column align="center" label="User info" fixed="left">
           <el-table-column align="center" prop="user.name" label="Tên" />
           <el-table-column align="center" prop="user.user_id" label="ID" />
@@ -57,18 +40,16 @@
         ]"
         :filter-method="filterDate"
       />
-      <template v-if="isEmployee(currentUser.role)">
-        <el-table-column
-          prop="time_from"
-          label="Thời gian bắt đầu"
-          min-width="120"
-        />
-        <el-table-column
-          prop="time_to"
-          label="Thời gian kết thúc"
-          min-width="120"
-        />
-      </template>
+      <el-table-column
+        prop="time_from"
+        label="Thời gian bắt đầu"
+        min-width="100"
+      />
+      <el-table-column
+        prop="time_to"
+        label="Thời gian kết thúc"
+        min-width="100"
+      />
 
       <el-table-column prop="reason" label="Lý do" min-width="120" />
 
@@ -86,7 +67,7 @@
       >
         <template #default="{ row }: { row: Timeoff }">
           <el-tag
-            v-if="isEmployee(currentUser.role) || row.status == 'Rejected'"
+            v-if="isEmployee(currentUser?.role) || row.status == 'Rejected'"
             :type="tagStatusType(row.status)"
             disable-transitions
           >
@@ -107,7 +88,7 @@
       </el-table-column>
 
       <el-table-column
-        v-if="isEmployee(currentUser.role)"
+        v-if="isEmployee(currentUser?.role)"
         prop="type_timeoff"
         label="Phân loại"
         min-width="120"
@@ -126,7 +107,7 @@
   </div>
 
   <vs-dialog
-    v-if="isEmployee(currentUser.role)"
+    v-if="isEmployee(currentUser?.role)"
     v-model="isOpenRequestTimeoffForm"
     not-close
   >
@@ -136,22 +117,6 @@
     <el-divider />
 
     <div class="flex flex-col gap-4">
-      <!-- <div v-if="isHR(currentUser.role)" class="flex gap-4">
-        <vs-select v-model="employeeRequest" label="Chọn nhân viên">
-          <vs-option
-            v-for="(employee, index) in employees"
-            :key="index"
-            :value="employee"
-            :label="employee.name"
-          />
-        </vs-select>
-
-        <vs-input
-          label="ID"
-          :model-value="employeeRequest.employee_id"
-          disabled
-        />
-      </div> -->
       <el-config-provider :locale="viVN">
         <div>
           <div class="flex items-center justify-between ml-2 mb-1">
@@ -232,66 +197,35 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onBeforeMount } from 'vue'
+import { computed, ref, watch } from 'vue'
 import dayjs from 'dayjs'
-import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
-import { ElMessage } from 'element-plus'
+import { notification } from 'vuesax-old'
 // @ts-ignore
 import viVN from 'element-plus/dist/locale/vi.min.js'
 
 import EmployeeServices from '~/services/employee-services'
-import { useUser } from '~/store'
+import { useEmployeeTimeoffStore, useUserStore } from '~/store'
 import { isHR, isEmployee } from '~/config'
-import type { Timeoff } from '~/types/time'
+import type { Timeoff } from '~/types'
+import { getResponseError } from '~/composables'
+import { storeToRefs } from 'pinia'
 
-const currentUser = useUser()
-
-// const employeeRequest = ref({
-//   employee_id: '',
-//   name: '',
-// })
+const { user: currentUser } = storeToRefs(useUserStore())
+const timeoffStore = useEmployeeTimeoffStore()
+const { timeoffsArray } = storeToRefs(timeoffStore)
 
 const isOpenRequestTimeoffForm = ref<boolean>(false)
 const isAllDay = ref<boolean>(false)
 const sendingRequestTimeoff = ref<boolean>(false)
 const notes = ref<string>('')
-const dates = ref([dayjs().format('YYYY-MM-DD')])
+/**
+ * Ref<Date[]>
+ * */
+const dates = ref<any>([dayjs().format('YYYY-MM-DD')])
 const typeTimeoff = ref('paid')
 
 const startTime = ref('09:00')
 const endTime = ref('17:00')
-
-const { result, refetch } = useQuery<{
-  timeoffs: Timeoff[]
-}>(
-  gql`
-    query EmployeeTimeoffs($user_id: ID) {
-      timeoffs(
-        user_id: $user_id
-        orderBy: [{ column: DAY_REQUEST, order: DESC }]
-      ) {
-        day_request
-        id
-        reason
-        status
-        time_from
-        time_to
-        type_timeoff
-        user {
-          name
-          user_id
-        }
-      }
-    }
-  `,
-  () => {
-    if (isHR(currentUser.role)) return {}
-    return {
-      user_id: currentUser.id,
-    }
-  }
-)
 
 const diffTime = computed(() => {
   const _startTime = dayjs(`2023-04-01T${startTime.value}:00`)
@@ -311,26 +245,34 @@ const tagStatusType = (status: string) => {
 }
 const updateStatus = async (status: string, timeoff_id: number) => {
   try {
-    const response = await EmployeeServices.updateRequestTimeoff({
+    await EmployeeServices.updateRequestTimeoff({
       id: timeoff_id,
       status,
     })
-    ElMessage({
-      message: response.message || 'Update status successfully',
-      duration: 3000,
-      type: 'success',
+    notification({
+      title: 'Update status',
+      text: 'Update status successfully',
+      position: 'top-center',
+      border: 'success',
+      progress: 'auto',
+      duration: 5000,
     })
-    refetch(() => {
-      if (isHR(currentUser.role)) return {}
-      return {
-        user_id: currentUser.id,
+    timeoffStore.refetch(
+      {},
+      {
+        user_id: isHR(currentUser.value?.role)
+          ? ''
+          : currentUser.value?.user_id,
       }
-    })
+    )
   } catch (e) {
-    ElMessage({
-      message: 'Update status failed',
-      type: 'error',
-      duration: 3000,
+    notification({
+      title: 'Update status',
+      text: 'Update status failed',
+      position: 'top-center',
+      border: 'warn',
+      progress: 'auto',
+      duration: 10000,
     })
   }
 }
@@ -339,7 +281,8 @@ const sendRequestTimeoff = async () => {
   sendingRequestTimeoff.value = true
   try {
     // parse date before sending request
-    const _dates: any[] /** timestamp[] */ = Array.isArray(dates.value)
+    /** Timestamp[] */
+    const _dates: any[] = Array.isArray(dates.value)
       ? dates.value
       : [dates.value]
 
@@ -351,20 +294,31 @@ const sendRequestTimeoff = async () => {
       type_timeoff: typeTimeoff.value,
       reason: notes.value,
       dates: datesParsed,
-      id: currentUser.id,
+      user_id: currentUser.value?.user_id,
     })
-    refetch()
-    ElMessage({
-      message: 'Success',
-      type: 'success',
-      duration: 3000,
+    timeoffStore.refetch(
+      {},
+      {
+        user_id: currentUser.value?.user_id,
+      }
+    )
+    notification({
+      title: 'Update status',
+      text: 'Success',
+      border: 'success',
+      position: 'top-center',
+      progress: 'auto',
+      duration: 5000,
     })
   } catch (error) {
-    ElMessage({
-      // @ts-ignore
-      message: error.message || 'Có lỗi xảy ra',
-      type: 'error',
-      duration: 3000,
+    const e = getResponseError(error)
+    notification({
+      title: 'Update status',
+      text: e.message || 'Có lỗi xảy ra',
+      position: 'top-center',
+      border: 'warn',
+      progress: 'auto',
+      duration: 10000,
     })
   }
   sendingRequestTimeoff.value = false
@@ -381,9 +335,5 @@ const filterDate = (value: string, row: Timeoff) => row.day_request === value
 watch(isAllDay, () => {
   startTime.value = '09:00'
   endTime.value = '17:00'
-})
-
-onBeforeMount(() => {
-  refetch()
 })
 </script>
