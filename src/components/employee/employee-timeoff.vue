@@ -258,10 +258,12 @@ const updateStatus = async (status: string, timeoff_id: number) => {
       duration: 5000,
     })
     timeoffStore.refetch(
-      {},
+      {
+        force: true,
+      },
       {
         user_id: isHR(currentUser.value?.role)
-          ? ''
+          ? undefined
           : currentUser.value?.user_id,
       }
     )
@@ -297,7 +299,9 @@ const sendRequestTimeoff = async () => {
       user_id: currentUser.value?.user_id,
     })
     timeoffStore.refetch(
-      {},
+      {
+        force: true,
+      },
       {
         user_id: currentUser.value?.user_id,
       }

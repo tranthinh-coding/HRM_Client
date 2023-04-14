@@ -17,7 +17,7 @@
       </div>
       <div class="form-original">
         <vs-input
-          :model-value="selectedUser.user_id"
+          :model-value="selectedUser?.user_id"
           label="Employee ID"
           label-float
           disabled
@@ -40,7 +40,7 @@
       </div>
       <div class="form-original">
         <vs-input
-          :model-value="selectedUser.email"
+          :model-value="selectedUser?.email"
           label="Email"
           label-float
           disabled
@@ -75,7 +75,7 @@
     </div>
 
     <template #footer>
-      <vs-button block @click="addNewEmployee">
+      <vs-button block @click="addNewEmployee" class="my-4">
         {{ t('actions.create') }}
       </vs-button>
     </template>
@@ -85,11 +85,11 @@
 <script setup lang="ts">
 import { PropType, reactive, ref } from 'vue'
 import { useVModel } from '@vueuse/core'
-import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { Department, JobPosition, User } from '~/types'
 import EmployeeServices from '~/services/employee-services'
 import { getResponseError } from '~/composables'
+import { notification } from 'vuesax-old'
 
 const props = defineProps({
   open: {
@@ -117,16 +117,11 @@ const emit = defineEmits({
 const isOpen = useVModel(props, 'open', emit)
 const { t } = useI18n()
 
-// @ts-ignore
 const selectedUser = ref<{
   user_id: string
   email: string
   user_name: string
-}>({
-  user_id: '',
-  email: '',
-  user_name: '',
-})
+}>()
 
 const employeeForm = reactive<{
   department: string
@@ -136,6 +131,8 @@ const employeeForm = reactive<{
 
 const addNewEmployee = async () => {
   try {
+    if (!selectedUser.value) throw new Error('Please complete the fields')
+
     const response = await EmployeeServices.create({
       user_id: selectedUser.value.user_id,
       department: employeeForm.department,
@@ -143,26 +140,29 @@ const addNewEmployee = async () => {
       gender: employeeForm.gender,
     })
 
-    ElMessage({
-      message: response.message || 'Thêm nhân viên thành công',
-      duration: 3000,
-      type: 'success',
-      zIndex: 9999,
+    notification({
+      title: 'Employee Create Form',
+      text: response.message || 'Thêm nhân viên thành công',
+      duration: 5000,
+      border: 'success',
+      position: 'top-center',
+      progress: true,
     })
 
     Object.assign(employeeForm, { department: '', position: '', gender: '' })
 
-    // @ts-ignore
-    selectedUser.value = {}
+    selectedUser.value = undefined
     emit('update:employee')
   } catch (error) {
     const _e = getResponseError(error)
 
-    ElMessage({
-      message: _e.message || 'Thêm nhân viên không thành công',
-      type: 'error',
-      duration: 4000,
-      zIndex: 99999,
+    notification({
+      title: 'Employee Create Form',
+      text: _e.message || 'Thêm nhân viên không thành công',
+      border: 'danger',
+      duration: 9000,
+      position: 'top-center',
+      progress: true,
     })
   }
 }
