@@ -26,7 +26,11 @@
       @open-edit-form="onOpenEditForm"
     />
   </template>
-  <timeoff-info-off-date-column :employee="employee" />
+  <timeoff-info-off-date-column
+    class="absolute top-2px left-5px"
+    :eid="employee.employee_id"
+    :date="date"
+  />
 </template>
 
 <script setup lang="ts">
