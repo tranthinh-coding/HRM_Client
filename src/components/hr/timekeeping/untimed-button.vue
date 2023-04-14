@@ -7,7 +7,7 @@
       @click="openTimekeepingForm"
     >
       <slot>
-        <el-icon size="14">
+        <el-icon size="24">
           <finger-scan />
         </el-icon>
       </slot>
