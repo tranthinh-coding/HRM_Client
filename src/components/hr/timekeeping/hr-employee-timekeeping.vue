@@ -182,12 +182,16 @@
     </el-table-column>
   </el-table>
 
-  <vs-dialog v-model="isCreateTimekeeping" prevent-close scroll>
+  <vs-dialog v-model="isCreateTimekeeping" scroll>
     <template #header>
       <h2 class="text-lg">
         {{ tempEmployeeOpened?.name }}: Ngày
         {{ openDate }}
       </h2>
+      <timeoff-info-off-date-column
+        :date="dayjs(openDate)"
+        :eid="tempEmployeeOpened?.employee_id"
+      />
     </template>
 
     <div class="flex flex-col gap-4">
@@ -209,7 +213,7 @@
         </p>
 
         <div class="flex items-center gap-1 justify-start">
-          <el-time-select
+          <vs-time-select
             :model-value="tempTimekeepingTime?.time_from"
             @update:model-value="(e) => updateTempTimekeeping('time_from', e)"
             :max-time="tempTimekeepingTime?.time_to"
@@ -217,9 +221,10 @@
             start="00:00"
             step="00:30"
             end="23:30"
+            :clearable="false"
           />
           -
-          <el-time-select
+          <vs-time-select
             :model-value="tempTimekeepingTime?.time_to"
             :min-time="tempTimekeepingTime?.time_from"
             @update:model-value="(e) => updateTempTimekeeping('time_to', e)"
@@ -227,6 +232,7 @@
             start="00:00"
             step="00:30"
             end="23:30"
+            :clearable="false"
           />
         </div>
       </div>
@@ -241,7 +247,7 @@
           :value="h"
           :label="h.type_of_time"
         >
-          <div class="flex justify-between w-full">
+          <div class="flex justify-between w-full items-center">
             <p class="text-sm">{{ h.type_of_time }}</p>
             <p>
               <span class="text-xs">HS lương</span>
@@ -268,12 +274,14 @@
     </template>
   </vs-dialog>
 
-  <vs-dialog
-    v-model="isEditTimekeeping"
-    @vnode-unmounted="tempTimekeepingEdit = null"
-    scroll
-  >
-    <template #header>Chỉnh sửa thông tin</template>
+  <vs-dialog v-model="isEditTimekeeping" scroll>
+    <template #header>
+      <h2 class="text-lg">Chỉnh sửa thông tin</h2>
+      <timeoff-info-off-date-column
+        :date="dayjs(tempTimekeepingEdit!.date)"
+        :eid="tempTimekeepingEdit!.user_id"
+      />
+    </template>
 
     <div class="flex flex-col gap-4">
       <vs-input
@@ -294,19 +302,19 @@
         </p>
 
         <div class="flex items-center gap-1 justify-start">
-          <el-time-select
+          <vs-time-select
             :model-value="tempTimekeepingEdit?.time_from"
             @update:model-value="
               (e) => updateTempEditTimekeeping('time_from', e)
             "
             :max-time="tempTimekeepingEdit?.time_to"
             placeholder="Start time"
-            start="00:00"
+            start="06:00"
             step="00:30"
             end="23:30"
           />
           -
-          <el-time-select
+          <vs-time-select
             :model-value="tempTimekeepingEdit?.time_to"
             :min-time="tempTimekeepingEdit?.time_from"
             @update:model-value="(e) => updateTempEditTimekeeping('time_to', e)"
@@ -328,7 +336,7 @@
           :value="h"
           :label="h.type_of_time"
         >
-          <div class="flex justify-between w-full">
+          <div class="flex justify-between w-full items-center">
             <p class="text-sm">{{ h.type_of_time }}</p>
             <p>
               <span class="text-xs">HS lương</span>
@@ -409,11 +417,13 @@ import { getResponseError } from '~/composables'
 import { diffTime, isCurrentDate } from '~/utils'
 import EmployeeTimekeepingServices from '~/services/employee-timekeeping-services'
 // import { createReusableTemplate } from 'vue-reuse-template'
+import VsTimeSelect from '~/components/time-select'
 import TimekeepingHistory from '~/components/timekeeping-history.vue'
 import DateColumn from './date-column.vue'
 import HeaderColumn from './header-column.vue'
 import TimekeepingButton from './timekeeping-button.vue'
 import UntimedButton from './untimed-button.vue'
+import TimeoffInfoOffDateColumn from './timeoff-info-off-date-column.vue'
 
 import type { Employee, HourlyWageCoefficient, Timekeeping } from '~/types'
 
