@@ -1,5 +1,12 @@
 <template>
-  <div class="config">
+  <div class="config flex">
+    <div v-if="isSmaller('lg')">
+      <vs-button type="shadow" icon @click="toggleSidebar(!isSidebarCollapsed)">
+        <el-icon sise="24">
+          <icon-menu />
+        </el-icon>
+      </vs-button>
+    </div>
     <div class="btn-group-right">
       <el-tooltip effect="light" :enterable="false">
         <el-button link>
@@ -44,7 +51,7 @@
       <el-tooltip effect="light">
         <div class="user-info">
           <img class="user-avatar" src="/avatar.png" />
-          <span class="user-name">{{ user.name }}</span>
+          <span class="user-name">{{ user?.name }}</span>
         </div>
 
         <template #content>
@@ -66,17 +73,22 @@
 <script setup lang="ts">
 import { Moon, Sunny } from '@element-plus/icons-vue'
 import { useI18n } from 'vue-i18n'
-import { isDark } from '~/composables'
+import { isDark, toggleSidebar, isSidebarCollapsed } from '~/composables'
 import { REPO_LINK } from '~/config'
 import { loadLanguageAsync, SUPPORT_LANGUAGES } from '~/plugins/i18n'
 import { useUserStore } from '~/store'
 import IconCode from '~/components/icons/code.vue'
 import IconLanguage from '~/components/icons/language.vue'
 import { storeToRefs } from 'pinia'
+import { useBreakpoints } from '@vueuse/core'
 
 const { user } = storeToRefs(useUserStore())
 
 const { t } = useI18n()
+
+const { isSmaller } = useBreakpoints({
+  lg: '1100px',
+})
 </script>
 
 <style scoped lang="scss">

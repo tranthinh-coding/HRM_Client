@@ -2,7 +2,7 @@
   <div class="dashboard-container">
     <app-sidebar />
 
-    <div class="dashboard-wrapper">
+    <div class="dashboard-wrapper" :class="{ 'is-tablet': isSidebarCollapsed }">
       <app-header />
 
       <el-scrollbar class="main">
@@ -28,14 +28,16 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { isEmployee, isGuest, isHR } from '~/config'
+import { isSidebarCollapsed } from '~/composables'
 import { useUserStore } from '~/store'
+
 import AppSidebar from '~/layouts/components/app-sidebar.vue'
 import AppHeader from '~/layouts/components/app-config.vue'
 import ApplicantDashboard from '~/views/applicant-dashboard.vue'
 import EmployeeDashboard from '~/views/employee-dashboard.vue'
 import HrDashboard from '~/views/hr-dashboard.vue'
-import { isEmployee, isGuest, isHR } from '~/config'
-import { storeToRefs } from 'pinia'
 
 const { user } = storeToRefs(useUserStore())
 </script>
@@ -49,13 +51,14 @@ const { user } = storeToRefs(useUserStore())
 }
 .dashboard-wrapper {
   height: 100%;
-  width: 100%;
-  max-width: calc(100% - 300px);
+  width: calc(100% - 300px);
+  transition: all 0.25s ease;
 }
 
 @media screen and (max-width: 1100px) {
-  .dashboard-wrapper {
-    max-width: unset;
+  .dashboard-wrapper.is-tablet {
+    transition: all 0.25s ease;
+    width: 100%;
   }
 }
 

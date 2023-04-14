@@ -130,6 +130,8 @@ provide<SidebarContext>(
   gap: 16px;
   transition: all 0.25s ease;
 
+  overflow: hidden;
+  white-space: nowrap;
   &::after {
     content: '';
     position: absolute;
