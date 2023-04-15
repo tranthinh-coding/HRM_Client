@@ -1,6 +1,5 @@
 import { computed, reactive, unref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import dayjs from 'dayjs'
 import type { Timeoff, RefetchOptions, EmployeeTimeoff } from '~/types'
 import { lastDayOfTheWeek } from '~/utils'
 import { useQuery } from '@vue/apollo-composable'
@@ -54,13 +53,7 @@ export const useEmployeeTimeoffStore = defineStore('TIMEOFF', () => {
           }
         }
       }
-    `,
-    () => ({
-      day_request: {
-        from: lastDayOfTheWeek(),
-        to: dayjs(lastDayOfTheWeek()).add(6, 'days').format('YYYY-MM-DD'),
-      },
-    })
+    `
   )
 
   const timeoffsArray = computed(() => Array.from(timeoffsCached.values()))
