@@ -5,7 +5,7 @@ import { lastDayOfTheWeek } from '~/utils'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { MaybeRef } from '@vueuse/core'
-import { isArray } from 'lodash-unified'
+import { castArray, isArray } from 'lodash-unified'
 
 type QueryResponse = {
   timeoffs: Timeoff[]
@@ -82,6 +82,15 @@ export const useEmployeeTimeoffStore = defineStore('TIMEOFF', () => {
     }, {})
   )
 
+  const timeoffsResolved = (eid?: string, date?: string) => {
+    let etimeoff = timeoffs.value[eid || 'null']?.[date || 'null']
+
+    if (!etimeoff) return []
+
+    etimeoff = castArray(etimeoff)
+    return etimeoff.filter((e) => e?.status === 'Resolved')
+  }
+
   const refetch = async (
     options: TimeoffRefetchOptions = {},
     query?: QueryParams
@@ -103,5 +112,6 @@ export const useEmployeeTimeoffStore = defineStore('TIMEOFF', () => {
     timeoffs,
     timeoffsArray,
     refetch,
+    timeoffsResolved,
   }
 })
