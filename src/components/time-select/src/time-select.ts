@@ -47,7 +47,7 @@ export const timeSelectProps = {
     default: () => CloseCircle,
   },
   disabledItems: {
-    type: [] as PropType<Array<string>>,
+    type: Array as PropType<Array<string>>,
     default: () => [],
   },
 }
