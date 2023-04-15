@@ -215,24 +215,26 @@
         <div class="flex items-center gap-1 justify-start">
           <vs-time-select
             :model-value="tempTimekeepingTime?.time_from"
-            @update:model-value="(e) => updateTempTimekeeping('time_from', e)"
+            @update:model-value="(e: any) => updateTempTimekeeping('time_from', e)"
             :max-time="tempTimekeepingTime?.time_to"
             placeholder="Start time"
-            start="00:00"
-            step="00:30"
-            end="23:30"
+            :start="TIME_START"
+            :step="TIME_STEP"
+            :end="TIME_END"
             :clearable="false"
+            :disabled-items="employeeTimeoffsDisabled"
           />
           -
           <vs-time-select
             :model-value="tempTimekeepingTime?.time_to"
             :min-time="tempTimekeepingTime?.time_from"
-            @update:model-value="(e) => updateTempTimekeeping('time_to', e)"
+            @update:model-value="(e: any) => updateTempTimekeeping('time_to', e)"
             placeholder="End time"
-            start="00:00"
-            step="00:30"
-            end="23:30"
+            :start="TIME_START"
+            :step="TIME_STEP"
+            :end="TIME_END"
             :clearable="false"
+            :disabled-items="employeeTimeoffsDisabled"
           />
         </div>
       </div>
@@ -296,7 +298,10 @@
           v-if="tempTimekeepingEdit?.time_from && tempTimekeepingEdit?.time_to"
         >
           {{
-            diffTime(tempTimekeepingEdit.time_from, tempTimekeepingEdit.time_to)
+            diffTime(
+              tempTimekeepingEdit.time_from,
+              tempTimekeepingEdit.time_to
+            ) - employeeTimeoffsBreaktime
           }}
           tiếng
         </p>
@@ -305,23 +310,27 @@
           <vs-time-select
             :model-value="tempTimekeepingEdit?.time_from"
             @update:model-value="
-              (e) => updateTempEditTimekeeping('time_from', e)
+              (e: any) => updateTempEditTimekeeping('time_from', e)
             "
             :max-time="tempTimekeepingEdit?.time_to"
             placeholder="Start time"
-            start="06:00"
-            step="00:30"
-            end="23:30"
+            :start="TIME_START"
+            :step="TIME_STEP"
+            :end="TIME_END"
+            :clearable="false"
+            :disabled-items="employeeTimeoffsDisabled"
           />
           -
           <vs-time-select
             :model-value="tempTimekeepingEdit?.time_to"
             :min-time="tempTimekeepingEdit?.time_from"
-            @update:model-value="(e) => updateTempEditTimekeeping('time_to', e)"
+            @update:model-value="(e: any) => updateTempEditTimekeeping('time_to', e)"
             placeholder="End time"
-            start="00:00"
-            step="00:30"
-            end="23:30"
+            :start="TIME_START"
+            :step="TIME_STEP"
+            :end="TIME_END"
+            :clearable="false"
+            :disabled-items="employeeTimeoffsDisabled"
           />
         </div>
       </div>
@@ -412,12 +421,13 @@ import {
   useHourlyWageCoefficientsStore,
   useEmployeeTimekeepingStore,
   useEmployeesStore,
+  useEmployeeTimeoffStore,
 } from '~/store'
 import { getResponseError } from '~/composables'
 import { diffTime, isCurrentDate } from '~/utils'
 import EmployeeTimekeepingServices from '~/services/employee-timekeeping-services'
+import { compareTime, nextTime } from './time'
 // import { createReusableTemplate } from 'vue-reuse-template'
-import VsTimeSelect from '~/components/time-select'
 import TimekeepingHistory from '~/components/timekeeping-history.vue'
 import DateColumn from './date-column.vue'
 import HeaderColumn from './header-column.vue'
@@ -425,14 +435,73 @@ import TimekeepingButton from './timekeeping-button.vue'
 import UntimedButton from './untimed-button.vue'
 import TimeoffInfoOffDateColumn from './timeoff-info-off-date-column.vue'
 
-import type { Employee, HourlyWageCoefficient, Timekeeping } from '~/types'
+import type {
+  Employee,
+  HourlyWageCoefficient,
+  Timekeeping,
+  Timeoff,
+} from '~/types'
 
 // const [DefineTableColumn, ReuseTableColumn] = createReusableTemplate<{
 //   date: Dayjs
 //   weekday: string
 // }>()
 
+const TIME_STEP = '00:30'
+const TIME_START = '00:00'
+const TIME_END = '23:30'
+const TIME_FORMAT = 'HH:mm'
+
 const { hourlyWageCoefficients } = storeToRefs(useHourlyWageCoefficientsStore())
+
+const employeeTimeoffStore = useEmployeeTimeoffStore()
+
+// TODO: neu lua chon time from va time to bao gom ca phan thoi gian nghi phep thi moi tru, nguoc lai tra ve 0
+const employeeTimeoffsBreaktime = computed(() => {
+  const timeoffsResolvedOffOpenedDate = employeeTimeoffStore.timeoffsResolved(
+    tempEmployeeOpened.value?.employee_id || tempTimekeepingEdit.value?.user_id,
+    openDate.value
+  )
+  const totalTime = timeoffsResolvedOffOpenedDate.reduce(
+    (prev: number, curr: Timeoff) => {
+      prev += diffTime(curr.time_from, curr.time_to)
+      return prev
+    },
+    0
+  )
+  return totalTime
+})
+const employeeTimeoffsDisabled = computed(() => {
+  const timeoffsResolvedOffOpenedDate = employeeTimeoffStore.timeoffsResolved(
+    tempEmployeeOpened.value?.employee_id || tempTimekeepingEdit.value?.user_id,
+    openDate.value
+  )
+
+  return timeoffsResolvedOffOpenedDate.reduce<string[]>(
+    (prev: string[], curr: Timeoff) => {
+      const result = [...prev]
+
+      let current = curr.time_from
+      let currentTime: string
+
+      while (
+        current &&
+        curr.time_to &&
+        compareTime(current, curr.time_to) <= 0
+      ) {
+        currentTime = dayjs(current, TIME_FORMAT).format(TIME_FORMAT)
+
+        result.push(currentTime)
+        current = nextTime(current, TIME_STEP)
+      }
+
+      result.pop()
+      result.shift()
+      return result
+    },
+    []
+  )
+})
 
 const employeeTimekeepingStore = useEmployeeTimekeepingStore()
 const { timekeepings } = storeToRefs(employeeTimekeepingStore)
