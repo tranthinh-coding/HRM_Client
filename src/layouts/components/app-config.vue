@@ -9,16 +9,14 @@
     </div>
     <div class="btn-group-right">
       <el-tooltip effect="light" :enterable="false">
-        <el-button link>
-          <el-switch
-            v-model="isDark"
-            class="ml-2"
-            inline-prompt
-            style="--el-switch-on-color: #242526"
-            :active-icon="Moon"
-            :inactive-icon="Sunny"
-          />
-        </el-button>
+        <el-switch
+          v-model="isDark"
+          class="ml-2"
+          inline-prompt
+          style="--el-switch-on-color: #242526"
+          :active-icon="Moon"
+          :inactive-icon="Sunny"
+        />
         <template #content>
           <span style="user-select: none">Theme</span>
         </template>
