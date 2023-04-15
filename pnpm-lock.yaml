@@ -68,7 +68,7 @@ specifiers:
   vue-reuse-template: ^0.3.1
   vue-router: ^4.1.6
   vue-tsc: ^1.0.12
-  vuesax-alpha: 0.1.6-alpha-2
+  vuesax-alpha: 0.2.0-beta.1
   vuesax-old: npm:vuesax-alpha@0.0.1-alpha.3
 
 dependencies:
@@ -94,7 +94,7 @@ dependencies:
   vue-i18n: 9.2.2_vue@3.2.47
   vue-reuse-template: 0.3.1_vue@3.2.47
   vue-router: 4.1.6_vue@3.2.47
-  vuesax-alpha: 0.1.6-alpha-2_vue@3.2.47
+  vuesax-alpha: 0.2.0-beta.1_vue@3.2.47
   vuesax-old: /vuesax-alpha/0.0.1-alpha.3
 
 devDependencies:
@@ -7060,8 +7060,8 @@ packages:
       - '@vue/composition-api'
     dev: false
 
-  /vuesax-alpha/0.1.6-alpha-2_vue@3.2.47:
-    resolution: {integrity: sha512-KNE4Yo8QYAUiC7CIIVVu45WCplAWMjyubA20x0ITPTRAPs8QAZA0oR+VVmr9LIOFQg8FBHiOxkWbRD9NQMOUqQ==}
+  /vuesax-alpha/0.2.0-beta.1_vue@3.2.47:
+    resolution: {integrity: sha512-Dg0oNra6jWof4lJ1Sh/Di5HI3QCe6DLkPxDXlMzrv45wlICuI+qVw+BUiMTH6I5GtUOlcgwweTRDKYAjNkbLuA==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:

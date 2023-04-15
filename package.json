@@ -45,7 +45,7 @@
     "vue-i18n": "^9.2.2",
     "vue-reuse-template": "^0.3.1",
     "vue-router": "^4.1.6",
-    "vuesax-alpha": "0.1.6-alpha-2",
+    "vuesax-alpha": "0.2.0-beta.1",
     "vuesax-old": "npm:vuesax-alpha@0.0.1-alpha.3"
   },
   "devDependencies": {
