@@ -1,3 +1,22 @@
+import { User } from './user'
+
+export type TimekeepingHistory = {
+  id: number
+  message: string
+  time_from: string
+  time_to: string
+  type_of_time: string
+  coefficient: string
+  /** ID nguoi tao cap nhat */
+  user_id: string
+  /** thong tin nguoi tao cap nhat */
+  user: User
+
+  timekeeping_id: string
+
+  timekeeping: Timekeeping
+}
+
 export type Timekeeping = {
   /**
    * Unique ID
@@ -33,6 +52,8 @@ export type Timekeeping = {
    * Coefficient: he so luong
    */
   coefficient: number
+
+  histories: TimekeepingHistory[]
 }
 
 export type EmployeeTimekeepings = {

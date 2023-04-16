@@ -42,6 +42,19 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
             user_id
             email
           }
+
+          histories {
+            id
+            message
+            time_from
+            time_to
+            type_of_time
+            coefficient
+
+            user {
+              name
+            }
+          }
         }
       }
     `,
@@ -79,6 +92,14 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
     }, {})
   )
 
+  const timekeepingHistories = computed(
+    () => (timekeepingID: string | number) => {
+      return timekeepingsArray.value.find(
+        (timekeeping) => timekeeping.id === timekeepingID
+      )?.histories
+    }
+  )
+
   const refetch = async (
     options: TimekeepingRefetchOptions,
     query?: QueryParams
@@ -99,6 +120,7 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
   return {
     timekeepings,
     timekeepingsArray,
+    timekeepingHistories,
     refetch,
   }
 })

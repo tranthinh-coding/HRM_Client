@@ -12,6 +12,15 @@
       />
     </el-config-provider>
     <vs-button type="flat" @click="jumpToCurrentWeek"> Tuần này </vs-button>
+    <div class="flex items-center">
+      <vs-button
+        type="shadow"
+        icon
+        @click="employeeTimekeepingStore.refetch({ force: true })"
+      >
+        <el-icon> <refresh-bold /> </el-icon>
+      </vs-button>
+    </div>
   </div>
   <el-table :data="employees" table-layout="fixed" border>
     <el-table-column align="center" min-width="150" fixed="left">
@@ -357,6 +366,13 @@
           </div>
         </vs-option>
       </vs-select>
+
+      <vs-input
+        :model-value="tempTimekeepingEdit?.message"
+        label="Lời nhắn"
+        label-float
+        @update:model-value="(val) => tempTimekeepingEdit!.message! = String(val)"
+      />
     </div>
 
     <timekeeping-history :timekeeping="tempTimekeepingEdit!" class="mt20px" />
@@ -431,7 +447,7 @@ import { diffTime, isCurrentDate } from '~/utils'
 import EmployeeTimekeepingServices from '~/services/employee-timekeeping-services'
 import { compareTime, nextTime } from './time'
 // import { createReusableTemplate } from 'vue-reuse-template'
-import TimekeepingHistory from '~/components/timekeeping-history.vue'
+import TimekeepingHistory from '~/components/hr/timekeeping/timekeeping-history.vue'
 import DateColumn from './date-column.vue'
 import HeaderColumn from './header-column.vue'
 import TimekeepingButton from './timekeeping-button.vue'
@@ -637,7 +653,9 @@ const changeEmployeeTypeOfTime = (typeOfTime: HourlyWageCoefficient) => {
 
 /** Edit FORM */
 const isEditTimekeeping = ref<boolean>(false)
-const tempTimekeepingEdit = ref<Timekeeping | null>(null)
+const tempTimekeepingEdit = ref<(Timekeeping & { message?: string }) | null>(
+  null
+)
 
 const onOpenEditForm = (timekeeping: Timekeeping) => {
   tempTimekeepingEdit.value = { ...timekeeping }
