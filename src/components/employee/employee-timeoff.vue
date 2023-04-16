@@ -1,10 +1,14 @@
 <template>
   <div>
-    <div
-      v-if="isEmployee(currentUser?.role)"
-      class="flex items-center justify-end"
-    >
+    <div class="flex items-center justify-end">
+      <vs-tooltip>
+        <vs-button icon @click="refetchTimeoff" type="shadow">
+          <el-icon> <refresh-bold /> </el-icon>
+        </vs-button>
+        <template #content>Refresh</template>
+      </vs-tooltip>
       <vs-button
+        v-if="isEmployee(currentUser?.role)"
         type="transparent"
         color="dribbble"
         @click="openRequestTimeoffForm"
@@ -235,6 +239,18 @@ const diffTime = computed(() => {
 
   return timeDiffInHours
 })
+const refetchTimeoff = async () => {
+  await timeoffStore.refetch(
+    {
+      force: true,
+    },
+    {
+      user_id: isHR(currentUser.value?.role)
+        ? undefined
+        : currentUser.value?.user_id,
+    }
+  )
+}
 const disabledDate = (time: Date) => {
   return time.getTime() < Date.now() - 60 * 60 * 24 * 1000
 }
@@ -257,16 +273,7 @@ const updateStatus = async (status: string, timeoff_id: number) => {
       progress: 'auto',
       duration: 5000,
     })
-    timeoffStore.refetch(
-      {
-        force: true,
-      },
-      {
-        user_id: isHR(currentUser.value?.role)
-          ? undefined
-          : currentUser.value?.user_id,
-      }
-    )
+    refetchTimeoff()
   } catch (e) {
     notification({
       title: 'Update status',
@@ -298,14 +305,7 @@ const sendRequestTimeoff = async () => {
       dates: datesParsed,
       user_id: currentUser.value?.user_id,
     })
-    timeoffStore.refetch(
-      {
-        force: true,
-      },
-      {
-        user_id: currentUser.value?.user_id,
-      }
-    )
+    refetchTimeoff()
     notification({
       title: 'Update status',
       text: 'Success',
