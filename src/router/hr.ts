@@ -10,9 +10,6 @@ export const hrRoutes: RouteRecordRaw = {
     requireRole: HR,
     layout: DashboardLayout,
   },
-  redirect: {
-    name: 'hr/dashboard',
-  },
   children: [
     {
       path: 'dashboard',
