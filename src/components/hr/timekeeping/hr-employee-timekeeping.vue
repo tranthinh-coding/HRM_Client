@@ -504,7 +504,7 @@ const employeeTimeoffsDisabled = computed(() => {
 
   return timeoffsResolvedOffOpenedDate.reduce<string[]>(
     (prev: string[], curr: Timeoff) => {
-      const result = [...prev]
+      const result = []
 
       let current = curr.time_from
       let currentTime: string
@@ -522,7 +522,7 @@ const employeeTimeoffsDisabled = computed(() => {
 
       result.pop()
       result.shift()
-      return result
+      return [...prev, ...result]
     },
     []
   )
