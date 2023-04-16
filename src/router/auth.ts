@@ -1,4 +1,4 @@
-import { ElMessage } from 'element-plus'
+import { notification } from 'vuesax-old'
 import { useUserStore } from '~/store'
 import AuthLayout from '~/layouts/auth-layout.vue'
 import { Component } from 'vue'
@@ -33,11 +33,12 @@ export const authRoutes = [
       const user = useUserStore()
       user.reset()
 
-      ElMessage({
-        message: "You're logged out~",
-        type: 'success',
+      notification({
+        text: "You're logged out~",
+        border: 'success',
         duration: 3000,
-        showClose: true,
+        position: 'top-center',
+        progress: true,
       })
 
       removeToken(ACCESS_TOKEN)

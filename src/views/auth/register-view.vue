@@ -78,7 +78,7 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ElMessage } from 'element-plus'
+import { notification } from 'vuesax-old'
 import type { FormRules, FormInstance } from 'element-plus'
 import UserService from '~/services/user-service'
 import { getResponseError } from '~/composables'
@@ -168,20 +168,24 @@ const submit = () => {
       const usr = await UserService.register(form)
 
       if (!usr) {
-        ElMessage({
-          message: t('request.response.noData'),
-          type: 'error',
+        notification({
+          title: t('auth.register'),
+          text: t('request.response.noData'),
+          border: 'danger',
           duration: 8 * 1000,
-          showClose: true,
+          position: 'top-center',
+          progress: true,
         })
         return
       }
 
-      ElMessage({
-        message: t('auth.registerSuccess'),
-        type: 'success',
+      notification({
+        title: t('auth.register'),
+        text: t('auth.registerSuccess'),
+        border: 'success',
         duration: 1.5 * 1000,
-        showClose: true,
+        position: 'top-center',
+        progress: true,
       })
       return router.push({ name: 'home' })
     } catch (error) {
@@ -195,11 +199,13 @@ const submit = () => {
           _error.errors.password_confirmation?.[0] || ''
       }
       if (_error.message) {
-        ElMessage({
-          message: _error.message,
-          type: 'error',
+        notification({
+          title: t('auth.register'),
+          text: _error.message,
+          border: 'danger',
           duration: 8 * 1000,
-          showClose: true,
+          position: 'top-center',
+          progress: true,
         })
       }
     }

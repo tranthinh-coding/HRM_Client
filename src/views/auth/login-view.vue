@@ -55,7 +55,7 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ElMessage } from 'element-plus'
+import { notification } from 'vuesax-old'
 import type { FormInstance, FormRules } from 'element-plus'
 import { APP_NAME } from '~/config'
 import UserService from '~/services/user-service'
@@ -108,32 +108,35 @@ const submit = () => {
       const usr = await UserService.login(form)
 
       if (!usr) {
-        ElMessage({
-          message: t('request.response.noData'),
-          type: 'error',
+        notification({
+          text: t('request.response.noData'),
+          border: 'error',
           duration: 3 * 1000,
-          showClose: true,
+          position: 'top-center',
+          progress: true,
         })
         isFetching.value = false
         return
       }
 
-      ElMessage({
-        message: t('auth.loginSuccess'),
-        type: 'success',
+      notification({
+        text: t('auth.loginSuccess'),
+        border: 'success',
         duration: 3 * 1000,
-        showClose: true,
+        position: 'top-center',
+        progress: true,
       })
 
       isFetching.value = false
       return router.push({ name: 'home' })
     } catch (error) {
       const _error = getResponseError<FormState>(error)
-      ElMessage({
-        message: _error.message,
-        type: 'error',
+      notification({
+        text: _error.message,
+        border: 'error',
         duration: 3 * 1000,
-        showClose: true,
+        position: 'top-center',
+        progress: true,
       })
     }
 
@@ -143,8 +146,6 @@ const submit = () => {
 </script>
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');
-
 .form {
   max-width: 380px;
   margin: auto;
@@ -171,7 +172,6 @@ const submit = () => {
   color: getCssVar(color, primary);
   text-align: center;
   width: 100%;
-  font-family: 'Ubuntu', sans-serif;
 }
 
 .form-submit {
