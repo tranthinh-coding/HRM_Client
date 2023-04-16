@@ -207,7 +207,10 @@
           v-if="tempTimekeepingTime?.time_from && tempTimekeepingTime?.time_to"
         >
           {{
-            diffTime(tempTimekeepingTime.time_from, tempTimekeepingTime.time_to)
+            diffTime(
+              tempTimekeepingTime.time_from,
+              tempTimekeepingTime.time_to
+            ) - employeeTimeoffsBreaktime
           }}
           tiếng
         </p>
@@ -456,15 +459,37 @@ const { hourlyWageCoefficients } = storeToRefs(useHourlyWageCoefficientsStore())
 
 const employeeTimeoffStore = useEmployeeTimeoffStore()
 
-// TODO: neu lua chon time from va time to bao gom ca phan thoi gian nghi phep thi moi tru, nguoc lai tra ve 0
 const employeeTimeoffsBreaktime = computed(() => {
+  const timeFrom = isEditTimekeeping.value
+    ? tempTimekeepingEdit.value?.time_from
+    : isCreateTimekeeping.value
+    ? tempTimekeepingTime.value?.time_from
+    : undefined
+  const timeTo = isEditTimekeeping.value
+    ? tempTimekeepingEdit.value?.time_to
+    : isCreateTimekeeping.value
+    ? tempTimekeepingTime.value?.time_to
+    : undefined
+  const eid = isEditTimekeeping.value
+    ? tempTimekeepingEdit.value?.user_id
+    : isCreateTimekeeping.value
+    ? tempEmployeeOpened.value?.employee_id
+    : undefined
+
   const timeoffsResolvedOffOpenedDate = employeeTimeoffStore.timeoffsResolved(
-    tempEmployeeOpened.value?.employee_id || tempTimekeepingEdit.value?.user_id,
+    eid,
     openDate.value
   )
   const totalTime = timeoffsResolvedOffOpenedDate.reduce(
     (prev: number, curr: Timeoff) => {
-      prev += diffTime(curr.time_from, curr.time_to)
+      if (timeFrom && timeTo) {
+        if (
+          compareTime(timeFrom, curr.time_from) <= 0 &&
+          compareTime(curr.time_to, timeTo) <= 0
+        ) {
+          prev += diffTime(curr.time_from, curr.time_to)
+        }
+      }
       return prev
     },
     0
