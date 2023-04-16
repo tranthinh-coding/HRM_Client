@@ -29,8 +29,8 @@
 </template>
 
 <script setup lang="ts">
-import type { CalendarInstance } from 'element-plus/es/components/calendar/src/instance'
 import { ref } from 'vue'
+import type { CalendarInstance } from 'element-plus/es/components/calendar/src/instance'
 
 const calendarInstance = ref<CalendarInstance | null>(null)
 const calendar = ref(new Date())
