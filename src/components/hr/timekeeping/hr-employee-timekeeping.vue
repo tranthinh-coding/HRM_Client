@@ -359,7 +359,7 @@
       </vs-select>
     </div>
 
-    <timekeeping-history :timekeeping="tempTimekeepingEdit!" />
+    <timekeeping-history :timekeeping="tempTimekeepingEdit!" class="mt20px" />
 
     <template #footer>
       <div class="flex w-full justify-end items-center gap-2">
