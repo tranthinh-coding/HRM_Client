@@ -23,6 +23,19 @@ export const parseTime = (time: string): null | Time => {
   return null
 }
 
+/**
+ * Compare time:
+ *
+ * @param time1 'HH:mm'
+ * @param time2 'HH:mm'
+ *
+ * @return
+ *  + -1 if time1 is less than time2 or cannot be compared
+ *
+ *  + 0 if equal
+ *
+ *  + 1 if time1 is greater than time2
+ */
 export const compareTime = (time1: string, time2: string): number => {
   const value1 = parseTime(time1)
   if (!value1) return -1
