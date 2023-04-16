@@ -14,6 +14,7 @@ export const useUserStore = defineStore('USER', () => {
 
   const reset = () => {
     user.value = undefined
+    isLoggedIn.value = false
   }
 
   return {
