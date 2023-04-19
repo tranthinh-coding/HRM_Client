@@ -8,8 +8,15 @@ export interface Timeoff {
   time_from: string
   time_to: string
   type_timeoff: string
+  coefficient: string
   user_id: number
   user: User
+}
+
+export interface TimeoffType {
+  id: number
+  name: string
+  coefficient: number
 }
 
 export interface EmployeeTimeoff {

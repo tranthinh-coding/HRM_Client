@@ -1,6 +1,11 @@
 import { computed, reactive, unref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import type { Timeoff, RefetchOptions, EmployeeTimeoff } from '~/types'
+import type {
+  Timeoff,
+  TimeoffType,
+  RefetchOptions,
+  EmployeeTimeoff,
+} from '~/types'
 import { lastDayOfTheWeek } from '~/utils'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
@@ -9,6 +14,7 @@ import { castArray, isArray } from 'lodash-unified'
 
 type QueryResponse = {
   timeoffs: Timeoff[]
+  timeoff_types: TimeoffType[]
 }
 
 type QueryParams = {
@@ -43,6 +49,7 @@ export const useEmployeeTimeoffStore = defineStore('TIMEOFF', () => {
           type_timeoff
           status
           user_id
+          coefficient
 
           user {
             name
@@ -52,9 +59,16 @@ export const useEmployeeTimeoffStore = defineStore('TIMEOFF', () => {
             role
           }
         }
+        timeoff_types {
+          id
+          name
+          coefficient
+        }
       }
     `
   )
+
+  const timeoffTypes = computed(() => result.value?.timeoff_types || [])
 
   const timeoffsArray = computed(() => Array.from(timeoffsCached.values()))
 
@@ -111,6 +125,7 @@ export const useEmployeeTimeoffStore = defineStore('TIMEOFF', () => {
   return {
     timeoffs,
     timeoffsArray,
+    timeoffTypes,
     refetch,
     timeoffsResolved,
   }

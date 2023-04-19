@@ -92,19 +92,16 @@
       </el-table-column>
 
       <el-table-column
-        v-if="isEmployee(currentUser?.role)"
         prop="type_timeoff"
         label="Phân loại"
         min-width="120"
-        :filters="[
-          { text: 'Nghỉ có lương', value: 'paid' },
-          { text: 'Nghỉ không lương', value: 'unpaid' },
-        ]"
+        :filters="timeoffTypes.map((e) => ({ text: e.name, value: e.name }))"
         :filter-method="filterPaid"
       >
         <template #default="{ row }: { row: Timeoff }">
-          <template v-if="row.type_timeoff === 'paid'">Nghỉ có lương</template>
-          <template v-else>Nghỉ không lương</template>
+          {{ row.type_timeoff }}
+          <br />
+          HS lương {{ row.coefficient }}
         </template>
       </el-table-column>
     </el-table>
@@ -144,25 +141,30 @@
             <p class="text-xs">Chọn thời gian nghỉ</p>
             <p v-if="diffTime">{{ diffTime }} giờ</p>
           </div>
-          <el-time-select
-            v-model="startTime"
-            :max-time="endTime"
-            class="mr-4"
-            placeholder="Start time"
-            start="08:30"
-            step="00:30"
-            end="18:30"
-            :disabled="isAllDay"
-          />
-          <el-time-select
-            v-model="endTime"
-            :min-time="startTime"
-            placeholder="End time"
-            start="08:30"
-            step="00:30"
-            end="18:30"
-            :disabled="isAllDay"
-          />
+          <div class="flex items-center justify-between">
+            <vs-time-select
+              v-model="startTime"
+              :max-time="endTime"
+              class="mr-4"
+              placeholder="Start time"
+              start="00:00"
+              step="00:30"
+              end="23:30"
+              :disabled="isAllDay"
+              :clearable="false"
+            />
+            -
+            <vs-time-select
+              v-model="endTime"
+              :min-time="startTime"
+              placeholder="End time"
+              start="00:30"
+              step="00:30"
+              end="23:30"
+              :disabled="isAllDay"
+              :clearable="false"
+            />
+          </div>
         </div>
       </el-config-provider>
 
@@ -173,15 +175,19 @@
             <el-icon size="18"><info-circle-broken /></el-icon>
             <template #content>
               <p class="text-sm">
-                Trường hợp thời gian nghỉ có lương trong tháng tới giới hạn, hệ
-                thống sẽ tính nghỉ không lương
+                Với nghỉ phép tiêu chuẩn, hệ thống sẽ tính hệ số lương bằng một
+                nửa ca làm việc
               </p>
             </template>
           </vs-tooltip>
         </p>
         <vs-select v-model="typeTimeoff">
-          <vs-option value="paid" label="Nghỉ có lương" />
-          <vs-option value="unpaid" label="Nghỉ không lương" />
+          <vs-option
+            v-for="(type, index) in timeoffTypes"
+            :key="index"
+            :value="type"
+            :label="`${type.name} - ${type.coefficient}`"
+          />
         </vs-select>
       </div>
 
@@ -210,13 +216,13 @@ import viVN from 'element-plus/dist/locale/vi.min.js'
 import EmployeeServices from '~/services/employee-services'
 import { useEmployeeTimeoffStore, useUserStore } from '~/store'
 import { isHR, isEmployee } from '~/config'
-import type { Timeoff } from '~/types'
+import type { Timeoff, TimeoffType } from '~/types'
 import { getResponseError } from '~/composables'
 import { storeToRefs } from 'pinia'
 
 const { user: currentUser } = storeToRefs(useUserStore())
 const timeoffStore = useEmployeeTimeoffStore()
-const { timeoffsArray } = storeToRefs(timeoffStore)
+const { timeoffsArray, timeoffTypes } = storeToRefs(timeoffStore)
 
 const isOpenRequestTimeoffForm = ref<boolean>(false)
 const isAllDay = ref<boolean>(false)
@@ -226,7 +232,7 @@ const notes = ref<string>('')
  * Ref<Date[]>
  * */
 const dates = ref<any>([dayjs().format('YYYY-MM-DD')])
-const typeTimeoff = ref('paid')
+const typeTimeoff = ref<TimeoffType>()
 
 const startTime = ref('09:00')
 const endTime = ref('17:00')
@@ -295,12 +301,16 @@ const sendRequestTimeoff = async () => {
       ? dates.value
       : [dates.value]
 
+    if (!typeTimeoff.value) {
+      throw new Error('Invalid timeoff')
+    }
+
     const datesParsed = _dates.map((e) => dayjs(e).format('YYYY-MM-DD'))
 
     await EmployeeServices.requestTimeoff({
       time_from: startTime.value,
       time_to: endTime.value,
-      type_timeoff: typeTimeoff.value,
+      type_timeoff_id: typeTimeoff.value.id,
       reason: notes.value,
       dates: datesParsed,
       user_id: currentUser.value?.user_id,
