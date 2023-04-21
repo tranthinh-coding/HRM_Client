@@ -9,3 +9,7 @@ export type Day = Month
 
 // export type DateFormat = `${Year}-${Month}-${Day}`
 export type DateFormat = `${string}-${string}-${string}`
+
+export type TwoDigit = `${Digit}${Digit}`
+
+export type Time = `${TwoDigit}:${TwoDigit}`

@@ -445,7 +445,7 @@ import {
 import { getResponseError } from '~/composables'
 import { diffTime, isCurrentDate } from '~/utils'
 import EmployeeTimekeepingServices from '~/services/employee-timekeeping-services'
-import { compareTime, nextTime } from './time'
+import { compareTime, nextTime } from '~/utils/dayjs-time'
 // import { createReusableTemplate } from 'vue-reuse-template'
 import TimekeepingHistory from '~/components/hr/timekeeping/timekeeping-history.vue'
 import DateColumn from './date-column.vue'

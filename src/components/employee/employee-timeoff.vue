@@ -44,16 +44,11 @@
         ]"
         :filter-method="filterDate"
       />
-      <el-table-column
-        prop="time_from"
-        label="Thời gian bắt đầu"
-        min-width="100"
-      />
-      <el-table-column
-        prop="time_to"
-        label="Thời gian kết thúc"
-        min-width="100"
-      />
+      <el-table-column prop="time_from" label="Thời gian" min-width="150">
+        <template #default="{ row }: { row: Timeoff }">
+          {{ row.time_from }} - {{ row.time_to }}
+        </template>
+      </el-table-column>
 
       <el-table-column prop="reason" label="Lý do" min-width="120" />
 
@@ -111,6 +106,7 @@
     v-if="isEmployee(currentUser?.role)"
     v-model="isOpenRequestTimeoffForm"
     not-close
+    @closed="() => (isAllDay = false)"
   >
     <h3 class="text-lg font-semibold opacity-90 mt-3">
       Thêm yêu cầu nghỉ phép
@@ -134,22 +130,32 @@
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
             :disabled-date="disabledDate"
+            :clearable="false"
           />
         </div>
         <div>
           <div class="flex items-center gap-2 ml-2 mb-1">
             <p class="text-xs">Chọn thời gian nghỉ</p>
-            <p v-if="diffTime">{{ diffTime }} giờ</p>
+            <vs-tooltip :show-after="350">
+              <el-icon size="18"><info-circle-broken /></el-icon>
+              <template #content>
+                <p class="text-sm">
+                  Điều chỉnh thời gian kết thúc trước để dễ dàng lựa chọn hơn
+                </p>
+              </template>
+            </vs-tooltip>
+            {{ diffTime(startTime, endTime) }} giờ
           </div>
           <div class="flex items-center justify-between">
             <vs-time-select
               v-model="startTime"
               :max-time="endTime"
+              :min-time="minTimeStart"
               class="mr-4"
               placeholder="Start time"
-              start="00:00"
-              step="00:30"
-              end="23:30"
+              :start="TIME_START"
+              :step="TIME_STEP"
+              :end="TIME_END"
               :disabled="isAllDay"
               :clearable="false"
             />
@@ -158,9 +164,9 @@
               v-model="endTime"
               :min-time="startTime"
               placeholder="End time"
-              start="00:30"
-              step="00:30"
-              end="23:30"
+              :start="nextTime(TIME_START, TIME_STEP)"
+              :step="TIME_STEP"
+              :end="TIME_END"
               :disabled="isAllDay"
               :clearable="false"
             />
@@ -171,7 +177,7 @@
       <div>
         <p class="ml-2 text-xs mb-1 flex items-center gap-2">
           Chọn loại thời gian nghỉ
-          <vs-tooltip>
+          <vs-tooltip :show-after="350">
             <el-icon size="18"><info-circle-broken /></el-icon>
             <template #content>
               <p class="text-sm">
@@ -209,16 +215,29 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import dayjs from 'dayjs'
+import { storeToRefs } from 'pinia'
 import { notification } from 'vuesax-old'
 // @ts-ignore
 import viVN from 'element-plus/dist/locale/vi.min.js'
 
+import { nextTime, compareTime } from '~/utils/dayjs-time'
 import EmployeeServices from '~/services/employee-services'
 import { useEmployeeTimeoffStore, useUserStore } from '~/store'
 import { isHR, isEmployee } from '~/config'
-import type { Timeoff, TimeoffType } from '~/types'
 import { getResponseError } from '~/composables'
-import { storeToRefs } from 'pinia'
+import type { Timeoff, TimeoffType, Time } from '~/types'
+import { last } from 'lodash-unified'
+
+const TIME_STEP: Time = '00:30'
+const TIME_START: Time = '00:00'
+const TIME_END: Time = '23:30'
+const TIME_FORMAT = 'HH:mm'
+
+const TIMES: Time[] = [TIME_START]
+
+while (compareTime(last(TIMES)!, TIME_END) != 0) {
+  TIMES.push(nextTime(last(TIMES)!, TIME_STEP) as any)
+}
 
 const { user: currentUser } = storeToRefs(useUserStore())
 const timeoffStore = useEmployeeTimeoffStore()
@@ -234,17 +253,27 @@ const notes = ref<string>('')
 const dates = ref<any>([dayjs().format('YYYY-MM-DD')])
 const typeTimeoff = ref<TimeoffType>()
 
-const startTime = ref('09:00')
-const endTime = ref('17:00')
+const startTime = ref<Time>(
+  /** find next step time: 16:47 => get 17:00 */
+  TIMES.find((e) => compareTime(e, dayjs().format('HH:mm') as Time) > 0) ||
+    TIME_START
+)
 
-const diffTime = computed(() => {
-  const _startTime = dayjs(`2023-04-01T${startTime.value}:00`)
-  const _endTime = dayjs(`2023-04-01T${endTime.value}:00`)
+const endTime = ref<Time>(nextTime(startTime.value, TIME_STEP) as Time)
+
+const minTimeStart = computed(() =>
+  dayjs().add(5, 'minutes').format(TIME_FORMAT)
+)
+
+const diffTime = (start: Time, end: Time) => {
+  const _startTime = dayjs(`2023-04-01T${start}`)
+  const _endTime = dayjs(`2023-04-01T${end}`)
 
   const timeDiffInHours = _endTime.diff(_startTime, 'hours', true)
 
   return timeDiffInHours
-})
+}
+
 const refetchTimeoff = async () => {
   await timeoffStore.refetch(
     {
@@ -346,8 +375,16 @@ const filterStatus = (value: string, row: Timeoff) => row.status === value
 const filterPaid = (value: string, row: Timeoff) => row.type_timeoff === value
 const filterDate = (value: string, row: Timeoff) => row.day_request === value
 
-watch(isAllDay, () => {
-  startTime.value = '09:00'
-  endTime.value = '17:00'
+watch(isAllDay, (val) => {
+  if (val) {
+    startTime.value = '09:00'
+    endTime.value = '17:00'
+  } else {
+    startTime.value =
+      TIMES.find((e) => compareTime(e, dayjs().format('HH:mm') as Time) > 0) ||
+      TIME_START
+
+    endTime.value = nextTime(startTime.value, TIME_STEP) as Time
+  }
 })
 </script>
