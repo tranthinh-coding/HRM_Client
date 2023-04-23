@@ -16,7 +16,7 @@
       <vs-button
         type="shadow"
         icon
-        @click="employeeTimekeepingStore.refetch({ force: true })"
+        @click="employeeTimekeepingStore.refetch({ force: true, date })"
       >
         <el-icon> <refresh-bold /> </el-icon>
       </vs-button>
@@ -632,7 +632,7 @@ const acceptCreate = async () => {
       position: 'top-center',
       text: e.message,
       border: 'error',
-      duration: 0,
+      duration: 10000,
     })
   }
 }
@@ -705,7 +705,7 @@ const acceptEdit = async () => {
       position: 'top-center',
       text: e.message,
       border: 'error',
-      duration: 0,
+      duration: 10000,
     })
   }
 }
