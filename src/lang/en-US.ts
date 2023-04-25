@@ -13,6 +13,8 @@ export default {
       timeoff: 'Time off',
       salary: 'Salary',
       request: 'Request',
+      reward: 'Reward',
+      discipline: 'Discipline',
     },
     department: 'Department',
     action: 'Action',

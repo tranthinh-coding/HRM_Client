@@ -81,6 +81,15 @@
       <el-icon size="26"> <sms-notification /> </el-icon>
       {{ t('page.sidebar.request') }}
     </sidebar-item> -->
+    <sidebar-item
+      class="menu-item"
+      id="9"
+      :to="{ name: 'hr/reward-discipline' }"
+      @active="activeItem"
+    >
+      <el-icon size="26"> <medal-star /> </el-icon>
+      {{ t('page.sidebar.reward') }} / {{ t('page.sidebar.discipline') }}
+    </sidebar-item>
   </menu>
 </template>
 
@@ -106,8 +115,6 @@ provide<SidebarContext>(
 </script>
 
 <style scoped lang="scss">
-@use 'element-plus/theme-chalk/src/mixins/function.scss';
-
 .menu {
   padding: 20px;
   padding-bottom: 40px;

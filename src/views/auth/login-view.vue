@@ -110,7 +110,7 @@ const submit = () => {
       if (!usr) {
         notification({
           text: t('request.response.noData'),
-          border: 'error',
+          border: 'danger',
           duration: 3 * 1000,
           position: 'top-center',
           progress: true,
@@ -133,7 +133,7 @@ const submit = () => {
       const _error = getResponseError<FormState>(error)
       notification({
         text: _error.message,
-        border: 'error',
+        border: 'danger',
         duration: 3 * 1000,
         position: 'top-center',
         progress: true,

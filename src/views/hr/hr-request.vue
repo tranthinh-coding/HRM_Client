@@ -9,24 +9,30 @@
             </el-badge>
           </div>
         </template>
+
+        hi
       </el-tab-pane>
       <el-tab-pane name="2">
         <template #label>
           <div class="pt-4">
-            <el-badge :value="timeoffsResolved.length" :max="99">
+            <el-badge :value="timeoffsResolved.length" :max="99" type="success">
               Chấp thuận
             </el-badge>
           </div>
         </template>
+        
+        chap thuan
       </el-tab-pane>
       <el-tab-pane name="3">
         <template #label>
           <div class="pt-4">
-            <el-badge :value="timeoffsRejected.length" :max="99">
+            <el-badge :value="timeoffsRejected.length" :max="99" type="warning">
               Từ chối
             </el-badge>
           </div>
         </template>
+
+        tu choi
       </el-tab-pane>
     </el-tabs>
   </div>

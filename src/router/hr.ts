@@ -62,5 +62,10 @@ export const hrRoutes: RouteRecordRaw = {
       name: 'hr/request',
       component: () => import('~/views/hr/hr-request.vue'),
     },
+    {
+      path: 'reward-discipline',
+      name: 'hr/reward-discipline',
+      component: () => import('~/views/hr/reward-discipline.vue'),
+    },
   ],
 }

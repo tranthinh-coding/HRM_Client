@@ -13,6 +13,8 @@ export default {
       timeoff: 'Thời gian nghỉ',
       salary: 'Thông tin lương',
       request: 'Yêu cầu',
+      reward: 'Khen thưởng',
+      discipline: 'Kỷ luật',
     },
     department: 'Phòng ban',
     action: 'Hành động',
