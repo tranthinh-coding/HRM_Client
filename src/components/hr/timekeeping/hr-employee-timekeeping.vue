@@ -13,13 +13,17 @@
     </el-config-provider>
     <vs-button type="flat" @click="jumpToCurrentWeek"> Tuần này </vs-button>
     <div class="flex items-center">
-      <vs-button
-        type="shadow"
-        icon
-        @click="employeeTimekeepingStore.refetch({ force: true, date })"
-      >
-        <el-icon> <refresh-bold /> </el-icon>
-      </vs-button>
+      <vs-tooltip :show-after="350">
+        <vs-button
+          type="shadow"
+          icon
+          @click="employeeTimekeepingStore.refetch({ force: true, date })"
+        >
+          <el-icon> <refresh-bold /> </el-icon>
+        </vs-button>
+
+        <template #content>Refresh</template>
+      </vs-tooltip>
     </div>
   </div>
   <el-table :data="employees" table-layout="fixed" border>
@@ -33,11 +37,15 @@
                 {{ row.department }}
               </div>
               <div class="flex gap-2 items-center">
-                <el-icon size="18"><email /></el-icon>
+                <el-icon size="18">
+                  <email />
+                </el-icon>
                 {{ row.email }}
               </div>
               <div class="flex gap-2 items-center">
-                <el-icon size="18"><people /></el-icon>
+                <el-icon size="18">
+                  <people />
+                </el-icon>
                 {{ row.employee_id }}
               </div>
               <div class="flex gap-2 items-center">
@@ -322,8 +330,8 @@
           <vs-time-select
             :model-value="tempTimekeepingEdit?.time_from"
             @update:model-value="
-              (e: any) => updateTempEditTimekeeping('time_from', e)
-            "
+            (e: any) => updateTempEditTimekeeping('time_from', e)
+          "
             :max-time="tempTimekeepingEdit?.time_to"
             placeholder="Start time"
             :start="TIME_START"

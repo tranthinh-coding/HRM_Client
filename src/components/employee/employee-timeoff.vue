@@ -214,19 +214,19 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { last } from 'lodash-unified'
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { notification } from 'vuesax-old'
 // @ts-ignore
 import viVN from 'element-plus/dist/locale/vi.min.js'
 
-import { nextTime, compareTime } from '~/utils/dayjs-time'
+import { compareTime, nextTime } from '~/utils/dayjs-time'
 import EmployeeServices from '~/services/employee-services'
 import { useEmployeeTimeoffStore, useUserStore } from '~/store'
-import { isHR, isEmployee } from '~/config'
+import { isEmployee, isHR } from '~/config'
 import { getResponseError } from '~/composables'
-import type { Timeoff, TimeoffType, Time } from '~/types'
-import { last } from 'lodash-unified'
+import type { Time, Timeoff, TimeoffType } from '~/types'
 
 const TIME_STEP: Time = '00:30'
 const TIME_START: Time = '00:00'
@@ -269,9 +269,7 @@ const diffTime = (start: Time, end: Time) => {
   const _startTime = dayjs(`2023-04-01T${start}`)
   const _endTime = dayjs(`2023-04-01T${end}`)
 
-  const timeDiffInHours = _endTime.diff(_startTime, 'hours', true)
-
-  return timeDiffInHours
+  return _endTime.diff(_startTime, 'hours', true)
 }
 
 const refetchTimeoff = async () => {
