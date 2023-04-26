@@ -37,7 +37,7 @@
         </el-col>
 
         <el-col :xs="24" :sm="6" class="search-column">
-          <vs-button block @click="refetch(searchForm)">
+          <vs-button block @click="employeesStore.refetch(searchForm)">
             {{ t('employee.search') }}
           </vs-button>
         </el-col>
@@ -67,8 +67,8 @@
     <employee-create
       :positions="positions"
       :departments="departments"
-      :users="users"
-      @update:employee="refetch"
+      :users="g"
+      @update:employee="employeesStore.refetch"
       v-model:open="openCreateEmployeeForm"
     />
   </div>
@@ -76,14 +76,23 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import { Department, Employee, JobPosition, User } from '~/types'
+import { usePositionStore, useDepartmentStore, useEmployeesStore, useUsersStore } from '~/store'
 import employeeCreate from '~/components/hr/employee-create.vue'
 import employeeCard from '~/components/hr/employee-card.vue'
-import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
 
 const { t } = useI18n()
+
+const positionStore = usePositionStore()
+const { positions } = storeToRefs(positionStore)
+
+const departmentStore = useDepartmentStore()
+const { departments } = storeToRefs(departmentStore)
+
+const employeesStore = useEmployeesStore()
+const { employees } = storeToRefs(employeesStore)
+
 const openCreateEmployeeForm = ref(false)
 
 const searchForm = reactive<{
@@ -92,67 +101,9 @@ const searchForm = reactive<{
   position: string
 }>({ employee_id: '', name: '', position: '' })
 
-const { result, refetch } = useQuery<{
-  employees: {
-    data: Employee[]
-    paginatorInfo: {
-      count: number
-      currentPage: number
-      hasMorePages: boolean
-      lastPage: number
-      perPage: number
-      total: number
-    }
-  }
-  allUsers: User[]
-  positions: JobPosition[]
-  departments: Department[]
-}>(
-  gql`
-    query Employees($employee_id: String, $position: String, $name: String) {
-      employees(
-        first: 10
-        page: 1
-        name: $name
-        employee_id: $employee_id
-        position: $position
-      ) {
-        data {
-          name
-          email
-          employee_id
-          position
-        }
-        paginatorInfo {
-          count
-          currentPage
-          hasMorePages
-          lastPage
-          perPage
-          total
-        }
-      }
-      allUsers(role: "Guest") {
-        user_id
-        email
-        name
-        status
-      }
-      positions {
-        name
-      }
-      departments {
-        name
-      }
-    }
-  `,
-  () => ({ employee_id: '', name: '', position: '' })
-)
+const usersStore = useUsersStore()
 
-const users = computed(() => result.value?.allUsers || [])
-const employees = computed(() => result.value?.employees.data || [])
-const positions = computed(() => result.value?.positions || [])
-const departments = computed(() => result.value?.departments || [])
+const g = computed(() => usersStore.localFilter({ role: "Guest"}))
 </script>
 
 <style scoped lang="scss">
