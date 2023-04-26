@@ -11,6 +11,10 @@ type QueryResponse = {
   }
 }
 
+type FilterOptions = {
+  role?: string
+}
+
 export const useUsersStore = defineStore('USERS', () => {
   const { result, refetch } = useQuery<QueryResponse>(
     gql`
@@ -48,9 +52,22 @@ export const useUsersStore = defineStore('USERS', () => {
 
   const users = computed(() => result.value?.users.data || [])
 
+  const localFilter = computed<(options: FilterOptions) => User[]>(
+    () => (options: FilterOptions) => {
+      let keys = Object.keys(options)
+
+      return users.value.filter((e) => {
+        // @ts-ignore
+        let acceptedKeys = keys.filter((key) => e[key] === options[key])
+        return acceptedKeys.length === keys.length
+      })
+    }
+  )
+
   return {
     users,
     seekers,
     refetch,
+    localFilter,
   }
 })
