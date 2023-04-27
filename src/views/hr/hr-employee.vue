@@ -64,21 +64,15 @@
       </el-col>
     </el-row>
 
-    <employee-create
-      :positions="positions"
-      :departments="departments"
-      :users="g"
-      @update:employee="employeesStore.refetch"
-      v-model:open="openCreateEmployeeForm"
-    />
+    <employee-create v-model:open="openCreateEmployeeForm" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import { usePositionStore, useDepartmentStore, useEmployeesStore, useUsersStore } from '~/store'
+import { usePositionStore, useEmployeesStore } from '~/store'
 import employeeCreate from '~/components/hr/employee-create.vue'
 import employeeCard from '~/components/hr/employee-card.vue'
 
@@ -86,9 +80,6 @@ const { t } = useI18n()
 
 const positionStore = usePositionStore()
 const { positions } = storeToRefs(positionStore)
-
-const departmentStore = useDepartmentStore()
-const { departments } = storeToRefs(departmentStore)
 
 const employeesStore = useEmployeesStore()
 const { employees } = storeToRefs(employeesStore)
@@ -100,10 +91,6 @@ const searchForm = reactive<{
   name: string
   position: string
 }>({ employee_id: '', name: '', position: '' })
-
-const usersStore = useUsersStore()
-
-const g = computed(() => usersStore.localFilter({ role: "Guest"}))
 </script>
 
 <style scoped lang="scss">

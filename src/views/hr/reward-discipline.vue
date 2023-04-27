@@ -33,31 +33,70 @@
         <h3 class="text-lg mt-4px">Tao khoan khen thuong cho nhan vien</h3>
       </template>
 
-      <div class="flex flex-col gap-6px">
-        <vs-input
-          v-model="rewardCreateForm.name"
-          label="Loai khen thuong"
-          label-float
-        />
-        <vs-input
-          v-model="rewardCreateForm.description"
-          label="Loi nhan"
-          label-float
-        />
-        <vs-input
-          v-model="rewardCreateForm.salary"
-          label="Muc thuong"
-          label-float
-        />
+      <div class="form-group">
+        <div class="form-original">
+          <vs-select v-model="selectedUser" label="Full Name" label-float>
+            <vs-option
+              v-for="(user, index) in employees"
+              :key="index"
+              :value="user"
+              :label="user.name"
+            />
+          </vs-select>
+        </div>
 
-        <div class="mt3">
-          <h4 class="relative -top-1 left-12px text-xs">Ngay ap dung</h4>
-          <el-date-picker
-            type="date"
-            v-model="rewardCreateForm.start_date"
-            :default-value="new Date()"
+        <div class="form-original">
+          <vs-input
+            :model-value="selectedUser?.email"
+            label="Email"
+            label-float
+            disabled
           />
         </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-original">
+          <vs-input
+            :model-value="selectedUser?.email"
+            label="Name"
+            label-float
+            disabled
+          />
+        </div>
+        <div class="form-original">
+          <vs-input
+            v-model="rewardCreateForm.name"
+            label="Loai khen thuong"
+            label-float
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-original">
+          <vs-input
+            v-model="rewardCreateForm.description"
+            label="Loi nhan"
+            label-float
+          />
+        </div>
+        <div class="form-original">
+          <vs-input
+            v-model="rewardCreateForm.salary"
+            label="Muc thuong"
+            label-float
+          />
+        </div>
+      </div>
+
+      <div class="mt3">
+        <h4 class="relative -top-1 left-12px text-xs">Ngay ap dung</h4>
+        <el-date-picker
+          type="date"
+          v-model="rewardCreateForm.start_date"
+          :default-value="new Date()"
+        />
       </div>
 
       <template #footer>
@@ -73,51 +112,26 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from 'vue'
-import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
+import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import dayjs from 'dayjs'
 
-import { useUserStore } from '~/store'
+import { useRewardStore, useEmployeesStore } from '~/store'
+import { storeToRefs } from 'pinia'
 
 const { t } = useI18n()
 
-const userStore = useUserStore()
+const rewardStore = useRewardStore()
+const { rewards } = storeToRefs(rewardStore)
 
-const { result } = useQuery<{
-  rewards: {
-    id: number
-    name: string
-    description: string
-    salary: number
-    start_date: string
-    user_id: string
-    created_at: string
-  }[]
-}>(
-  gql`
-    query REWARDS($user_id: String!) {
-      rewards(user_id: $user_id) {
-        id
-        name
-        description
-        salary
-        start_date
-        user_id
-        created_at
+const employeeStore = useEmployeesStore()
+const { employees } = storeToRefs(employeeStore)
 
-        user {
-          user_id
-          name
-        }
-      }
-    }
-  `,
-  () => ({ user_id: userStore.user?.user_id })
-)
-
-const rewards = computed(() => result.value?.rewards || [])
+const selectedUser = ref<{
+  user_id: string
+  email: string
+  user_name: string
+}>()
 
 const isOpenCreateReward = ref(false)
 
@@ -143,5 +157,30 @@ const closeCreateReward = () => {
 <style scoped lang="scss">
 .box {
   background-color: getColor(bg-color);
+}
+</style>
+
+<style lang="scss">
+.form-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+
+  &.is-ep {
+    margin-top: 20px;
+  }
+
+  .form-original {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-top: 10px;
+
+    .form-label {
+      font-size: 14px;
+      margin-left: 12px;
+    }
+  }
 }
 </style>

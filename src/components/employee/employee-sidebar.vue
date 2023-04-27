@@ -24,6 +24,14 @@
       <el-icon size="26"> <timer-pause /> </el-icon>
       {{ t('page.sidebar.timekeeping') }}
     </sidebar-item>
+    <sidebar-item
+      @active="sidebarInstance?.activeItem"
+      id="4"
+      :to="{ name: 'employee/reward-discipline' }"
+    >
+      <el-icon size="26"> <medal-star /> </el-icon>
+      {{ t('page.sidebar.reward') }} - {{ t('page.sidebar.discipline') }}
+    </sidebar-item>
   </v-sidebar>
 </template>
 
