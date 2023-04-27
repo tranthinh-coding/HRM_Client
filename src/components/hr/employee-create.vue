@@ -83,39 +83,46 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
-import { Department, JobPosition, User } from '~/types'
+import { storeToRefs } from 'pinia'
 import EmployeeServices from '~/services/employee-services'
 import { getResponseError } from '~/composables'
 import { notification } from 'vuesax-old'
+import {
+  usePositionStore,
+  useDepartmentStore,
+  useUsersStore,
+  useEmployeesStore,
+} from '~/store'
+
+const { t } = useI18n()
+
+const emit = defineEmits({
+  'update:open': () => true,
+})
 
 const props = defineProps({
   open: {
     type: Boolean,
     default: false,
   },
-  users: {
-    type: Array as PropType<User[]>,
-    default: () => [],
-  },
-  positions: {
-    type: Array as PropType<JobPosition[]>,
-    default: () => [],
-  },
-  departments: {
-    type: Array as PropType<Department[]>,
-    default: () => [],
-  },
 })
 
-const emit = defineEmits({
-  'update:open': () => true,
-  'update:employee': () => true,
-})
 const isOpen = useVModel(props, 'open', emit)
-const { t } = useI18n()
+
+const positionStore = usePositionStore()
+const { positions } = storeToRefs(positionStore)
+
+const departmentStore = useDepartmentStore()
+const { departments } = storeToRefs(departmentStore)
+
+const employeeStore = useEmployeesStore()
+
+const usersStore = useUsersStore()
+
+const users = computed(() => usersStore.localFilter({ role: 'Guest' }))
 
 const selectedUser = ref<{
   user_id: string
@@ -152,7 +159,8 @@ const addNewEmployee = async () => {
     Object.assign(employeeForm, { department: '', position: '', gender: '' })
 
     selectedUser.value = undefined
-    emit('update:employee')
+
+    employeeStore.refetch()
   } catch (error) {
     const _e = getResponseError(error)
 
