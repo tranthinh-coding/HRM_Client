@@ -18,7 +18,11 @@ export const useHourlyWageCoefficientsStore = defineStore(
             coefficient
           }
         }
-      `
+      `,
+      null,
+      {
+        pollInterval: 40000,
+      }
     )
 
     const hourlyWageCoefficients = computed<HourlyWageCoefficient[]>(

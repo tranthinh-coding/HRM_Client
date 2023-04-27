@@ -21,7 +21,11 @@ export const useDepartmentStore = defineStore('Department', () => {
           updated_at
         }
       }
-    `
+    `,
+    null,
+    {
+      pollInterval: 40000,
+    }
   )
 
   const departments = computed(() => result.value?.departments || [])

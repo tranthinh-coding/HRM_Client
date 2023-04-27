@@ -65,7 +65,11 @@ export const useEmployeeTimeoffStore = defineStore('TIMEOFF', () => {
           coefficient
         }
       }
-    `
+    `,
+    () => ({}),
+    {
+      pollInterval: 40000,
+    }
   )
 
   const timeoffTypes = computed(() => result.value?.timeoff_types || [])

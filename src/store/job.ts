@@ -40,7 +40,11 @@ export const useJobsStore = defineStore('JOBS', () => {
           updated_at
         }
       }
-    `
+    `,
+    () => ({}),
+    {
+      pollInterval: 40000,
+    }
   )
 
   const jobs = computed(() => result.value?.jobs || [])

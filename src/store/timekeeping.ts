@@ -61,7 +61,10 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
     () => ({
       from: lastDayOfTheWeek(),
       to: dayjs(lastDayOfTheWeek()).add(6, 'days').format('YYYY-MM-DD'),
-    })
+    }),
+    {
+      pollInterval: 40000,
+    }
   )
 
   const timekeepingsArray = computed(() =>

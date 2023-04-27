@@ -17,7 +17,11 @@ export const usePositionStore = defineStore('Position', () => {
           name
         }
       }
-    `
+    `,
+    null,
+    {
+      pollInterval: 40000,
+    }
   )
 
   const positions = computed(() => result.value?.positions || [])

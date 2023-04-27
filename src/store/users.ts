@@ -45,7 +45,11 @@ export const useUsersStore = defineStore('USERS', () => {
           }
         }
       }
-    `
+    `,
+    null,
+    {
+      pollInterval: 40000,
+    }
   )
 
   const seekers = computed(() => users.value.filter((e) => isGuest(e.role)))

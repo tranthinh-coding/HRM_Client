@@ -30,7 +30,11 @@ export const useApplicantsStore = defineStore('APPLICANTS', () => {
           }
         }
       }
-    `
+    `,
+    null,
+    {
+      pollInterval: 40000,
+    }
   )
 
   const applicants = computed(() => result.value?.applicants || [])
