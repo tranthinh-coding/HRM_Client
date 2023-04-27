@@ -12,6 +12,7 @@ export const useAxios = axios.create({
     Accept: 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
   },
+  withCredentials: true,
   responseType: 'json',
   responseEncoding: 'utf8',
   xsrfCookieName: 'XSRF-TOKEN',
@@ -63,9 +64,9 @@ useAxios.interceptors.response.use(
   (response) => response.data,
   (error) => {
     console.log({ error })
-    return Promise.reject(
-      error.response?.data || {
+    return Promise.reject({
         message: 'Server not responding',
+        __ERROR__: error
       }
     )
   }
