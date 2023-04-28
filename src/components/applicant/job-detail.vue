@@ -17,8 +17,7 @@
                   <div>
                     <div class="property">Mức lương</div>
                     <div class="value">
-                      {{ job.salary_from }} - {{ job.salary_to }}
-                      {{ job.salary_format }}
+                      {{ job.salary_from }} - {{ job.salary_to }} VND
                     </div>
                   </div>
                 </div>
@@ -146,6 +145,7 @@ const onClose = () => emit('close')
 
 const applyJob = async () => {
   try {
+    console.log(props.job)
     const response = await ApplicantServices.apply({
       job_id: props.job.id,
       message: message.value,
