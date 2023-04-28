@@ -87,22 +87,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ElMessage } from 'element-plus'
+import { storeToRefs } from 'pinia'
+import { notification } from 'vuesax-old'
 
-import departmentServices from '~/services/department-services'
 import { formatTime } from '~/utils'
+import { useDepartmentStore } from '~/store'
+import departmentServices from '~/services/department-services'
+import DepartmentCreate from '~/components/hr/department-create.vue'
+import DepartmentUpdate from '~/components/hr/department-update.vue'
+
 import type { Department } from '~/types/department'
-import DepartmentCreate from '../../components/hr/department-create.vue'
-import DepartmentUpdate from '../../components/hr/department-update.vue'
 
 type DepartmentForm = Pick<Department, 'name'>
 
 const { t } = useI18n()
 
+const departmentStore = useDepartmentStore()
+const { departments } = storeToRefs(departmentStore)
+
 const search = ref<string>('')
-const departments = ref<Department[]>([])
 
 const showCreateDepartmentForm = ref(false)
 const showUpdateDepartmentForm = ref(false)
@@ -139,14 +144,6 @@ const toggleUpdateForm = (department: Department) => {
   Object.assign(departmentUpdateForm, department)
 }
 
-const refreshDepartments = async () => {
-  try {
-    departments.value = await departmentServices.departments()
-  } catch {
-    departments.value = []
-  }
-}
-
 const addNewDepartment = async () => {
   isFetching.value = true
   try {
@@ -154,25 +151,29 @@ const addNewDepartment = async () => {
       throw new Error(t('validate.required'))
     }
     const response = await departmentServices.create(departmentForm)
-    ElMessage({
-      message: `${response.message}`,
+
+    notification({
+      text: response.message,
+      border: 'success',
       duration: 5000,
-      showClose: true,
-      type: 'success',
+      position: 'top-center',
+      progress: true,
     })
 
     departmentForm.name = ''
     departmentFormError.name = ''
 
-    refreshDepartments()
+    departmentStore.refetch()
   } catch (e) {
     const message: string = (e as any).message
     departmentFormError.name = message
-    ElMessage({
-      message: message,
+
+    notification({
+      text: message,
+      border: 'danger',
       duration: 5000,
-      showClose: true,
-      type: 'error',
+      position: 'top-center',
+      progress: true,
     })
   }
   isFetching.value = false
@@ -186,24 +187,25 @@ const updateDepartment = async () => {
     }
     const response = await departmentServices.update(departmentUpdateForm)
 
-    ElMessage({
-      message: `${response.message}`,
+    notification({
+      text: response.message,
+      border: 'success',
       duration: 5000,
-      showClose: true,
-      type: 'success',
+      position: 'top-center',
+      progress: true,
     })
-
     departmentFormError.name = ''
 
-    refreshDepartments()
+    departmentStore.refetch()
   } catch (e) {
     const message: string = (e as any).message
     departmentFormError.name = message
-    ElMessage({
-      message: message,
+    notification({
+      text: message,
+      border: 'danger',
       duration: 5000,
-      showClose: true,
-      type: 'error',
+      position: 'top-center',
+      progress: true,
     })
   }
   isFetching.value = false
@@ -213,26 +215,25 @@ const removeDepartment = async (department: Department) => {
   isFetching.value = true
   try {
     const response = await departmentServices.remove(department)
-
-    ElMessage({
-      message: response.message,
-      type: 'success',
-      duration: 2000,
+    notification({
+      text: response.message,
+      border: 'success',
+      duration: 5000,
+      position: 'top-center',
+      progress: true,
     })
-    refreshDepartments()
+    departmentStore.refetch()
   } catch (e: unknown) {
-    ElMessage({
-      message: 'Delete department failure',
-      type: 'error',
-      duration: 2000,
+    notification({
+      text: 'Delete department failure',
+      border: 'danger',
+      duration: 5000,
+      position: 'top-center',
+      progress: true,
     })
   }
   isFetching.value = false
 }
-
-onBeforeMount(() => {
-  refreshDepartments()
-})
 </script>
 
 <style scoped lang="scss">
