@@ -59,7 +59,7 @@
           >
             {{ t('user.see-info') }}
           </div> -->
-          <div class="tooltip-option" @click="$router.push({ name: 'logout' })">
+          <div class="tooltip-option" @click="logout">
             {{ t('auth.logout') }}
           </div>
         </template>
@@ -69,24 +69,70 @@
 </template>
 
 <script setup lang="ts">
-import { Moon, Sunny } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useBreakpoints } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+import { Moon, Sunny } from '@element-plus/icons-vue'
+import { useApolloClient } from '@vue/apollo-composable'
+import {
+  useUsersStore,
+  useApplicantsStore,
+  useDepartmentStore,
+  useEmployeeTimeoffStore,
+  useEmployeeTimekeepingStore,
+  useRewardStore,
+  usePositionStore,
+  useJobsStore,
+  useHourlyWageCoefficientsStore,
+  useEmployeesStore,
+} from '~/store'
+
 import { isDark, toggleSidebar, isSidebarCollapsed } from '~/composables'
 import { REPO_LINK } from '~/config'
 import { loadLanguageAsync, SUPPORT_LANGUAGES } from '~/plugins/i18n'
 import { useUserStore } from '~/store'
 import IconCode from '~/components/icons/code.vue'
 import IconLanguage from '~/components/icons/language.vue'
-import { storeToRefs } from 'pinia'
-import { useBreakpoints } from '@vueuse/core'
+
+const { client } = useApolloClient()
+
+const applicantStore = useApplicantsStore()
+const departmentsStore = useDepartmentStore()
+const employeeStore = useEmployeesStore()
+const hourlyWageCoefficientStore = useHourlyWageCoefficientsStore()
+const jobStore = useJobsStore()
+const positionStore = usePositionStore()
+const rewardStore = useRewardStore()
+const timekeepingStore = useEmployeeTimekeepingStore()
+const timeoffStore = useEmployeeTimeoffStore()
+const usersStore = useUsersStore()
+
+const router = useRouter()
+const { t } = useI18n()
 
 const { user } = storeToRefs(useUserStore())
-
-const { t } = useI18n()
 
 const { isSmaller } = useBreakpoints({
   lg: '1100px',
 })
+
+// need to clear graphql store before logout
+const logout = () => {
+  client.clearStore()
+  applicantStore.stop()
+  departmentsStore.stop()
+  employeeStore.stop()
+  hourlyWageCoefficientStore.stop()
+  jobStore.stop()
+  positionStore.stop()
+  rewardStore.stop()
+  timekeepingStore.stop()
+  timeoffStore.stop()
+  usersStore.stop()
+
+  return router.push({ name: 'logout' })
+}
 </script>
 
 <style scoped lang="scss">
