@@ -25,9 +25,15 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
   const timekeepingsWeekCached = new Set()
   const timekeepingsCached = reactive<Map<number, Timekeeping>>(new Map())
 
-  const { result, refetch: _refetch } = useQuery<QueryResponse, QueryParams>(
+  const {
+    result,
+    refetch: _refetch,
+    restart,
+    stop: _stop,
+    start,
+  } = useQuery<QueryResponse, QueryParams>(
     gql`
-      query timekeepings($from: Date!, $to: Date!) {
+      query TIMEKEEPINGS($from: Date!, $to: Date!) {
         timekeepings(date: { from: $from, to: $to }) {
           id
           name
@@ -120,10 +126,19 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
     })
   })
 
+  const stop = () => {
+    _stop()
+    timekeepingsWeekCached.clear()
+    timekeepingsCached.clear()
+  }
+
   return {
     timekeepings,
     timekeepingsArray,
     timekeepingHistories,
     refetch,
+    stop,
+    restart,
+    start,
   }
 })

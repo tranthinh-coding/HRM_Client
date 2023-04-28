@@ -9,10 +9,10 @@ type QueryResponse = {
   positions: JobPosition[]
 }
 
-export const usePositionStore = defineStore('Position', () => {
-  const { result, refetch } = useQuery<QueryResponse>(
+export const usePositionStore = defineStore('POSITIONS', () => {
+  const { result, refetch, stop, restart, start } = useQuery<QueryResponse>(
     gql`
-      query positions {
+      query POSITIONS {
         positions {
           name
         }
@@ -26,5 +26,5 @@ export const usePositionStore = defineStore('Position', () => {
 
   const positions = computed(() => result.value?.positions || [])
 
-  return { positions, refetch }
+  return { positions, refetch, stop, restart, start }
 })

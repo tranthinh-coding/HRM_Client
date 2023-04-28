@@ -8,7 +8,7 @@ import { useUserStore } from './user'
 export const useRewardStore = defineStore('REWARD', () => {
   const userStore = useUserStore()
 
-  const { result } = useQuery<{
+  const { result, stop, restart, start, refetch } = useQuery<{
     rewards: {
       id: number
       name: string
@@ -33,6 +33,12 @@ export const useRewardStore = defineStore('REWARD', () => {
           user {
             user_id
             name
+            email
+
+            employee_information {
+              position
+              department
+            }
           }
         }
       }
@@ -47,5 +53,9 @@ export const useRewardStore = defineStore('REWARD', () => {
 
   return {
     rewards,
+    stop,
+    restart,
+    start,
+    refetch,
   }
 })

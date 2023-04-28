@@ -82,6 +82,18 @@ import { notification } from 'vuesax-old'
 import type { FormRules, FormInstance } from 'element-plus'
 import UserService from '~/services/user-service'
 import { getResponseError } from '~/composables'
+import {
+  useUsersStore,
+  useApplicantsStore,
+  useDepartmentStore,
+  useEmployeeTimeoffStore,
+  useEmployeeTimekeepingStore,
+  useRewardStore,
+  usePositionStore,
+  useJobsStore,
+  useHourlyWageCoefficientsStore,
+  useEmployeesStore,
+} from '~/store'
 
 interface FormState {
   name: string
@@ -89,6 +101,17 @@ interface FormState {
   password: string
   password_confirmation: string
 }
+
+const applicationStore = useApplicantsStore()
+const departmentsStore = useDepartmentStore()
+const employeeStore = useEmployeesStore()
+const hourlyWageCoefficientStore = useHourlyWageCoefficientsStore()
+const jobStore = useJobsStore()
+const positionStore = usePositionStore()
+const rewardStore = useRewardStore()
+const timekeepingStore = useEmployeeTimekeepingStore()
+const timeoffStore = useEmployeeTimeoffStore()
+const usersStore = useUsersStore()
 
 const { t } = useI18n()
 const router = useRouter()
@@ -179,6 +202,20 @@ const submit = () => {
         return
       }
 
+      // need to restart the graphql query
+      applicationStore.restart()
+      departmentsStore.restart()
+      employeeStore.restart()
+      hourlyWageCoefficientStore.restart()
+      jobStore.restart()
+      positionStore.restart()
+      rewardStore.restart()
+      timekeepingStore.restart()
+      timeoffStore.restart()
+      usersStore.restart()
+
+      console.log('[GRAPHQL] restarted')
+
       notification({
         title: t('auth.register'),
         text: t('auth.registerSuccess'),
@@ -217,12 +254,11 @@ const submit = () => {
 
 <style scoped lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');
-@import 'element-plus/theme-chalk/src/mixins/function.scss';
 
 .form {
   max-width: 380px;
   margin: auto;
-  background-color: getCssVar(bg-color, page);
+  background-color: getColor(bg-color, page);
   max-height: max-content;
   min-height: 220px;
   padding: 28px;
@@ -242,7 +278,7 @@ const submit = () => {
   font-weight: 700;
   margin-bottom: 24px;
   margin-top: 20px;
-  color: var(--el-color-primary);
+  color: getColor(primary);
   text-align: center;
   width: 100%;
   font-family: 'Ubuntu', sans-serif;

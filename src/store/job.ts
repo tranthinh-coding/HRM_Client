@@ -19,10 +19,17 @@ type QueryParams = {
 }
 
 export const useJobsStore = defineStore('JOBS', () => {
-  const { result, refetch: _refetch } = useQuery<QueryResponse, QueryParams>(
+  const {
+    result,
+    refetch: _refetch,
+    stop,
+    restart,
+    start,
+  } = useQuery<QueryResponse, QueryParams>(
     gql`
       query JOBS {
         jobs {
+          id
           title
           expired_date
           description
@@ -56,5 +63,8 @@ export const useJobsStore = defineStore('JOBS', () => {
   return {
     jobs,
     refetch,
+    stop,
+    restart,
+    start,
   }
 })

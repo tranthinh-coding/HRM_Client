@@ -9,7 +9,7 @@ type QueryResponse = {
 }
 
 export const useApplicantsStore = defineStore('APPLICANTS', () => {
-  const { result, refetch } = useQuery<QueryResponse>(
+  const { result, refetch, stop, restart, start } = useQuery<QueryResponse>(
     gql`
       query APPLICANTS {
         applicants {
@@ -42,5 +42,8 @@ export const useApplicantsStore = defineStore('APPLICANTS', () => {
   return {
     applicants,
     refetch,
+    stop,
+    restart,
+    start,
   }
 })

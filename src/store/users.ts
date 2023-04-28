@@ -16,7 +16,7 @@ type FilterOptions = {
 }
 
 export const useUsersStore = defineStore('USERS', () => {
-  const { result, refetch } = useQuery<QueryResponse>(
+  const { result, refetch, stop, restart, start } = useQuery<QueryResponse>(
     gql`
       query USERS {
         users {
@@ -73,5 +73,8 @@ export const useUsersStore = defineStore('USERS', () => {
     seekers,
     refetch,
     localFilter,
+    stop,
+    restart,
+    start,
   }
 })

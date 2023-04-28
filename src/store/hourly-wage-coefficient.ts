@@ -7,11 +7,11 @@ import gql from 'graphql-tag'
 export const useHourlyWageCoefficientsStore = defineStore(
   'HourlyWageCoefficients',
   () => {
-    const { result, refetch } = useQuery<{
+    const { result, refetch, stop, restart, start } = useQuery<{
       hourly_wage_coefficients: HourlyWageCoefficient[]
     }>(
       gql`
-        query hourlyWageCoefficients {
+        query HourlyWageCoefficients {
           hourly_wage_coefficients {
             id
             type_of_time
@@ -32,6 +32,9 @@ export const useHourlyWageCoefficientsStore = defineStore(
     return {
       hourlyWageCoefficients,
       refetch,
+      stop,
+      restart,
+      start,
     }
   }
 )

@@ -56,15 +56,39 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { notification } from 'vuesax-old'
-import type { FormInstance, FormRules } from 'element-plus'
+import {
+  useUsersStore,
+  useApplicantsStore,
+  useDepartmentStore,
+  useEmployeeTimeoffStore,
+  useEmployeeTimekeepingStore,
+  useRewardStore,
+  usePositionStore,
+  useJobsStore,
+  useHourlyWageCoefficientsStore,
+  useEmployeesStore,
+} from '~/store'
+
 import { APP_NAME } from '~/config'
 import UserService from '~/services/user-service'
 import { getResponseError } from '~/composables'
+import type { FormInstance, FormRules } from 'element-plus'
 
 interface FormState {
   email: string
   password: string
 }
+
+const applicationStore = useApplicantsStore()
+const departmentsStore = useDepartmentStore()
+const employeeStore = useEmployeesStore()
+const hourlyWageCoefficientStore = useHourlyWageCoefficientsStore()
+const jobStore = useJobsStore()
+const positionStore = usePositionStore()
+const rewardStore = useRewardStore()
+const timekeepingStore = useEmployeeTimekeepingStore()
+const timeoffStore = useEmployeeTimeoffStore()
+const usersStore = useUsersStore()
 
 const { t } = useI18n()
 const router = useRouter()
@@ -119,6 +143,22 @@ const submit = () => {
         return
       }
 
+      isFetching.value = false
+
+      // need to restart the graphql query
+      applicationStore.start()
+      departmentsStore.start()
+      employeeStore.start()
+      hourlyWageCoefficientStore.start()
+      jobStore.start()
+      positionStore.start()
+      rewardStore.start()
+      timekeepingStore.start()
+      timeoffStore.start()
+      usersStore.start()
+
+      console.log('[GRAPHQL] restarted')
+
       notification({
         text: t('auth.loginSuccess'),
         border: 'success',
@@ -127,7 +167,6 @@ const submit = () => {
         progress: true,
       })
 
-      isFetching.value = false
       return router.push({ name: 'home' })
     } catch (error) {
       const _error = getResponseError<FormState>(error)

@@ -9,10 +9,10 @@ type QueryResponse = {
   departments: Department[]
 }
 
-export const useDepartmentStore = defineStore('Department', () => {
-  const { result, refetch } = useQuery<QueryResponse>(
+export const useDepartmentStore = defineStore('DEPARTMENTS', () => {
+  const { result, refetch, stop, restart, start } = useQuery<QueryResponse>(
     gql`
-      query departments {
+      query DEPARTMENTS {
         departments {
           id
           name
@@ -30,5 +30,5 @@ export const useDepartmentStore = defineStore('Department', () => {
 
   const departments = computed(() => result.value?.departments || [])
 
-  return { departments, refetch }
+  return { departments, refetch, stop, restart, start }
 })

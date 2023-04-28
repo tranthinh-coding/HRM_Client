@@ -11,7 +11,7 @@ type QueryResponse = {
 }
 
 export const useEmployeesStore = defineStore('EMPLOYEES', () => {
-  const { result, refetch } = useQuery<QueryResponse>(
+  const { result, refetch, stop, restart, start } = useQuery<QueryResponse>(
     gql`
       query EMPLOYEES($employee_id: String, $position: String, $name: String) {
         employees(employee_id: $employee_id, position: $position, name: $name) {
@@ -36,5 +36,8 @@ export const useEmployeesStore = defineStore('EMPLOYEES', () => {
   return {
     employees,
     refetch,
+    stop,
+    restart,
+    start,
   }
 })

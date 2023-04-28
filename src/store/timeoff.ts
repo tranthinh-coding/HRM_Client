@@ -29,13 +29,19 @@ type TimeoffRefetchOptions = RefetchOptions & {
   date?: MaybeRef<string>
 }
 
-export const useEmployeeTimeoffStore = defineStore('TIMEOFF', () => {
+export const useEmployeeTimeoffStore = defineStore('TIMEOFFS', () => {
   const timeoffsWeekCached = new Set()
   const timeoffsCached = reactive<Map<number, Timeoff>>(new Map())
 
-  const { result, refetch: _refetch } = useQuery<QueryResponse, QueryParams>(
+  const {
+    result,
+    refetch: _refetch,
+    stop: _stop,
+    restart,
+    start,
+  } = useQuery<QueryResponse, QueryParams>(
     gql`
-      query _etimeoffs($day_request: DateRange, $user_id: String) {
+      query TIMEOFFS($day_request: DateRange, $user_id: String) {
         timeoffs(
           day_request: $day_request
           user_id: $user_id
@@ -126,11 +132,20 @@ export const useEmployeeTimeoffStore = defineStore('TIMEOFF', () => {
     })
   })
 
+  const stop = () => {
+    _stop()
+    timeoffsWeekCached.clear()
+    timeoffsCached.clear()
+  }
+
   return {
     timeoffs,
     timeoffsArray,
     timeoffTypes,
     refetch,
     timeoffsResolved,
+    stop,
+    restart,
+    start,
   }
 })
