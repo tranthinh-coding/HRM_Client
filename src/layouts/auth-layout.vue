@@ -17,9 +17,7 @@
 </template>
 
 <style scoped lang="scss">
-@import 'element-plus/theme-chalk/src/mixins/function.scss';
-
 .auth-layout {
-  background-color: getCssVar(bg-color);
+  background-color: getColor(bg-color);
 }
 </style>
