@@ -1,5 +1,4 @@
 import { EMPLOYE_INFO_CREATE } from '~/config/app'
-import { Employee } from '~/types/employee'
 import { useAxios } from '~/composables'
 import {
   EMPLOYEE_API,
@@ -8,9 +7,9 @@ import {
   EMPLOYEE_PROFILE,
   EMPLOYEE_SAVE_PROFILE,
   EMPLOYEE_REQUEST_TIMEOFF,
+  EMPLOYEE_REWARD,
 } from '~/config'
-import type { SuccessResponse } from '~/types/request'
-import type { User } from '~/types/user'
+import type { Employee, EmployeeReward, User, SuccessResponse } from '~/types'
 
 export const getAll = () => useAxios.get<Employee[], Employee[]>(EMPLOYEE_API)
 
@@ -41,6 +40,15 @@ export const updateRequestTimeoff = (form: any) =>
     form
   )
 
+export const createReward = (
+  form: Omit<EmployeeReward, 'user' | 'created_at' | 'id'>
+) => useAxios.post(EMPLOYEE_REWARD, form)
+
+export const removeEmployeeReward = (id: number) =>
+  useAxios.delete<SuccessResponse, SuccessResponse>(EMPLOYEE_REWARD, {
+    data: { id },
+  })
+
 export default {
   getAll,
   create,
@@ -50,4 +58,6 @@ export default {
   saveProfile,
   requestTimeoff,
   updateRequestTimeoff,
+  createReward,
+  removeEmployeeReward,
 }
