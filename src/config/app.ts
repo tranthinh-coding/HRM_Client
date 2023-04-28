@@ -56,3 +56,7 @@ export const EMPLOYEE_CREATE_TIMEKEEPING = `${EMPLOYEE_API}/timekeeping/${CREATE
 export const EMPLOYEE_UPDATE_TIMEKEEPING = `${EMPLOYEE_API}/timekeeping/${UPDATE_API}`
 // timeoff
 export const EMPLOYEE_REQUEST_TIMEOFF = EMPLOYEE_API + '/request-timeoff'
+// employee reward
+export const EMPLOYEE_REWARD = EMPLOYEE_API + '/rewards'
+// employee discipline
+export const EMPLOYEE_DISCIPLINE = EMPLOYEE_API + '/disciplines'
