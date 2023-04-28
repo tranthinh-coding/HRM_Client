@@ -33,8 +33,6 @@ export const authRoutes = [
       const user = useUserStore()
       user.reset()
 
-      // TODO: clear all stored sessions
-
       notification({
         text: "You're logged out~",
         border: 'success',

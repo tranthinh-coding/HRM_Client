@@ -21,8 +21,6 @@ export const login = async <D = any>(form: D): Promise<User> => {
   )
   useUserStore().saveUser(user)
   setToken(ACCESS_TOKEN, user.token)
-
-  // TODO: refresh all store
   return user
 }
 
