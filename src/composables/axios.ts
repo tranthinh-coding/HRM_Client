@@ -62,14 +62,13 @@ useAxios.interceptors.request.use((config) => {
 
 useAxios.interceptors.response.use(
   (response) => response.data,
-  (error) => {
-    console.log({ error })
-    return Promise.reject({
+  (error) =>
+    Promise.reject(
+      error.response?.data || {
         message: 'Server not responding',
-        __ERROR__: error
+        __ERROR__: error,
       }
     )
-  }
 )
 
 export const getResponseData = <T extends any, R extends any>(
