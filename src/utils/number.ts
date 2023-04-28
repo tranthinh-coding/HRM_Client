@@ -24,11 +24,12 @@ export const ordinalSuffix = (value: number | string) => {
 }
 
 export const formatCurrencyInWords = (_num: number) => {
-  if (typeof _num !== 'number') {
-    throw new Error(
-      '[HR Warn](formatCurrencyInWords): Invalid currency, expect type number, got string'
-    )
-  }
+  // TODO: fix after done prj
+  // if (typeof _num !== 'number') {
+  //   throw new Error(
+  //     '[HR Warn](formatCurrencyInWords): Invalid currency, expect type number, got string'
+  //   )
+  // }
   const num = Number(_num)
 
   if (num >= 1000000000) {
