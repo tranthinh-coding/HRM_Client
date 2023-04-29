@@ -46,13 +46,13 @@
       :disabled="!editable"
       label="Trợ cấp khác"
     />
-    <vs-input
+    <!-- <vs-input
       v-model="salarySettings.paid_time_off"
       type="number"
       class="mb-5"
       :disabled="!editable"
       label="Số giờ nghỉ phép được tính lương"
-    />
+    /> -->
 
     <template v-if="editable">
       <div class="flex items-center justify-end gap-2">
