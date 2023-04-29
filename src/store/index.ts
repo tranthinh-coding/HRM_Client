@@ -1,5 +1,6 @@
 export * from './applicant'
 export * from './department'
+export * from './discipline'
 export * from './employees'
 export * from './hourly-wage-coefficient'
 export * from './job'

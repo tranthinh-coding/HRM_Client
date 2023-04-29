@@ -8,6 +8,7 @@ import {
   EMPLOYEE_SAVE_PROFILE,
   EMPLOYEE_REQUEST_TIMEOFF,
   EMPLOYEE_REWARD,
+  EMPLOYEE_DISCIPLINE,
 } from '~/config'
 import type { Employee, EmployeeReward, User, SuccessResponse } from '~/types'
 
@@ -49,6 +50,14 @@ export const removeEmployeeReward = (id: number) =>
     data: { id },
   })
 
+export const createDiscipline = (form: any) =>
+  useAxios.post(EMPLOYEE_DISCIPLINE, form)
+
+export const removeEmployeeDiscipline = (id: number) =>
+  useAxios.delete<SuccessResponse, SuccessResponse>(EMPLOYEE_DISCIPLINE, {
+    data: { id },
+  })
+
 export default {
   getAll,
   create,
@@ -60,4 +69,6 @@ export default {
   updateRequestTimeoff,
   createReward,
   removeEmployeeReward,
+  createDiscipline,
+  removeEmployeeDiscipline,
 }
