@@ -3,21 +3,14 @@ import { defineStore } from 'pinia'
 import { useQuery } from '@vue/apollo-composable'
 import { gql } from 'graphql-tag'
 
+import { EmployeeReward } from '~/types'
 import { useUserStore } from './user'
 
 export const useRewardStore = defineStore('REWARD', () => {
   const userStore = useUserStore()
 
   const { result, stop, restart, start, refetch } = useQuery<{
-    rewards: {
-      id: number
-      name: string
-      description: string
-      salary: number
-      start_date: string
-      user_id: string
-      created_at: string
-    }[]
+    rewards: EmployeeReward[]
   }>(
     gql`
       query REWARDS($user_id: String!) {
