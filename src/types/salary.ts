@@ -26,12 +26,22 @@ export type SalaryLeaveHours = {
   total_hours: number
 }
 
-export type Salary = {
+export interface SalaryPeriod {
+  id: number
+  name: string
+  start_date: DateFormat
+  end_date: DateFormat
+  salaries: Salary[]
+}
+
+export interface Salary {
   id: number
 
-  salary_calculation: string
+  salary_period_id: number
 
-  base_salary: string
+  salary_period: SalaryPeriod
+
+  base_salary: number
 
   bonus: SalaryBonus[]
 
@@ -41,15 +51,17 @@ export type Salary = {
 
   leave_hours: SalaryLeaveHours[]
 
-  start_date: string
+  start_date: DateFormat
 
-  end_date: string
+  end_date: DateFormat
+
+  department: string
 
   position: string
 
   coefficient_position: string
 
-  total_amount: string
+  total_amount: number
 
   user_id: string
 
