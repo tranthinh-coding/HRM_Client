@@ -2,7 +2,7 @@
   <div v-if="open" class="el-overlay" @click.self="onClose"></div>
   <transition name="fade-up" appear>
     <div v-if="open" class="detail-wrapper" @click.self="onClose">
-      <div class="detail-wrapper">
+      <div class="detail-container">
         <div class="detail-divider"><div class="detail-line"></div></div>
 
         <div class="detail-wrapper-content">
@@ -45,14 +45,14 @@ const onClose = () => emit('update:open', false)
   padding-top: 20px;
   // background-color: getCssVar(overlay-color, lighter);
 
-  .detail-wrapper {
+  .detail-container {
     background-color: getCssVar(bg-color);
     height: 90%;
     min-height: 320px;
     margin-top: 10%;
     width: 100%;
     border-radius: 30px 30px 0 0;
-    animation: fade-up 0.25s ease forwards;
+    animation: fade-up 0.15s ease forwards;
     box-shadow: getCssVar(shadow);
   }
 
