@@ -23,7 +23,7 @@ export const ordinalSuffix = (value: number | string) => {
   return value + 'th'
 }
 
-export const formatCurrencyInWords = (_num: number) => {
+export const formatCurrencyInWords = (_num: number | string) => {
   // TODO: fix after done prj
   // if (typeof _num !== 'number') {
   //   throw new Error(
@@ -44,3 +44,8 @@ export const formatCurrencyInWords = (_num: number) => {
 
   return num.toString()
 }
+
+export const moneyFormat = Intl.NumberFormat('vi-VN', {
+  style: 'currency',
+  currency: 'VND',
+}).format
