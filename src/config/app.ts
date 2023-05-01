@@ -60,3 +60,7 @@ export const EMPLOYEE_REQUEST_TIMEOFF = EMPLOYEE_API + '/request-timeoff'
 export const EMPLOYEE_REWARD = EMPLOYEE_API + '/rewards'
 // employee discipline
 export const EMPLOYEE_DISCIPLINE = EMPLOYEE_API + '/disciplines'
+
+// salary
+export const SALARY = 'salary'
+export const SALARY_PERIOD = SALARY + '/period'
