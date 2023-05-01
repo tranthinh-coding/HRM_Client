@@ -54,3 +54,10 @@
 .vs-select {
   max-width: unset;
 }
+
+.box {
+  background: getColor(theme-layout);
+  border-radius: 16px;
+  padding: 14px 18px;
+  // margin: 10px 0;
+}
