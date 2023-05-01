@@ -59,14 +59,17 @@ $--table: (
   $bg-color: $--bg-color,
   $popover: $--popover,
   $popper: $--popper,
-  $table: $--table,
+  $table: $--table
 );
 
 // if you want to import all
-@use "element-plus/theme-chalk/src/index.scss" as *;
+@use 'element-plus/theme-chalk/src/index.scss' as *;
 
 // You can comment it to hide debug info.
 // @debug $--colors;
 
 // custom dark variables
 @use './dark.scss';
+
+// custom components styles
+@use './table.scss';
