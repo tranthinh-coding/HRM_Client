@@ -53,6 +53,18 @@ export const hrRoutes: RouteRecordRaw = {
       component: () => import('~/views/hr/employee-salary.vue'),
     },
     {
+      path: 'employee-salary/period/:id',
+      name: 'hr/employee-salary/period',
+      component: () => import('~/views/hr/salary-period.vue'),
+      props: (route) => ({ id: route.params.id }),
+    },
+    {
+      path: 'employee-salary/detail/:id',
+      name: 'hr/employee-salary/detail',
+      component: () => import('~/views/hr/salary-detail.vue'),
+      props: (route) => ({ id: route.params.id }),
+    },
+    {
       path: 'timekeeping',
       name: 'hr/timekeeping',
       component: () => import('~/views/hr/hr-timekeeping.vue'),
