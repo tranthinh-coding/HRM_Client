@@ -14,35 +14,106 @@
   </el-collapse-transition>
 
   <div class="box p20px rounded-xl my-20px">
-    <el-empty v-if="employeeSalaries.length == 0" />
-    <el-table v-else :data="employeeSalaries">
-      <el-table-column fixed type="expand">
-        <template #default="{ row }: { row: Salary }">
-          <el-table :data="row.bonus">
-            <el-table-column label="Name" prop="name" />
-            <el-table-column label="So tien" prop="amount" />
-          </el-table>
+    <el-table :data="filterTableSalaryPeriods" lazy>
+      <el-table-column label="#" prop="id" />
+      <el-table-column label="Ky tinh luong" prop="name" />
+
+      <el-table-column
+        width="200"
+        :label="t('page.action')"
+        class-name="table-operations"
+      >
+        <template #header>
+          <vs-input v-model="search" :placeholder="t('page.search')">
+            <template #icon>
+              <el-icon><search-normal /></el-icon>
+            </template>
+          </vs-input>
+        </template>
+
+        <template #default="{ row }: { row: SalaryPeriod }">
+          <div class="flex items-center justify-center">
+            <vs-button
+              @click="deleteSalaryPeriod(row)"
+              type="transparent"
+              icon
+              color="dribbble"
+            >
+              <el-icon size="20"> <trash /> </el-icon>
+            </vs-button>
+            <vs-button @click="seeDetail(row)" type="transparent" icon>
+              <el-icon size="20"> <info-circle /> </el-icon>
+            </vs-button>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column fixed width="100" label="#" prop="id" />
-      <el-table-column label="Dot tinh luong" prop="salary_calculation" />
-      <el-table-column label="User" prop="user_id" />
+
+      <template #empty>
+        <el-empty />
+      </template>
     </el-table>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSalariesStore } from '~/store/salaries'
-import type { Salary } from '~/types'
+import { useI18n } from 'vue-i18n'
+
+import type { SalaryPeriod } from '~/types'
+import { useRouter } from 'vue-router'
+import { getResponseError } from '~/composables'
+import { notification } from 'vuesax-old'
+import SalaryServices from '~/services/salary-services'
+
+const router = useRouter()
+const { t } = useI18n()
 
 const employeeSalariesStore = useSalariesStore()
-const { employeeSalaries } = storeToRefs(employeeSalariesStore)
+const { salaryPeriods } = storeToRefs(employeeSalariesStore)
 
 const openform = ref(false)
 
-const salaryCalculation = computed(() => {})
+const search = ref('')
+
+const filterTableSalaryPeriods = computed(
+  () =>
+    salaryPeriods.value?.filter(
+      (salaryPeriod) =>
+        !search.value ||
+        salaryPeriod.name.toLowerCase().includes(search.value.toLowerCase())
+    ) || []
+)
+
+const seeDetail = (ePeriod: SalaryPeriod) => {
+  router.push({
+    name: 'hr/employee-salary/period',
+    params: {
+      id: ePeriod.id,
+    },
+  })
+}
+
+const deleteSalaryPeriod = async (ePeriod: SalaryPeriod) => {
+  try {
+    await SalaryServices.deletePeriod(ePeriod.id)
+    notification({
+      text: 'Deleted successfully',
+      duration: 3000,
+      position: 'top-center',
+      border: 'success',
+    })
+  } catch (error) {
+    const e = getResponseError(error)
+    notification({
+      text: e.message || 'Khong xoa duoc ky tinh luong nay',
+      duration: 3000,
+      position: 'top-center',
+      border: 'danger',
+    })
+  }
+}
 </script>
 
 <style scoped lang="scss">
