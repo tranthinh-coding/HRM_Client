@@ -8,8 +8,19 @@ export const deletePeriod = (periodId: string | number) =>
     },
   })
 
+export type SalaryPeriodCreateRequest = {
+  employees: string[]
+  salary_period: string
+  start_date: string
+  end_date: string
+}
+
+export const createSalaryPeriod = (form: SalaryPeriodCreateRequest) =>
+  useAxios.post(SALARY_PERIOD, form)
+
 export const SalaryServices = {
   deletePeriod,
+  createSalaryPeriod,
 }
 
 export default SalaryServices
