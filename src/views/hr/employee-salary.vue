@@ -1,17 +1,7 @@
 <template>
-  <vs-button type="gradient" color="danger" @click="openform = !openform">
+  <vs-button type="gradient" color="danger" @click="openForm = true">
     Tao bang luong
   </vs-button>
-
-  <el-collapse-transition>
-    <div class="box rounded-xl my-20px" v-show="openform">
-      <div class="flex flex-col gap-18px p20px">
-        <vs-input :model-value="'hi'" />
-        <vs-input :model-value="'hi'" />
-        <vs-input :model-value="'hi'" />
-      </div>
-    </div>
-  </el-collapse-transition>
 
   <div class="box p20px rounded-xl my-20px">
     <el-table :data="filterTableSalaryPeriods" lazy>
@@ -53,27 +43,112 @@
       </template>
     </el-table>
   </div>
+
+  <vs-dialog v-model="openForm">
+    <template #header>
+      <h3 class="text-lg">Tao ky tinh luong moi</h3>
+    </template>
+    <div class="flex flex-col gap-4">
+      <vs-input
+        v-model="createSalaryPeriodForm.salary_period"
+        label="Ky tinh luong"
+        label-float
+      />
+
+      <div class="relative mt-3">
+        <h4
+          class="absolute l0 z10 transition-all duration-250"
+          :class="
+            createSalaryPeriodForm.employees.length
+              ? 'top-0 -translate-y-100% ml-12px text-xs'
+              : 'top-50% -translate-y-50% ml-14px text-sm opacity-40'
+          "
+        >
+          Nhan vien
+        </h4>
+        <el-tree-select
+          v-model="createSalaryPeriodForm.employees"
+          :data="employeesTreeSelect"
+          :render-after-expand="false"
+          multiple
+          show-checkbox
+          filterable
+          :filter-node-method="filterNodeMethod"
+          check-on-click-node
+          collapse-tags
+          collapse-tags-tooltip
+          tag-type="success"
+          placeholder=" "
+          class="w-full"
+          clearable
+        />
+      </div>
+      <div>
+        <h4 class="relative ml-12px text-xs">Ngay bat dau</h4>
+        <el-date-picker
+          v-model="createSalaryPeriodForm.start_date"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
+          :default-value="new Date()"
+        />
+      </div>
+      <div>
+        <h4 class="relative ml-12px text-xs">Ngay ket thuc</h4>
+        <el-date-picker
+          v-model="createSalaryPeriodForm.end_date"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
+          :default-value="new Date()"
+        />
+      </div>
+    </div>
+
+    <template #footer>
+      <div class="flex w-full justify-end items-center gap-2">
+        <vs-button @click="acceptCreate" type="transparent">
+          Xác nhận
+        </vs-button>
+        <vs-button @click="cancleCreate" type="transparent" color="google-plus">
+          Huỷ
+        </vs-button>
+      </div>
+    </template>
+  </vs-dialog>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useSalariesStore } from '~/store/salaries'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import dayjs from 'dayjs'
+import { notification } from 'vuesax-old'
+
+import { getResponseError } from '~/composables'
+import SalaryServices, {
+  SalaryPeriodCreateRequest,
+} from '~/services/salary-services'
+import { useEmployeesStore, useSalariesStore } from '~/store'
 
 import type { SalaryPeriod } from '~/types'
-import { useRouter } from 'vue-router'
-import { getResponseError } from '~/composables'
-import { notification } from 'vuesax-old'
-import SalaryServices from '~/services/salary-services'
 
 const router = useRouter()
 const { t } = useI18n()
 
+const employeeStore = useEmployeesStore()
+const { employees } = storeToRefs(employeeStore)
+
 const employeeSalariesStore = useSalariesStore()
 const { salaryPeriods } = storeToRefs(employeeSalariesStore)
 
-const openform = ref(false)
+const createSalaryPeriodForm = reactive<SalaryPeriodCreateRequest>({
+  employees: [],
+  salary_period: dayjs().format('YYYY-MM-DD'),
+  start_date: dayjs().format('YYYY-MM-DD'),
+  end_date: dayjs().format('YYYY-MM-DD'),
+})
+
+const openForm = ref<boolean>(false)
 
 const search = ref('')
 
@@ -95,6 +170,33 @@ const seeDetail = (ePeriod: SalaryPeriod) => {
   })
 }
 
+const acceptCreate = async () => {
+  try {
+    console.log(createSalaryPeriodForm)
+    await SalaryServices.createSalaryPeriod(createSalaryPeriodForm)
+
+    notification({
+      text: 'Salary period created successfully',
+      duration: 3000,
+      position: 'top-center',
+      border: 'success',
+    })
+  } catch (e) {
+    const err = getResponseError<{ [employee_id: string]: string }>(e)
+
+    notification({
+      text: err.message || 'Salary period created successfully',
+      duration: 3000,
+      position: 'top-center',
+      border: 'danger',
+    })
+  }
+}
+
+const cancleCreate = () => {
+  openForm.value = false
+}
+
 const deleteSalaryPeriod = async (ePeriod: SalaryPeriod) => {
   try {
     await SalaryServices.deletePeriod(ePeriod.id)
@@ -114,10 +216,38 @@ const deleteSalaryPeriod = async (ePeriod: SalaryPeriod) => {
     })
   }
 }
-</script>
 
-<style scoped lang="scss">
-.box {
-  background: getColor(theme-layout);
+type TreeSelectContext = {
+  value: string
+  label: string
+  children?: TreeSelectContext[]
 }
-</style>
+
+const filterNodeMethod = (value: string, data: TreeSelectContext) =>
+  data.label.includes(value)
+
+const employeesTreeSelect = computed(() => {
+  if (employees.value.length === 0) {
+    return []
+  }
+
+  const _employees = employees.value.reduce((prev, e) => {
+    if (!prev.hasOwnProperty(e.department.name)) {
+      prev[e.department.name] = {
+        value: e.department.name,
+        label: e.department.name,
+        children: [],
+      }
+    }
+
+    prev[e.department.name].children!.push({
+      value: e.employee_id,
+      label: `${e.name} - ${e.employee_id}`,
+    })
+
+    return prev
+  }, {} as { [x: string]: TreeSelectContext })
+
+  return Object.values(_employees)
+})
+</script>
