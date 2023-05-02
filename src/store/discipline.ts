@@ -31,8 +31,14 @@ export const useDisciplineStore = defineStore('DISCIPLINE', () => {
             email
 
             employee_information {
-              position
-              department
+              position {
+                id
+                name
+              }
+              department {
+                id
+                name
+              }
             }
           }
         }

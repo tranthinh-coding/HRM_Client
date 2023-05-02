@@ -14,6 +14,7 @@ export const usePositionStore = defineStore('POSITIONS', () => {
     gql`
       query POSITIONS {
         positions {
+          id
           name
         }
       }

@@ -29,8 +29,14 @@ export const useRewardStore = defineStore('REWARD', () => {
             email
 
             employee_information {
-              position
-              department
+              position {
+                id
+                name
+              }
+              department {
+                id
+                name
+              }
             }
           }
         }

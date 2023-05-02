@@ -43,6 +43,7 @@ export type JobTypes = {
 }
 
 export type JobPosition = {
+  id: number
   name: string
 }
 

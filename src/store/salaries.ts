@@ -63,8 +63,14 @@ export const useSalariesStore = defineStore('E_SALARY', () => {
               email
 
               employee_information {
-                department
-                position
+                position {
+                  id
+                  name
+                }
+                department {
+                  id
+                  name
+                }
               }
             }
           }
