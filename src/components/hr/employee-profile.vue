@@ -187,6 +187,10 @@ type ProfileQuery = {
   profile?: ProfileInformation
 }
 
+const props = defineProps<{
+  id: string
+}>()
+
 const departmentStore = useDepartmentStore()
 const { departments } = storeToRefs(departmentStore)
 const positionStore = usePositionStore()
@@ -195,7 +199,6 @@ const { positions } = storeToRefs(positionStore)
 const { user: currentUser } = storeToRefs(useUserStore())
 
 const editable = ref(false)
-const employee = inject<{ employee_id: string }>('employee-detail')
 
 const { result, refetch } = useQuery<ProfileQuery>(
   gql`
@@ -231,7 +234,7 @@ const { result, refetch } = useQuery<ProfileQuery>(
     }
   `,
   () => ({
-    user_id: employee?.employee_id,
+    user_id: props?.id,
   })
 )
 
@@ -265,7 +268,7 @@ const saveChanges = async () => {
   try {
     const response = await EmployeeServices.saveProfile({
       ...updateForm,
-      user_id: employee?.employee_id,
+      user_id: props?.id,
     })
     ElMessage({
       message: response.message || 'Save employee information success',
@@ -273,7 +276,7 @@ const saveChanges = async () => {
       type: 'success',
     })
     await refetch(() => ({
-      user_id: employee?.employee_id,
+      user_id: props?.id,
     }))
     resetProfile()
   } catch (e) {
@@ -298,18 +301,17 @@ const cancelChanges = () => {
 }
 
 const resetProfile = () => {
-  if (!result.value) return
-  updateForm.address = result.value.profile?.address || ''
-  updateForm.citizen_id_card = result.value.profile?.citizen_id_card || ''
-  updateForm.country = result.value.profile?.country || ''
-  updateForm.date_of_birth = result.value.profile?.date_of_birth || ''
-  updateForm.nationality = result.value.profile?.nationality || ''
-  updateForm.phone_number = result.value.profile?.phone_number || ''
-  updateForm.gender = result.value.profile?.gender || ''
-  updateForm.email = result.value.user.email
-  updateForm.status = result.value.user.status
-  updateForm.position_id = result.value.employee?.position.id
-  updateForm.department_id = result.value.employee?.department.id
+  updateForm.address = result.value?.profile?.address || ''
+  updateForm.citizen_id_card = result.value?.profile?.citizen_id_card || ''
+  updateForm.country = result.value?.profile?.country || ''
+  updateForm.date_of_birth = result.value?.profile?.date_of_birth || ''
+  updateForm.nationality = result.value?.profile?.nationality || ''
+  updateForm.phone_number = result.value?.profile?.phone_number || ''
+  updateForm.gender = result.value?.profile?.gender || ''
+  updateForm.email = result.value?.user?.email
+  updateForm.status = result.value?.user?.status
+  updateForm.position_id = result.value?.employee?.position.id
+  updateForm.department_id = result.value?.employee?.department.id
 
   Object.keys(updateForm).forEach((key: unknown) => {
     let _key = key as keyof ProfileState
@@ -333,12 +335,6 @@ watch(updateForm, (val) => {
       return false
     return profile.value[key] !== val[key]
   })
-})
-
-onBeforeMount(() => {
-  refetch(() => ({
-    user_id: employee?.employee_id,
-  }))
 })
 </script>
 

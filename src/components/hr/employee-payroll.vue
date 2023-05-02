@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onBeforeMount, reactive, ref, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import PayrollServices from '~/services/payroll-services'
@@ -80,13 +80,9 @@ type PayrollSetting = {
   paid_time_off: number
 }
 
-const employee = inject<{ employee_id: string }>('employee-detail')
-
-if (!employee) {
-  throw new Error(
-    'components[employee-payroll]: need to inject the employee_id, got undefined'
-  )
-}
+const props = defineProps<{
+  id: string
+}>()
 
 const editable = ref<boolean>(false)
 const uploading = ref<boolean>(false)
@@ -98,6 +94,7 @@ const salarySettings = reactive<PayrollSetting>({
   allowance: 0,
   paid_time_off: 0,
 })
+
 const { result, refetch } = useQuery<{
   payroll: PayrollSetting
 }>(
@@ -113,7 +110,7 @@ const { result, refetch } = useQuery<{
     }
   `,
   () => ({
-    user_id: employee?.employee_id,
+    user_id: props?.id,
   })
 )
 
@@ -133,17 +130,16 @@ const saveChanges = async () => {
     }
     const response = await PayrollServices.savePayrollSetting({
       ...salarySettings,
-      user_id: employee?.employee_id,
+      user_id: props?.id,
     })
+    await refetch(() => ({
+      user_id: props?.id,
+    }))
     ElMessage({
       message: response.message || 'Success',
       type: 'success',
       duration: 3000,
     })
-
-    refetch({
-      user_id: employee?.employee_id,
-    })?.then(resetSalarySetting)
   } catch (e) {
     ElMessage({
       message: 'Cài đặt bảng lương không thành công, liên hệ bộ phận kĩ thuật!',
@@ -160,23 +156,15 @@ const cancelChanges = () => {
 }
 
 const resetSalarySetting = async () => {
-  if (!result.value?.payroll) return
-
-  salarySettings.base_salary = result.value.payroll.base_salary
-  salarySettings.conveyance = result.value.payroll.conveyance
-  salarySettings.allowance = result.value.payroll.allowance
-  salarySettings.media_allowance = result.value.payroll.media_allowance
-  salarySettings.paid_time_off = result.value.payroll.paid_time_off
+  salarySettings.base_salary = result.value?.payroll?.base_salary || 0
+  salarySettings.conveyance = result.value?.payroll?.conveyance || 0
+  salarySettings.allowance = result.value?.payroll?.allowance || 0
+  salarySettings.media_allowance = result.value?.payroll?.media_allowance || 0
+  salarySettings.paid_time_off = result.value?.payroll?.paid_time_off || 0
 }
 
 watch(result, () => {
   resetSalarySetting()
-})
-
-onBeforeMount(() => {
-  refetch(() => ({
-    user_id: employee?.employee_id,
-  }))
 })
 </script>
 

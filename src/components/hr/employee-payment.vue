@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onBeforeMount, reactive, ref, watch } from 'vue'
+import { onBeforeMount, reactive, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { isNil } from 'lodash-unified'
@@ -69,14 +69,9 @@ type BankAccount = {
   bank_account_number: string
   bank_user_name: string
 }
-
-const employee = inject<{ employee_id: string }>('employee-detail')
-
-if (!employee) {
-  throw new Error(
-    'components[employee-payment]: need to inject the employee_id, got undefined'
-  )
-}
+const props = defineProps<{
+  id: string
+}>()
 
 const editable = ref(false)
 const changed = ref<boolean>(false)
@@ -99,12 +94,11 @@ const { result, refetch } = useQuery<{
         bank_branch
         bank_name
         bank_user_name
-        user_id
       }
     }
   `,
   () => ({
-    user_id: employee?.employee_id,
+    user_id: props?.id,
   })
 )
 
@@ -113,10 +107,10 @@ const saveChanges = async () => {
   try {
     const response = await PayrollServices.saveEmployeePayment({
       ...bankForm,
-      user_id: employee?.employee_id,
+      user_id: props?.id,
     })
-    refetch(() => ({
-      user_id: employee?.employee_id,
+    await refetch(() => ({
+      user_id: props?.id,
     }))
     ElMessage({
       message: response.message || 'Cập nhật thông tin tài khoản thành công',
@@ -149,11 +143,11 @@ const cancelChanges = () => {
 }
 
 const resetBankForm = () => {
-  if (!result.value?.payment) return
-  bankForm.bank_name = result.value.payment.bank_name
-  bankForm.bank_branch = result.value.payment.bank_branch
-  bankForm.bank_user_name = result.value.payment.bank_user_name
-  bankForm.bank_account_number = result.value.payment.bank_account_number
+  bankForm.bank_name = result.value?.payment?.bank_name || ''
+  bankForm.bank_branch = result.value?.payment?.bank_branch || ''
+  bankForm.bank_user_name = result.value?.payment?.bank_user_name || ''
+  bankForm.bank_account_number =
+    result.value?.payment?.bank_account_number || ''
 }
 
 watch(result, () => {
@@ -175,7 +169,7 @@ watch(bankForm, (val) => {
 
 onBeforeMount(() => {
   refetch(() => ({
-    user_id: employee?.employee_id,
+    user_id: props?.id,
   }))
 })
 </script>
