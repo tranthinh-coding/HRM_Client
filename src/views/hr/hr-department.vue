@@ -5,13 +5,10 @@
         {{ t('page.add-department') }}
       </vs-button>
     </div>
-    <div class="department-table">
+    <div class="department-table box">
       <el-table
         max-height="calc(100vh - 68px - 250px)"
         :data="filterTableDepartments"
-        header-row-class-name="table-header"
-        row-class-name="table-row"
-        lazy
       >
         <el-table-column
           fixed
@@ -48,23 +45,25 @@
           </template>
 
           <template #default="scope">
-            <vs-button
-              @click="toggleUpdateForm(scope.row)"
-              type="transparent"
-              size="small"
-              icon
-            >
-              <el-icon size="20"> <edit /> </el-icon>
-            </vs-button>
-            <vs-button
-              @click="removeDepartment(scope.row)"
-              type="transparent"
-              size="small"
-              icon
-              color="danger"
-            >
-              <el-icon size="20"> <trash /> </el-icon>
-            </vs-button>
+            <div class="flex items-center gap-10px justify-center">
+              <vs-button
+                @click="toggleUpdateForm(scope.row)"
+                type="transparent"
+                size="small"
+                icon
+              >
+                <el-icon size="20"> <edit /> </el-icon>
+              </vs-button>
+              <vs-button
+                @click="removeDepartment(scope.row)"
+                type="transparent"
+                size="small"
+                icon
+                color="danger"
+              >
+                <el-icon size="20"> <trash /> </el-icon>
+              </vs-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -243,35 +242,5 @@ const removeDepartment = async (department: Department) => {
 }
 .department-heading {
   margin-bottom: 10px;
-}
-.department-table {
-  background-color: getColor(bg-color);
-  border-radius: 20px;
-  height: 100%;
-  overflow: hidden;
-}
-
-// .table-header {
-//   background-color: none;
-// }
-.el-table {
-  --el-bg-color: transparent;
-}
-
-.table-row {
-  border-radius: 8px;
-  padding: 4px 2px;
-  overflow: hidden;
-}
-
-.vs-button {
-  --vs-margin: 0;
-}
-</style>
-
-<style lang="scss">
-.table-operations .cell {
-  display: flex;
-  justify-content: center;
 }
 </style>

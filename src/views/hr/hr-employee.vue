@@ -4,7 +4,7 @@
       {{ t('employee.create') }}
     </vs-button>
 
-    <div class="search-form">
+    <div class="search-form box">
       <el-row :gutter="30">
         <el-col :xs="24" :sm="6" class="search-column">
           <vs-input
@@ -27,7 +27,7 @@
             :label="t('employee.position')"
             label-float
           >
-            <vs-option value="" label=" " style="height: 32px" />
+            <vs-option :value="undefined" label=" " style="height: 32px" />
             <vs-option
               v-for="(position, index) in positions"
               :key="index"
@@ -37,7 +37,7 @@
         </el-col>
 
         <el-col :xs="24" :sm="6" class="search-column">
-          <vs-button block @click="employeesStore.refetch(searchForm)">
+          <vs-button block @click="employeesFilter">
             {{ t('employee.search') }}
           </vs-button>
         </el-col>
@@ -49,7 +49,7 @@
         :sm="12"
         :md="8"
         :lg="6"
-        v-for="(employee, index) in employees"
+        v-for="(employee, index) in employeesFiltered"
         :key="index"
       >
         <employee-card
@@ -69,12 +69,13 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import { usePositionStore, useEmployeesStore } from '~/store'
+import { usePositionStore, useEmployeesStore, EmployeeQuery } from '~/store'
 import employeeCreate from '~/components/hr/employee-create.vue'
 import employeeCard from '~/components/hr/employee-card.vue'
+import { Employee } from '~/types'
 
 const { t } = useI18n()
 
@@ -86,11 +87,17 @@ const { employees } = storeToRefs(employeesStore)
 
 const openCreateEmployeeForm = ref(false)
 
-const searchForm = reactive<{
-  employee_id: string
-  name: string
-  position: string
-}>({ employee_id: '', name: '', position: '' })
+const searchForm = reactive<EmployeeQuery>({})
+
+const employeesFiltered = ref<Employee[]>([])
+
+const employeesFilter = () => {
+  employeesFiltered.value = employeesStore.localSearch(searchForm)
+}
+
+watch(employees, () => {
+  employeesFiltered.value = employeesStore.localSearch(searchForm)
+})
 </script>
 
 <style scoped lang="scss">
@@ -103,7 +110,6 @@ const searchForm = reactive<{
   margin-top: 25px;
   border-radius: 16px;
   margin-bottom: 25px;
-  background-color: getColor(bg-color);
 
   .vs-input {
     // margin-top: 25px;

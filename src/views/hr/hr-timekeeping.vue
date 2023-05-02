@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 rounded-2xl boxes">
+  <div class="p-6 rounded-2xl box">
     <el-statistic :value="currDateTimeoffs.length">
       <template #title>
         <div class="flex items-center">Số yêu cầu nghỉ hôm nay</div>

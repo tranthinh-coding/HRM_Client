@@ -11,13 +11,15 @@
       <div class="profile flex-1 md:flex-auto">
         <div class="general-profile">
           <vs-avatar size="100">
-            {{ employee?.avatar ?? employee?.name }}
+            <template #text>
+              {{ employee?.name }}
+            </template>
           </vs-avatar>
           <div class="general-info">
             <span style="font-size: 20px">
               {{ employee?.name }}
             </span>
-            <el-tag size="small"> {{ employee?.position }} </el-tag>
+            <el-tag size="small"> {{ employee?.position?.name }} </el-tag>
           </div>
           <el-divider />
           <employee-profile />
@@ -37,11 +39,15 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
+
 import { isHR } from '~/config'
 import { useUserStore } from '~/store'
+
 import EmployeePayment from '~/components/hr/employee-payment.vue'
 import EmployeePayroll from '~/components/hr/employee-payroll.vue'
 import EmployeeProfile from '~/components/hr/employee-profile.vue'
+
+import type { JobPosition, Department } from '~/types'
 
 const router = useRouter()
 
@@ -62,8 +68,8 @@ const { result } = useQuery<{
     avatar: String
   }
   employee: {
-    position: String
-    department: String
+    position: JobPosition
+    department: Department
   }
 }>(
   gql`
@@ -78,8 +84,14 @@ const { result } = useQuery<{
         avatar
       }
       employee(employee_id: $user_id) {
-        position
-        department
+        position {
+          id
+          name
+        }
+        department {
+          id
+          name
+        }
       }
     }
   `,

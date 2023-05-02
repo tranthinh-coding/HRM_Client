@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-end">
+  <div class="flex items-center justify-start my-3">
     <div>
       <vs-button type="border" @click="openCreateDisciplineForm">
         Thêm
@@ -19,7 +19,7 @@
             <div class="flex flex-col items-start gap-1">
               <div class="flex gap-2 items-center">
                 <el-icon size="18"><building-outline /></el-icon>
-                {{ row.user.employee_information.department }}
+                {{ row.user.employee_information.department.name }}
               </div>
               <div class="flex gap-2 items-center">
                 <el-icon size="18">
@@ -35,7 +35,7 @@
               </div>
               <div class="flex gap-2 items-center">
                 <el-icon size="18"><user-octagon-outline /></el-icon>
-                {{ row.user.employee_information.position }}
+                {{ row.user.employee_information.position.name }}
               </div>
             </div>
           </template>

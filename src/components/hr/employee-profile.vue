@@ -106,13 +106,18 @@
           v-if="isEmployee(currentUser?.role)"
           class="info-content"
           disabled
-          :model-value="profile.department"
+          :model-value="profile.department.name"
         />
-        <vs-select v-else v-model="updateForm.department" :disabled="!editable">
+        <vs-select
+          v-else
+          v-model="updateForm.department_id"
+          :disabled="!editable"
+        >
           <vs-option
-            v-for="(department, index) in result?.departments"
+            v-for="(department, index) in departments"
             :key="index"
-            :value="department.name"
+            :value="department.id"
+            :label="department.name"
           />
         </vs-select>
       </div>
@@ -121,14 +126,19 @@
         <vs-input
           v-if="isEmployee(currentUser?.role)"
           class="info-content"
-          :model-value="profile.position"
+          :model-value="profile.position.name"
           disabled
         />
-        <vs-select v-else v-model="updateForm.position" :disabled="!editable">
+        <vs-select
+          v-else
+          v-model="updateForm.position_id"
+          :disabled="!editable"
+        >
           <vs-option
-            v-for="(position, index) in result?.positions"
+            v-for="(position, index) in positions"
             :key="index"
-            :value="position.name"
+            :value="position.id"
+            :label="position.name"
           />
         </vs-select>
       </div>
@@ -153,6 +163,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck
 import { computed, inject, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
@@ -160,19 +171,12 @@ import { isNil } from 'lodash-unified'
 import EmployeeServices from '~/services/employee-services'
 
 import { isEmployee } from '~/config'
-import { useUserStore } from '~/store'
-import {
-  Department,
-  Employee,
-  JobPosition,
-  ProfileInformation,
-  User,
-  UserStatus,
-} from '~/types'
+import { useDepartmentStore, usePositionStore, useUserStore } from '~/store'
+import { Employee, ProfileInformation, User, UserStatus } from '~/types'
 import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 
-type ProfileState = Pick<Employee, 'department' | 'position'> &
+type ProfileState = Pick<Employee, 'department_id' | 'position_id'> &
   Pick<User, 'status' | 'email'> &
   ProfileInformation
 
@@ -181,9 +185,12 @@ type ProfileQuery = {
   employee: Pick<Employee, 'department' | 'position'>
   user: Pick<User, 'status' | 'email' | 'role'>
   profile?: ProfileInformation
-  departments: Department[]
-  positions: JobPosition[]
 }
+
+const departmentStore = useDepartmentStore()
+const { departments } = storeToRefs(departmentStore)
+const positionStore = usePositionStore()
+const { positions } = storeToRefs(positionStore)
 
 const { user: currentUser } = storeToRefs(useUserStore())
 
@@ -194,20 +201,20 @@ const { result, refetch } = useQuery<ProfileQuery>(
   gql`
     query EmployeeProfile($user_id: String!) {
       employee(employee_id: $user_id) {
-        position
-        department
+        position {
+          id
+          name
+        }
+        department {
+          id
+          name
+        }
       }
       user(user_id: $user_id) {
         id
         status
         email
         role
-      }
-      departments {
-        name
-      }
-      positions {
-        name
       }
       profile(user_id: $user_id) {
         address
@@ -231,7 +238,7 @@ const { result, refetch } = useQuery<ProfileQuery>(
 // check updateForm is the same profile
 const isProfileChange = ref<boolean>(false)
 
-const updateForm = reactive<ProfileState>({
+const updateForm = reactive({
   address: '',
   citizen_id_card: '',
   country: '',
@@ -241,11 +248,11 @@ const updateForm = reactive<ProfileState>({
   email: '',
   gender: '',
   status: '',
-  position: '',
-  department: '',
+  position_id: NaN,
+  department_id: NaN,
 })
 
-const profile = computed<ProfileState>(() =>
+const profile = computed(() =>
   Object.assign(
     {},
     result.value?.employee,
@@ -292,22 +299,22 @@ const cancelChanges = () => {
 
 const resetProfile = () => {
   if (!result.value) return
-  updateForm.address = result.value.profile?.address
-  updateForm.citizen_id_card = result.value.profile?.citizen_id_card
-  updateForm.country = result.value.profile?.country
-  updateForm.date_of_birth = result.value.profile?.date_of_birth
-  updateForm.nationality = result.value.profile?.nationality
-  updateForm.phone_number = result.value.profile?.phone_number
-  updateForm.gender = result.value.profile?.gender
+  updateForm.address = result.value.profile?.address || ''
+  updateForm.citizen_id_card = result.value.profile?.citizen_id_card || ''
+  updateForm.country = result.value.profile?.country || ''
+  updateForm.date_of_birth = result.value.profile?.date_of_birth || ''
+  updateForm.nationality = result.value.profile?.nationality || ''
+  updateForm.phone_number = result.value.profile?.phone_number || ''
+  updateForm.gender = result.value.profile?.gender || ''
   updateForm.email = result.value.user.email
   updateForm.status = result.value.user.status
-  updateForm.position = result.value.employee?.position
-  updateForm.department = result.value.employee?.department
+  updateForm.position_id = result.value.employee?.position.id
+  updateForm.department_id = result.value.employee?.department.id
 
   Object.keys(updateForm).forEach((key: unknown) => {
     let _key = key as keyof ProfileState
     if (isNil(profile.value[_key])) {
-      profile.value[_key] = updateForm[_key] as any
+      profile.value[_key] = updateForm[_key] as never
     }
   })
 }
@@ -319,13 +326,12 @@ watch(result, () => {
 watch(updateForm, (val) => {
   isProfileChange.value = Object.keys(updateForm).some((key: unknown) => {
     if (key === '__typename') return false
-    let _key = key as unknown as keyof ProfileState
     if (
-      (isNil(profile.value[_key]) && val[_key] == '') ||
-      (isNil(val[_key]) && profile.value[_key] == '')
+      (isNil(profile.value[key]) && val[key] == '') ||
+      (isNil(val[key]) && profile.value[key] == '')
     )
       return false
-    return profile.value[_key] !== val[_key]
+    return profile.value[key] !== val[key]
   })
 })
 

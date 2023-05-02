@@ -1,16 +1,14 @@
 <template>
-  <div>
-    <div class="box rounded-2xl p-6">
-      <el-tabs model-value="reward">
-        <el-tab-pane :label="t('page.sidebar.reward')" name="reward">
-          <reward-table />
-        </el-tab-pane>
+  <div class="box">
+    <el-tabs model-value="reward">
+      <el-tab-pane :label="t('page.sidebar.reward')" name="reward">
+        <reward-table />
+      </el-tab-pane>
 
-        <el-tab-pane :label="t('page.sidebar.discipline')" name="discipline">
-          <discipline-table />
-        </el-tab-pane>
-      </el-tabs>
-    </div>
+      <el-tab-pane :label="t('page.sidebar.discipline')" name="discipline">
+        <discipline-table />
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -22,12 +20,6 @@ import DisciplineTable from '~/components/hr/reward-discipline/discipline-table.
 
 const { t } = useI18n()
 </script>
-
-<style scoped lang="scss">
-.box {
-  background-color: getColor(bg-color);
-}
-</style>
 
 <style lang="scss">
 .form-group {

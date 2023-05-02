@@ -20,13 +20,25 @@
     <el-table
       max-height="calc(100vh - 250px)"
       :data="timeoffsArray"
+      table-layout="fixed"
       class="w-full mt-4"
+      :cell-style="cellStyle"
       :default-sort="{ prop: 'day_request', order: 'descending' }"
     >
       <template v-if="isHR(currentUser?.role)">
         <el-table-column align="center" label="User info" fixed="left">
-          <el-table-column align="center" prop="user.name" label="Tên" />
-          <el-table-column align="center" prop="user.user_id" label="ID" />
+          <template #default="{ row }: { row: Timeoff }">
+            <vs-tooltip>
+              <div class="flex items-center justify-center">
+                <vs-avatar>
+                  <template #text>{{ row.user.name }}</template>
+                </vs-avatar>
+              </div>
+              <template #content>
+                {{ row.user.user_id }}
+              </template>
+            </vs-tooltip>
+          </template>
         </el-table-column>
       </template>
       <el-table-column
@@ -366,6 +378,13 @@ const sendRequestTimeoff = async () => {
 }
 const openRequestTimeoffForm = () => {
   isOpenRequestTimeoffForm.value = true
+}
+
+const cellStyle = ({ columnIndex }: { columnIndex: number }) => {
+  if (columnIndex > 0)
+    return {
+      'border-left': `var(--el-table-border)`,
+    }
 }
 
 /** Table filter */

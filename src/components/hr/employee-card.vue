@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card box">
     <div class="card__title">
       <div class="employee__avatar">
         <vs-avatar>
@@ -64,7 +64,7 @@ const copyInfo = (text?: string | number) => {
 .card {
   padding: 14px 20px;
   border-radius: 16px;
-  background: getColor(bg-color);
+  // background: getColor(bg-color);
 
   &__title {
     padding-bottom: 18px;

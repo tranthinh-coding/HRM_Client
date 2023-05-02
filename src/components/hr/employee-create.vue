@@ -27,14 +27,15 @@
     <div class="form-group">
       <div class="form-original">
         <vs-select
-          v-model="employeeForm.department"
+          v-model="employeeForm.department_id"
           label="Department"
           label-float
         >
           <vs-option
             v-for="(department, index) in departments"
             :key="index"
-            :value="department.name"
+            :value="department.id"
+            :label="department.name"
           />
         </vs-select>
       </div>
@@ -51,14 +52,15 @@
     <div class="form-group">
       <div class="form-original">
         <vs-select
-          v-model="employeeForm.position"
+          v-model="employeeForm.position_id"
           label-float
           :label="t('employee.position')"
         >
           <vs-option
             v-for="(position, index) in positions"
             :key="index"
-            :value="position.name"
+            :value="position.id"
+            :label="position.name"
           />
         </vs-select>
       </div>
@@ -131,10 +133,10 @@ const selectedUser = ref<{
 }>()
 
 const employeeForm = reactive<{
-  department: string
-  position: string
+  department_id?: number
+  position_id?: number
   gender: string
-}>({ department: '', position: '', gender: '' })
+}>({ department_id: undefined, position_id: undefined, gender: '' })
 
 const addNewEmployee = async () => {
   try {
@@ -142,8 +144,8 @@ const addNewEmployee = async () => {
 
     const response = await EmployeeServices.create({
       user_id: selectedUser.value.user_id,
-      department: employeeForm.department,
-      position: employeeForm.position,
+      department_id: employeeForm.department_id,
+      position_id: employeeForm.position_id,
       gender: employeeForm.gender,
     })
 

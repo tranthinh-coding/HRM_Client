@@ -26,7 +26,7 @@
       </vs-tooltip>
     </div>
   </div>
-  <el-table :data="employees" table-layout="fixed" border>
+  <el-table :data="employees" table-layout="fixed" :cell-style="cellStyle">
     <el-table-column align="center" min-width="150" fixed="left">
       <template #default="{ row }: { row: Employee }">
         <vs-tooltip>
@@ -34,7 +34,7 @@
             <div class="flex flex-col items-start gap-1">
               <div class="flex gap-2 items-center">
                 <el-icon size="18"><building-outline /></el-icon>
-                {{ row.department }}
+                {{ row.department.name }}
               </div>
               <div class="flex gap-2 items-center">
                 <el-icon size="18">
@@ -50,13 +50,15 @@
               </div>
               <div class="flex gap-2 items-center">
                 <el-icon size="18"><user-octagon-outline /></el-icon>
-                {{ row.position }}
+                {{ row.position.name }}
               </div>
             </div>
           </template>
           <div class="flex items-center gap-2">
             <vs-avatar>
-              {{ row.name }}
+              <template #text>
+                {{ row.name }}
+              </template>
             </vs-avatar>
             <span class="whitespace-nowrap">{{ row.name }}</span>
           </div>
@@ -744,6 +746,13 @@ const openListTimekeeping = (employee: Employee, date: Dayjs) => {
 const tableColumnClassName = computed(() =>
   isCurrentDate(date.value) ? 'bg-gray-3 bg-opacity-10' : ''
 )
+
+const cellStyle = ({ columnIndex }: { columnIndex: number }) => {
+  if (columnIndex > 0)
+    return {
+      'border-left': `var(--el-table-border)`,
+    }
+}
 
 watch(date, (val) => {
   employeeTimekeepingStore.refetch(

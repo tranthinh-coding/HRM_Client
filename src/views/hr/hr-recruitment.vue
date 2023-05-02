@@ -535,7 +535,7 @@ getApplicantsOffered()
 
 .el-statistic {
   padding: 20px;
-  background-color: getColor(bg-color);
+  background-color: getColor(theme-layout);
   border-radius: 18px;
 }
 
@@ -553,7 +553,7 @@ getApplicantsOffered()
     flex: 1;
     padding: 20px;
     border-radius: 20px;
-    background: getColor(bg-color);
+    background: getColor(theme-layout);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -573,7 +573,7 @@ getApplicantsOffered()
       text-align: left;
       padding-top: 10px;
       padding-bottom: 10px;
-      background: getColor(bg-color);
+      background: getColor(theme-layout);
       border: 1px solid transparent;
       border-bottom-color: getColor(color, 0.2);
       display: flex;
@@ -586,7 +586,7 @@ getApplicantsOffered()
   }
 
   .job-form {
-    background: getColor(bg-color);
+    background: getColor(theme-layout);
     padding: 24px;
     border-radius: 14px;
     min-width: 320px;
@@ -617,7 +617,7 @@ getApplicantsOffered()
 }
 
 .applicants {
-  background: getColor(bg-color);
+  background: getColor(theme-layout);
   margin-top: 20px;
   margin-bottom: 20px;
   border-radius: 20px;
