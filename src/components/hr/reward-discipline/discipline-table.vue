@@ -44,7 +44,11 @@
     </el-table-column>
     <el-table-column min-width="150" label="Loai ky luat" prop="name" />
     <el-table-column min-width="150" label="Ly do" prop="description" />
-    <el-table-column min-width="150" label="Muc khau tru luong" prop="salary" />
+    <el-table-column min-width="150" label="Muc khau tru" prop="salary">
+      <template #default="{ row }: { row: EmployeeDiscipline }">
+        {{ moneyFormat(row.salary) }}
+      </template>
+    </el-table-column>
     <el-table-column min-width="120" label="Ngay tao" prop="created_at">
       <template #default="{ row }: { row: EmployeeDiscipline }">
         {{ dayjs(row.created_at).format('YYYY-MM-DD') }}
@@ -184,6 +188,7 @@ import { EmployeeDiscipline } from '~/types'
 import employeeServices from '~/services/employee-services'
 import { getResponseError } from '~/composables'
 import { notification } from 'vuesax-old'
+import { moneyFormat } from '~/utils'
 
 const { t } = useI18n()
 
