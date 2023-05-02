@@ -22,19 +22,21 @@
             <el-tag size="small"> {{ employee?.position?.name }} </el-tag>
           </div>
           <el-divider />
-          <employee-profile />
+          <employee-profile :id="id" />
         </div>
       </div>
       <div class="payment-setting flex-1 md:flex-auto">
-        <employee-payment />
-        <employee-payroll v-if="isHR(user?.role)" />
+        <employee-payment :id="id" />
+        <template v-if="isHR(user?.role)">
+          <employee-payroll :id="id" />
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, provide } from 'vue'
+import { computed, onMounted, provide } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useQuery } from '@vue/apollo-composable'
@@ -57,7 +59,7 @@ const props = defineProps<{
   id: string
 }>()
 
-const { result } = useQuery<{
+const { result, refetch } = useQuery<{
   user: {
     id: Number
     name: String
@@ -108,6 +110,11 @@ const back = () => {
 }
 
 provide<{ employee_id: string }>('employee-detail', { employee_id: props.id })
+
+onMounted(() => {
+  console.log('mounting employee')
+})
+refetch()
 </script>
 
 <style scoped lang="scss">
@@ -134,7 +141,7 @@ provide<{ employee_id: string }>('employee-detail', { employee_id: props.id })
   // min-width: 400px;
   height: max-content;
   border-radius: 20px;
-  background-color: getColor(bg-color);
+  background-color: getColor(theme-layout);
 }
 .payroll-setting {
   padding: 20px;
@@ -142,14 +149,14 @@ provide<{ employee_id: string }>('employee-detail', { employee_id: props.id })
   flex: 1;
   height: max-content;
   border-radius: 20px;
-  background-color: getColor(bg-color);
+  background-color: getColor(theme-layout);
 }
 .profile {
   flex: 1;
   // min-width: 300px;
   height: max-content;
   width: 100%;
-  background: getColor(bg-color);
+  background: getColor(theme-layout);
   padding: 20px;
   border-radius: 20px;
 }
@@ -198,7 +205,7 @@ img {
   height: 36px;
   width: 40px;
   border-radius: 40px 18px 18px 18px;
-  background-color: getColor(bg-color);
+  background-color: getColor(theme-layout);
   display: flex;
   justify-content: center;
   cursor: pointer;

@@ -13,14 +13,12 @@
       </template>
     </h1>
 
-    <h1 class="text-2xl my-10">TODO: them bang khen thuong</h1>
-
     <div class="box my-8 flex gap-8 flex-wrap md:flex-nowrap">
       <el-table :data="salaryPeriod?.salaries">
         <el-table-column fixed type="expand">
           <template #default="{ row }: { row: Salary }">
             <div class="pl-8">
-              <div class="flex gap-50px">
+              <div class="flex gap-50px items-start justify-between">
                 <div class="my-4 max-w-300px">
                   <h2 class="text-lg my-2">Khoan tro cap:</h2>
                   <el-table
@@ -46,6 +44,34 @@
                         {{ moneyFormat(row.amount) }}
                       </template>
                     </el-table-column>
+                  </el-table>
+                </div>
+                <div class="my-4 max-w-390px">
+                  <h2 class="text-lg my-2">Khau tru:</h2>
+                  <el-table
+                    :data="row.deduction"
+                    max-height="200"
+                    show-summary
+                    :summary-method="
+                      (param) =>
+                        getSummaries(param, {
+                          first: 'Tong',
+                          cb: [moneyFormat],
+                        })
+                    "
+                  >
+                    <el-table-column
+                      width="150"
+                      label="Ten"
+                      prop="name"
+                      :fit="false"
+                    />
+                    <el-table-column width="120" label="Muc tien" prop="amount">
+                      <template #default="{ row }: { row: SalaryDeduction }">
+                        {{ moneyFormat(row.amount) }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column width="120" label="Ngay" prop="date" />
                   </el-table>
                 </div>
                 <div class="my-4 max-w-390px">

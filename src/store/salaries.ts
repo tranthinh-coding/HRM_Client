@@ -100,7 +100,7 @@ export const useSalariesStore = defineStore('E_SALARY', () => {
       })
     })
 
-    console.log(res[0]?.salaries[0].bonus)
+    console.log(res[0]?.salaries[0].deduction)
     return res
   })
 
