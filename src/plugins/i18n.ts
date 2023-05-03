@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { createI18n } from 'vue-i18n/dist/vue-i18n.esm-bundler.js'
+import { createI18n } from 'vue-i18n'
 
 import viVN from '~/lang/vi-VN'
 
