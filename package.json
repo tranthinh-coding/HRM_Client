@@ -17,10 +17,7 @@
     "format": "prettier --write --cache .",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0 --cache",
     "lint:fix": "pnpm run lint --fix",
-    "lint:commit": "commitlint --from $(git merge-base origin/dev HEAD) --to HEAD > ./commit-lint.txt",
-    "stub": "pnpm run -r --parallel stub",
-    "prepare": "husky install",
-    "postinstall": "pnpm stub"
+    "lint:commit": "commitlint --from $(git merge-base origin/dev HEAD) --to HEAD > ./commit-lint.txt"
   },
   "dependencies": {
     "@apollo/client": "^3.7.10",
