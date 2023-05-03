@@ -7,9 +7,7 @@ services:
     container_name: 'node_CLIENT_HRM'
     working_dir: /var/www/html
     volumes:
-      - '.:/var/www/html'
+      - './dist:/var/www/html'
     environment:
-      NODE_ENV: development
-    command: npm install && npm run dev
     networks:
       - app-networks
