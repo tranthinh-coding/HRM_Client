@@ -2,12 +2,11 @@ version: '3'
 networks:
   app-networks: null
 services:
-  nodejs:
+  npm:
     image: node:18
-    container_name: 'node_CLIENT_HRM'
-    working_dir: /var/www/html
+    container_name: 'npm_CLIENT_HRM'
     volumes:
-      - './dist:/var/www/html'
-    environment:
-    networks:
-      - app-networks
+      - '.:/var/www/html'
+    working_dir: /var/www/html
+    entrypoint:
+      - npm
