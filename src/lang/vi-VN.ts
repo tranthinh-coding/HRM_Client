@@ -34,6 +34,7 @@ export default {
     email: 'Email',
     birthdate: 'Ngày sinh',
     position: 'Vị trí',
+    department: 'Phòng ban',
     address: 'Địa chỉ',
     'phone-number': 'Số điện thoại',
   },

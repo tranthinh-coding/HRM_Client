@@ -34,6 +34,7 @@ export default {
     email: 'Email',
     birthdate: 'Birthdate',
     position: 'Position',
+    department: 'Department',
     address: 'Address',
     'phone-number': 'Phone number',
   },
