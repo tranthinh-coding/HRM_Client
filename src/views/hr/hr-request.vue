@@ -20,7 +20,7 @@
             </el-badge>
           </div>
         </template>
-        
+
         chap thuan
       </el-tab-pane>
       <el-tab-pane name="3">

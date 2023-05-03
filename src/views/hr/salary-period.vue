@@ -315,6 +315,8 @@ import { useRouter } from 'vue-router'
 import { cloneDeep } from 'lodash-unified'
 
 import { useSalariesStore } from '~/store/salaries'
+import { moneyFormat } from '~/utils'
+
 import type {
   Salary,
   SalaryBonus,
@@ -324,7 +326,6 @@ import type {
   SalaryReward,
   SalaryWorkingHours,
 } from '~/types'
-import { moneyFormat } from '~/utils'
 import type { TableColumnCtx } from 'element-plus'
 
 interface SummaryMethodProps<T> {

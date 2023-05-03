@@ -30,6 +30,12 @@
   </vs-dialog>
 </template>
 
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+}
+</script>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -43,10 +49,6 @@ const props = defineProps<{
   eid?: string
   date: Dayjs
 }>()
-
-defineOptions({
-  inheritAttrs: false,
-})
 
 const employeeTimeoffStore = useEmployeeTimeoffStore()
 const { timeoffs } = storeToRefs(employeeTimeoffStore)

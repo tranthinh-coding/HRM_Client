@@ -164,7 +164,7 @@
 
 <script setup lang="ts">
 // @ts-nocheck
-import { computed, inject, onBeforeMount, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { isNil } from 'lodash-unified'
@@ -204,6 +204,8 @@ const { result, refetch } = useQuery<ProfileQuery>(
   gql`
     query EmployeeProfile($user_id: String!) {
       employee(employee_id: $user_id) {
+        id
+
         position {
           id
           name
@@ -220,6 +222,7 @@ const { result, refetch } = useQuery<ProfileQuery>(
         role
       }
       profile(user_id: $user_id) {
+        id
         address
         gender
         country
@@ -229,6 +232,7 @@ const { result, refetch } = useQuery<ProfileQuery>(
         citizen_id_card
       }
       userStatusTypes {
+        id
         name
       }
     }
@@ -308,10 +312,10 @@ const resetProfile = () => {
   updateForm.nationality = result.value?.profile?.nationality || ''
   updateForm.phone_number = result.value?.profile?.phone_number || ''
   updateForm.gender = result.value?.profile?.gender || ''
-  updateForm.email = result.value?.user?.email
-  updateForm.status = result.value?.user?.status
-  updateForm.position_id = result.value?.employee?.position.id
-  updateForm.department_id = result.value?.employee?.department.id
+  updateForm.email = result.value?.user?.email || ''
+  updateForm.status = result.value?.user?.status || ''
+  updateForm.position_id = result.value?.employee?.position.id || NaN
+  updateForm.department_id = result.value?.employee?.department.id || NaN
 
   Object.keys(updateForm).forEach((key: unknown) => {
     let _key = key as keyof ProfileState

@@ -16,6 +16,7 @@ coverage
 components.d.ts
 /cypress/videos/
 /cypress/screenshots/
+.eslintcache
 
 # Editor directories and files
 .vscode/*
