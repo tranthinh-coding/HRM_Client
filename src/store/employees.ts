@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import type { Employee } from '~/types/employee'
+import { trim } from 'lodash-unified'
 
 type QueryResponse = {
   employees: {
@@ -20,9 +21,10 @@ export type EmployeeQuery = {
 export const useEmployeesStore = defineStore('EMPLOYEES', () => {
   const { result, refetch, stop, restart, start } = useQuery<QueryResponse>(
     gql`
-      query EMPLOYEES($employee_id: String, $name: String) {
-        employees(employee_id: $employee_id, name: $name) {
+      query EMPLOYEES {
+        employees {
           data {
+            id
             name
             email
             employee_id
@@ -38,7 +40,7 @@ export const useEmployeesStore = defineStore('EMPLOYEES', () => {
         }
       }
     `,
-    () => ({ employee_id: '', name: '', position: '' }),
+    null,
     {
       pollInterval: 40000,
     }
@@ -49,25 +51,26 @@ export const useEmployeesStore = defineStore('EMPLOYEES', () => {
   const localSearch = computed(
     () =>
       ({ employee_id, position, department, name }: EmployeeQuery) => {
+        const eid = trim(employee_id)
+        const _position = trim(position)
+        const _department = trim(department)
+        const _name = trim(name)
         return employees.value.filter((e) => {
-          if (!employee_id && !position && !department && !name) return true
+          if (!eid && !position && !department && !name) return true
 
+          if (eid && !e.employee_id.toLowerCase().includes(eid.toLowerCase()))
+            return false
           if (
-            employee_id &&
-            !e.employee_id.toLowerCase().includes(employee_id.toLowerCase())
+            _position &&
+            !e.position.name.toLowerCase().includes(_position.toLowerCase())
           )
             return false
           if (
-            position &&
-            !e.position.name.toLowerCase().includes(position.toLowerCase())
+            _department &&
+            !e.department.name.toLowerCase().includes(_department.toLowerCase())
           )
             return false
-          if (
-            department &&
-            !e.department.name.toLowerCase().includes(department.toLowerCase())
-          )
-            return false
-          if (name && !e.name.toLowerCase().includes(name.toLowerCase()))
+          if (_name && !e.name.toLowerCase().includes(_name.toLowerCase()))
             return false
 
           return true

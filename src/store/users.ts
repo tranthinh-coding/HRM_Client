@@ -34,6 +34,7 @@ export const useUsersStore = defineStore('USERS', () => {
             updated_at
 
             profile_information {
+              id
               date_of_birth
               gender
               address
@@ -58,11 +59,11 @@ export const useUsersStore = defineStore('USERS', () => {
 
   const localFilter = computed<(options: FilterOptions) => User[]>(
     () => (options: FilterOptions) => {
-      let keys = Object.keys(options)
+      const keys = Object.keys(options)
 
       return users.value.filter((e) => {
         // @ts-ignore
-        let acceptedKeys = keys.filter((key) => e[key] === options[key])
+        const acceptedKeys = keys.filter((key) => e[key] === options[key])
         return acceptedKeys.length === keys.length
       })
     }

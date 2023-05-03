@@ -45,6 +45,7 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
           user_id
 
           user {
+            id
             user_id
             email
           }
@@ -58,6 +59,7 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
             coefficient
 
             user {
+              id
               name
             }
           }

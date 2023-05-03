@@ -13,18 +13,21 @@ export const useApplicantsStore = defineStore('APPLICANTS', () => {
     gql`
       query APPLICANTS {
         applicants {
+          id
           user_id
           job_id
           message
           status
 
           user {
+            id
             name
             user_id
             email
           }
 
           job {
+            id
             title
             description
           }

@@ -24,6 +24,7 @@ export const useRewardStore = defineStore('REWARD', () => {
           created_at
 
           user {
+            id
             user_id
             name
             email

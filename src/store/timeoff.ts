@@ -58,6 +58,7 @@ export const useEmployeeTimeoffStore = defineStore('TIMEOFFS', () => {
           coefficient
 
           user {
+            id
             name
             email
             user_id

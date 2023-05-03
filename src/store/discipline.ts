@@ -26,6 +26,7 @@ export const useDisciplineStore = defineStore('DISCIPLINE', () => {
           created_at
 
           user {
+            id
             user_id
             name
             email

@@ -39,6 +39,7 @@ export const useSalariesStore = defineStore('E_SALARY', () => {
             user_id
 
             user {
+              id
               name
               email
 
