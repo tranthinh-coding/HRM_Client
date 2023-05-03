@@ -11,6 +11,11 @@ export type SalaryDeduction = {
   name: string
   amount: number
 }
+export type SalaryReward = {
+  date: DateFormat
+  name: string
+  amount: number
+}
 
 export type SalaryWorkingHours = {
   amount: number
@@ -46,6 +51,7 @@ export interface Salary {
   bonus: SalaryBonus[]
 
   deduction: SalaryDeduction[]
+  reward: SalaryDeduction[]
 
   workings_hours: SalaryWorkingHours[]
 
