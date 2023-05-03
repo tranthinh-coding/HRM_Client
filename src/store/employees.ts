@@ -2,7 +2,6 @@ import { computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
-import { includes } from 'lodash-unified'
 import type { Employee } from '~/types/employee'
 
 type QueryResponse = {
@@ -55,22 +54,23 @@ export const useEmployeesStore = defineStore('EMPLOYEES', () => {
 
           if (
             employee_id &&
-            includes(e.employee_id.toLowerCase(), employee_id.toLowerCase())
+            !e.employee_id.toLowerCase().includes(employee_id.toLowerCase())
           )
-            return true
+            return false
           if (
             position &&
-            includes(e.position.name.toLowerCase(), position.toLowerCase())
+            !e.position.name.toLowerCase().includes(position.toLowerCase())
           )
-            return true
+            return false
           if (
             department &&
-            includes(e.department.name.toLowerCase(), department.toLowerCase())
+            !e.department.name.toLowerCase().includes(department.toLowerCase())
           )
-            return true
-          if (name && includes(e.name.toLowerCase(), name.toLowerCase()))
-            return true
-          return false
+            return false
+          if (name && !e.name.toLowerCase().includes(name.toLowerCase()))
+            return false
+
+          return true
         })
       }
   )

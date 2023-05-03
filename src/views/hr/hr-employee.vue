@@ -23,6 +23,21 @@
 
         <el-col :xs="24" :sm="6">
           <vs-select
+            v-model="searchForm.department"
+            :label="t('employee.department')"
+            label-float
+          >
+            <vs-option :value="undefined" label=" " style="height: 32px" />
+            <vs-option
+              v-for="(department, index) in departments"
+              :key="index"
+              :value="department.name"
+            />
+          </vs-select>
+        </el-col>
+
+        <el-col :xs="24" :sm="6">
+          <vs-select
             v-model="searchForm.position"
             :label="t('employee.position')"
             label-float
@@ -35,12 +50,12 @@
             />
           </vs-select>
         </el-col>
-
+        <!-- 
         <el-col :xs="24" :sm="6" class="search-column">
           <vs-button block @click="employeesFilter">
             {{ t('employee.search') }}
           </vs-button>
-        </el-col>
+        </el-col> -->
       </el-row>
     </div>
 
@@ -72,7 +87,12 @@
 import { reactive, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import { usePositionStore, useEmployeesStore, EmployeeQuery } from '~/store'
+import {
+  usePositionStore,
+  useEmployeesStore,
+  EmployeeQuery,
+  useDepartmentStore,
+} from '~/store'
 import employeeCreate from '~/components/hr/employee-create.vue'
 import employeeCard from '~/components/hr/employee-card.vue'
 import { Employee } from '~/types'
@@ -82,8 +102,10 @@ const { t } = useI18n()
 const positionStore = usePositionStore()
 const { positions } = storeToRefs(positionStore)
 
+const departmentStore = useDepartmentStore()
+const { departments } = storeToRefs(departmentStore)
+
 const employeesStore = useEmployeesStore()
-const { employees } = storeToRefs(employeesStore)
 
 const openCreateEmployeeForm = ref(false)
 
@@ -91,13 +113,12 @@ const searchForm = reactive<EmployeeQuery>({})
 
 const employeesFiltered = ref<Employee[]>([])
 
-const employeesFilter = () => {
-  employeesFiltered.value = employeesStore.localSearch(searchForm)
-}
-
-watch(employees, () => {
-  employeesFiltered.value = employeesStore.localSearch(searchForm)
-})
+watch(
+  () => employeesStore.localSearch(searchForm),
+  (val) => {
+    employeesFiltered.value = val
+  }
+)
 </script>
 
 <style scoped lang="scss">
