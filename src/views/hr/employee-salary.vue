@@ -172,8 +172,9 @@ const seeDetail = (ePeriod: SalaryPeriod) => {
 
 const acceptCreate = async () => {
   try {
-    console.log(createSalaryPeriodForm)
     await SalaryServices.createSalaryPeriod(createSalaryPeriodForm)
+
+    employeeSalariesStore.refetch()
 
     notification({
       text: 'Salary period created successfully',
@@ -185,7 +186,7 @@ const acceptCreate = async () => {
     const err = getResponseError<{ [employee_id: string]: string }>(e)
 
     notification({
-      text: err.message || 'Salary period created successfully',
+      text: err.message || 'Salary period created failed',
       duration: 3000,
       position: 'top-center',
       border: 'danger',
@@ -200,6 +201,7 @@ const cancleCreate = () => {
 const deleteSalaryPeriod = async (ePeriod: SalaryPeriod) => {
   try {
     await SalaryServices.deletePeriod(ePeriod.id)
+    employeeSalariesStore.refetch()
     notification({
       text: 'Deleted successfully',
       duration: 3000,
