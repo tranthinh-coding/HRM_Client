@@ -2,11 +2,22 @@ version: '3'
 networks:
   app-networks: null
 services:
+  nginx:
+    image: 'nginx:stable-alpine'
+    container_name: 'nginx_HRM_Client'
+    ports:
+      - '80:80'
+    volumes:
+      - '.:/var/www/html'
+      - './nginx-default.conf:/etc/nginx/conf.d/default.conf'
+    networks:
+      - app-networks
+
   npm:
     image: node:18
     container_name: 'npm_CLIENT_HRM'
     volumes:
-      - '.:/var/www/html'
+      - './dist:/var/www/html'
     working_dir: /var/www/html
     entrypoint:
       - npm
