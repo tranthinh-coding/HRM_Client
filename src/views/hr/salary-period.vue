@@ -13,11 +13,30 @@
       </template>
     </h1>
 
-    <div class="box my-8 flex gap-8 flex-wrap md:flex-nowrap">
+    <div class="mt-4">
+      <vs-button color="dribbble" type="flat">
+        <div class="flex items-center gap-1 text-lg">
+          <el-icon>
+            <export />
+          </el-icon>
+          Xuat xlsx
+        </div>
+      </vs-button>
+    </div>
+    <div class="box my-8">
       <el-table :data="salaryPeriod?.salaries">
         <el-table-column fixed type="expand">
           <template #default="{ row }: { row: Salary }">
             <div class="pl-8">
+              <vs-button color="dribbble" type="flat">
+                <div class="flex items-center gap-1 text-lg">
+                  <el-icon>
+                    <export />
+                  </el-icon>
+                  Xuat xlsx
+                </div>
+              </vs-button>
+
               <div class="flex gap-50px items-start justify-between">
                 <div class="my-4 max-w-300px">
                   <h2 class="text-lg my-2">Khoan tro cap:</h2>
@@ -75,9 +94,9 @@
                   </el-table>
                 </div>
                 <div class="my-4 max-w-390px">
-                  <h2 class="text-lg my-2">Khau tru:</h2>
+                  <h2 class="text-lg my-2">Khen thuong:</h2>
                   <el-table
-                    :data="row.deduction"
+                    :data="row.reward"
                     max-height="200"
                     show-summary
                     :summary-method="
@@ -95,7 +114,7 @@
                       :fit="false"
                     />
                     <el-table-column width="120" label="Muc tien" prop="amount">
-                      <template #default="{ row }: { row: SalaryDeduction }">
+                      <template #default="{ row }: { row: SalaryReward }">
                         {{ moneyFormat(row.amount) }}
                       </template>
                     </el-table-column>
@@ -224,7 +243,9 @@
               </template>
               <div class="flex items-center gap-2">
                 <vs-avatar>
-                  {{ row.user.name }}
+                  <template #text>
+                    {{ row.user.name }}
+                  </template>
                 </vs-avatar>
                 <span class="whitespace-nowrap">{{ row.user.name }}</span>
               </div>
@@ -267,10 +288,10 @@
           </template>
         </el-table-column>
 
-        <el-table-column min-width="130" label="Chuc vu - He so">
+        <el-table-column min-width="130" label="Chuc vu">
           <template #default="{ row }: { row: SalaryReduced }">
-            <el-tag>{{ row.position }}</el-tag> -
-            <el-tag effect="plain">{{ row.coefficient_position }}</el-tag>
+            <el-tag>{{ row.position }}</el-tag>
+            <!--  -<el-tag effect="plain">{{ row.coefficient_position }}</el-tag> -->
           </template>
         </el-table-column>
 
@@ -300,6 +321,7 @@ import type {
   SalaryDeduction,
   SalaryLeaveHours,
   SalaryPeriod,
+  SalaryReward,
   SalaryWorkingHours,
 } from '~/types'
 import { moneyFormat } from '~/utils'
