@@ -106,10 +106,16 @@ const departmentStore = useDepartmentStore()
 const { departments } = storeToRefs(departmentStore)
 
 const employeesStore = useEmployeesStore()
+const { employees } = storeToRefs(employeesStore)
 
 const openCreateEmployeeForm = ref(false)
 
-const searchForm = reactive<EmployeeQuery>({})
+const searchForm = reactive<EmployeeQuery>({
+  department: '',
+  employee_id: '',
+  name: '',
+  position: '',
+})
 
 const employeesFiltered = ref<Employee[]>([])
 
@@ -119,6 +125,11 @@ watch(
     employeesFiltered.value = val
   }
 )
+
+watch(employees, (val) => {
+  employeesFiltered.value = val
+  console.log(employeesFiltered.value)
+})
 </script>
 
 <style scoped lang="scss">
