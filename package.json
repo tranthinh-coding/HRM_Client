@@ -5,7 +5,7 @@
   "scripts": {
     "cz": "czg",
     "dev": "vite",
-    "build": "run-p type-check \"build:*\"",
+    "build": "run-p type-check build-only build:rollup",
     "build:vite": "vite build",
     "build:rollup": "tsx rollup.mts",
     "build:primitive": "run-p type-check build-only",
