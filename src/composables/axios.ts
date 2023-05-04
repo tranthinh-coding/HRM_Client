@@ -12,7 +12,6 @@ export const useAxios = axios.create({
     Accept: 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
   },
-  withCredentials: true,
   responseType: 'json',
   responseEncoding: 'utf8',
   xsrfCookieName: 'XSRF-TOKEN',
