@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import {
@@ -128,7 +128,10 @@ watch(
 
 watch(employees, (val) => {
   employeesFiltered.value = val
-  console.log(employeesFiltered.value)
+})
+
+onMounted(() => {
+  employeesFiltered.value = employees.value
 })
 </script>
 
