@@ -4,6 +4,15 @@
       Tao bang luong
     </vs-button>
 
+    <div class="my3" v-if="createPeriodErrorOfEmployees.length">
+      <vs-alert color="danger">
+        <template #title> Loi khi tao bang luong </template>
+        <div v-for="err in createPeriodErrorOfEmployees">
+          {{ Object.entries(err)[0][1] }}
+        </div>
+      </vs-alert>
+    </div>
+
     <div class="box p20px rounded-xl my-20px">
       <el-table :data="filterTableSalaryPeriods" lazy>
         <el-table-column label="#" prop="id" />
@@ -44,78 +53,82 @@
         </template>
       </el-table>
     </div>
+
+    <vs-dialog v-model="openForm">
+      <template #header>
+        <h3 class="text-lg">Tao ky tinh luong moi</h3>
+      </template>
+      <div class="flex flex-col gap-4">
+        <vs-input
+          v-model="createSalaryPeriodForm.salary_period"
+          label="Ky tinh luong"
+          label-float
+        />
+
+        <div class="relative mt-3">
+          <h4
+            class="absolute l0 z10 transition-all duration-250"
+            :class="
+              createSalaryPeriodForm.employees.length
+                ? 'top-0 -translate-y-100% ml-12px text-xs'
+                : 'top-50% -translate-y-50% ml-14px text-sm opacity-40'
+            "
+          >
+            Nhan vien
+          </h4>
+          <el-tree-select
+            v-model="createSalaryPeriodForm.employees"
+            :data="employeesTreeSelect"
+            :render-after-expand="false"
+            multiple
+            show-checkbox
+            filterable
+            :filter-node-method="filterNodeMethod"
+            check-on-click-node
+            collapse-tags
+            collapse-tags-tooltip
+            tag-type="success"
+            placeholder=" "
+            class="w-full"
+            clearable
+          />
+        </div>
+        <div>
+          <h4 class="relative ml-12px text-xs">Ngay bat dau</h4>
+          <el-date-picker
+            v-model="createSalaryPeriodForm.start_date"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
+            :default-value="new Date()"
+          />
+        </div>
+        <div>
+          <h4 class="relative ml-12px text-xs">Ngay ket thuc</h4>
+          <el-date-picker
+            v-model="createSalaryPeriodForm.end_date"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
+            :default-value="new Date()"
+          />
+        </div>
+      </div>
+
+      <template #footer>
+        <div class="flex w-full justify-end items-center gap-2">
+          <vs-button @click="acceptCreate" type="transparent">
+            Xác nhận
+          </vs-button>
+          <vs-button
+            @click="cancleCreate"
+            type="transparent"
+            color="google-plus"
+          >
+            Huỷ
+          </vs-button>
+        </div>
+      </template>
+    </vs-dialog>
   </div>
-
-  <vs-dialog v-model="openForm">
-    <template #header>
-      <h3 class="text-lg">Tao ky tinh luong moi</h3>
-    </template>
-    <div class="flex flex-col gap-4">
-      <vs-input
-        v-model="createSalaryPeriodForm.salary_period"
-        label="Ky tinh luong"
-        label-float
-      />
-
-      <div class="relative mt-3">
-        <h4
-          class="absolute l0 z10 transition-all duration-250"
-          :class="
-            createSalaryPeriodForm.employees.length
-              ? 'top-0 -translate-y-100% ml-12px text-xs'
-              : 'top-50% -translate-y-50% ml-14px text-sm opacity-40'
-          "
-        >
-          Nhan vien
-        </h4>
-        <el-tree-select
-          v-model="createSalaryPeriodForm.employees"
-          :data="employeesTreeSelect"
-          :render-after-expand="false"
-          multiple
-          show-checkbox
-          filterable
-          :filter-node-method="filterNodeMethod"
-          check-on-click-node
-          collapse-tags
-          collapse-tags-tooltip
-          tag-type="success"
-          placeholder=" "
-          class="w-full"
-          clearable
-        />
-      </div>
-      <div>
-        <h4 class="relative ml-12px text-xs">Ngay bat dau</h4>
-        <el-date-picker
-          v-model="createSalaryPeriodForm.start_date"
-          format="YYYY-MM-DD"
-          value-format="YYYY-MM-DD"
-          :default-value="new Date()"
-        />
-      </div>
-      <div>
-        <h4 class="relative ml-12px text-xs">Ngay ket thuc</h4>
-        <el-date-picker
-          v-model="createSalaryPeriodForm.end_date"
-          format="YYYY-MM-DD"
-          value-format="YYYY-MM-DD"
-          :default-value="new Date()"
-        />
-      </div>
-    </div>
-
-    <template #footer>
-      <div class="flex w-full justify-end items-center gap-2">
-        <vs-button @click="acceptCreate" type="transparent">
-          Xác nhận
-        </vs-button>
-        <vs-button @click="cancleCreate" type="transparent" color="google-plus">
-          Huỷ
-        </vs-button>
-      </div>
-    </template>
-  </vs-dialog>
 </template>
 
 <script setup lang="ts">
@@ -172,6 +185,8 @@ const seeDetail = (ePeriod: SalaryPeriod) => {
   })
 }
 
+const createPeriodErrorOfEmployees = ref<{ [eid: string]: string }[]>([])
+
 const acceptCreate = async () => {
   try {
     await SalaryServices.createSalaryPeriod(createSalaryPeriodForm)
@@ -186,6 +201,10 @@ const acceptCreate = async () => {
     })
   } catch (e) {
     const err = getResponseError<{ [employee_id: string]: string }>(e)
+
+    if (err.errors) {
+      createPeriodErrorOfEmployees.value = err.errors
+    }
 
     notification({
       text: err.message || 'Salary period created failed',
