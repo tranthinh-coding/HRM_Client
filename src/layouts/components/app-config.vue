@@ -8,7 +8,7 @@
       </vs-button>
     </div>
     <div class="btn-group-right">
-      <el-tooltip effect="light" :enterable="false">
+      <el-tooltip effect="light" :enterable="false" :auto-close="2000">
         <el-switch
           v-model="isDark"
           class="ml-2"
@@ -21,7 +21,7 @@
           <span style="user-select: none">Theme</span>
         </template>
       </el-tooltip>
-      <el-tooltip effect="light" :enterable="false">
+      <el-tooltip effect="light" :enterable="false" :auto-close="2000">
         <a :href="REPO_LINK" target="_blank" style="display: flex">
           <el-icon size="26">
             <icon-code />
