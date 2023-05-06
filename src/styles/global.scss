@@ -61,3 +61,19 @@
   padding: 14px 18px;
   // margin: 10px 0;
 }
+
+.theme-layout {
+  background: getColor(theme-layout);
+}
+
+.bg-gray-1 {
+  background-color: getColor(gray-1);
+}
+
+.bg-gray-2 {
+  background-color: getColor(gray-2);
+}
+
+.bg-theme-bg {
+  background-color: getColor(theme-bg);
+}

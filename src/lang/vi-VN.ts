@@ -62,6 +62,7 @@ export default {
   job: {
     findAJob: 'Tìm kiếm một công việc',
     create: 'Tạo công việc',
+    update: 'Chinh sua công việc',
     apply: 'Ứng tuyển',
     'mark-favorite': 'Đánh dấu ưa thích',
     detail: 'Xem chi tiết',

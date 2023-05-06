@@ -42,6 +42,7 @@ export const useJobsStore = defineStore('JOBS', () => {
           salary_to
           type
           status
+          published
           start_date
           created_at
           updated_at

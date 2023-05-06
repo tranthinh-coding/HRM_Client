@@ -2,12 +2,12 @@ import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
 import UnoCSS from 'unocss/vite'
-// @ts-ignore
-import VueMacros from 'unplugin-vue-macros/vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import VueMacros from 'unplugin-vue-macros'
 // import type { VitePWAOptions } from 'vite-plugin-pwa'
 // import { VitePWA } from 'vite-plugin-pwa'
 import Components from 'unplugin-vue-components/vite'
-// import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/unplugin-vue-i18n/vite'
 import path from 'path'
 
@@ -50,14 +50,14 @@ import path from 'path'
 //     navigateFallback: 'index.html',
 //   },
 // }
-
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
     outDir: './dist/hrm',
+    cssMinify: true,
   },
   plugins: [
-    VueMacros({
+    VueMacros.vite({
       setupBlock: true,
       plugins: {
         vue: Vue({
@@ -75,8 +75,18 @@ export default defineConfig({
     }),
     // VitePWA(pwaOptions),
     Components(),
+    // AutoImport({
+    //   resolvers: [ElementPlusResolver()],
+    // }),
+    // Components({
+    //   resolvers: [ElementPlusResolver()],
+    // }),
     UnoCSS(),
   ],
+  esbuild: {},
+  // optimizeDeps: {
+  //   include: ['vue'],
+  // },
   css: {
     preprocessorOptions: {
       scss: {

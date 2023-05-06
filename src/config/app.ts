@@ -28,6 +28,7 @@ export const JOB_API_TYPE_JOB = JOB_API + '/types'
 export const JOB_API_POSITION_JOB = JOB_API + '/positions'
 export const JOB_API_ARCHIVE = JOB_API + '/archive'
 export const JOB_API_FILTER = JOB_API + '/filter-job'
+export const JOB_API_UPDATE_PUBLISH_STATUS = JOB_API + '/update-publish-status'
 
 export const DEPARTMENTS_API = 'departments'
 

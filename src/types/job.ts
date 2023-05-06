@@ -3,7 +3,6 @@ type DateResponse = string
 export interface Job {
   id: number
   title: string
-  department: string
   position: string // leader, employee, PM
   no_of_vacancies: number // so luong tuyen
   experience: string // kinh nghiem
@@ -16,6 +15,7 @@ export interface Job {
   expired_date: DateResponse
   description: string
   count: number
+  published: boolean
   created_at: string
   updated_at: string
 }
@@ -24,7 +24,6 @@ export type JobCreate = Required<
   Pick<
     Job,
     | 'title'
-    | 'department'
     | 'position'
     | 'no_of_vacancies'
     | 'experience'

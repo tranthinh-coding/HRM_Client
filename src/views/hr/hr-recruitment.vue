@@ -125,23 +125,56 @@
 
       <el-row :gutter="30">
         <el-col :xs="24" :sm="24" :md="12">
-          <div class="jobs-list">
-            <div class="jobs-heading">
-              <h3>Latest Jobs</h3>
-            </div>
-            <div
-              class="job-item"
+          <el-row :gutter="20" class="-mt3">
+            <el-col
               v-for="(job, index) in jobSortCreatedTime"
               :key="index"
+              :xs="24"
+              :sm="24"
+              :md="24"
+              :lg="12"
+              class="mt3"
             >
-              <h3 class="job-title">
-                {{ job.title }} <el-tag>{{ job.position }}</el-tag>
-              </h3>
-              <h3 class="job-time">
-                {{ formatTime(new Date(job.created_at).getTime()) }}
-              </h3>
-            </div>
-          </div>
+              <div class="rounded-2xl overflow-hidden text-left">
+                <div
+                  class="p4 theme-layout flex flex-col items-start justify-start"
+                >
+                  <div class="relative w-full mb-2">
+                    <h2 class="line-clamp-1">
+                      {{ job.title }}
+                    </h2>
+                    <vs-button
+                      @click="openEditJob(job)"
+                      class="absolute right-0 top-0"
+                      icon
+                      type="shadow"
+                    >
+                      <el-icon size="16"><edit /></el-icon>
+                    </vs-button>
+                    <div v-if="job.count">
+                      <span class="text-sx">{{ job.count }} applicants</span>
+                    </div>
+                    <span v-else class="text-xs"> Start recuitment </span>
+                  </div>
+
+                  <h3 class="job-time text-sm">
+                    {{ formatTime(new Date(job.created_at).getTime()) }}
+                  </h3>
+                </div>
+                <div class="p2 px4 bg-gray-1 flex items-center gap-2">
+                  <el-switch
+                    :model-value="!!job.published"
+                    @update:model-value="
+                      (val) => updateJobPublishStatus(job.id, !!val)
+                    "
+                  />
+                  <el-tag>{{
+                    !!job.published ? 'Published' : 'Not published'
+                  }}</el-tag>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
         </el-col>
         <el-col :xs="24" :sm="24" :md="12">
           <div class="jobs-list">
@@ -163,184 +196,311 @@
             </div>
           </div>
         </el-col>
-
-        <el-col :xs="24" :sm="24" :md="12"> </el-col>
       </el-row>
 
-      <keep-alive>
-        <vs-dialog v-model="openCreateJobForm">
-          <template #header>
-            <h4>{{ t('job.create') }}</h4>
-          </template>
-          <div class="form-group">
-            <div class="form-original">
-              <vs-input
-                v-model="job.title"
-                class="job-control"
-                label-float
-                :label="t('job.title')"
-              />
-            </div>
-            <div class="form-original">
-              <vs-input
-                v-model="job.age"
-                class="job-control"
-                label-float
-                :label="t('job.age')"
-              />
-            </div>
+      <vs-dialog v-model="openCreateJobForm">
+        <template #header>
+          <h4>{{ t('job.create') }}</h4>
+        </template>
+        <div class="form-group">
+          <div class="form-original">
+            <vs-input
+              v-model="job.title"
+              class="job-control"
+              label-float
+              :label="t('job.title')"
+            />
           </div>
-          <div class="form-group">
-            <div class="form-original">
-              <vs-input
-                v-model="job.experience"
-                class="form-control"
-                label-float
-                :label="t('job.experience')"
-              />
-            </div>
-            <div class="form-original">
-              <vs-input
-                v-model="job.no_of_vacancies"
-                class="form-control"
-                label-float
-                :label="t('job.quantity')"
-              />
-            </div>
+          <div class="form-original">
+            <vs-input
+              v-model="job.age"
+              class="job-control"
+              label-float
+              :label="t('job.age')"
+            />
           </div>
-          <div class="form-group">
-            <div class="form-original">
-              <vs-input
-                v-model="job.salary_from"
-                class="form-control"
-                label-float
-                :label="t('job.salary-from')"
-              />
-            </div>
-            <div class="form-original">
-              <vs-input
-                v-model="job.salary_to"
-                class="form-control"
-                label-float
-                :label="t('job.salary-to')"
-              />
-            </div>
+        </div>
+        <div class="form-group">
+          <div class="form-original">
+            <vs-input
+              v-model="job.experience"
+              class="form-control"
+              label-float
+              :label="t('job.experience')"
+            />
           </div>
-          <div class="form-group">
-            <div class="form-original">
-              <vs-select
-                class="form-control"
-                allow-create
-                :label="t('job.department')"
-                v-model="job.department"
-              >
-                <vs-option
-                  v-for="(department, index) in departments"
-                  :key="index"
-                  :value="department.name"
-                />
-              </vs-select>
-            </div>
-            <div class="form-original">
-              <vs-select
-                class="form-control"
-                allow-create
-                :label="t('job.type')"
-                v-model="job.type"
-              >
-                <vs-option
-                  v-for="(type, index) in jobTypes"
-                  :key="index"
-                  :value="type.name"
-                />
-              </vs-select>
-            </div>
-            <div class="form-original">
-              <vs-select
-                class="form-control"
-                allow-create
-                :label="t('job.position')"
-                v-model="job.position"
-              >
-                <vs-option
-                  v-for="(position, index) in jobPositions"
-                  :key="index"
-                  :value="position.name"
-                />
-              </vs-select>
-            </div>
+          <div class="form-original">
+            <vs-input
+              v-model="job.no_of_vacancies"
+              class="form-control"
+              label-float
+              :label="t('job.quantity')"
+            />
           </div>
-          <div class="form-group is-ep">
-            <div class="form-original">
-              <el-date-picker
-                v-model="job.start_date"
-                :popper-options="{
-                  strategy: 'absolute',
-                }"
-                type="date"
-                format="YYYY/MM/DD"
-                value-format="YYYY-MM-DD"
-                style="width: 100%"
-                :disabled-date="disabledDate"
-                placeholder="Ngày bắt đầu"
-              />
-            </div>
-            <div class="form-original">
-              <el-date-picker
-                v-model="job.expired_date"
-                type="date"
-                format="YYYY/MM/DD"
-                value-format="YYYY-MM-DD"
-                style="width: 100%"
-                :disabled-date="disabledDate"
-                placeholder="Ngày kết thúc"
-              />
-            </div>
+        </div>
+        <div class="form-group">
+          <div class="form-original">
+            <vs-input
+              v-model="job.salary_from"
+              class="form-control"
+              label-float
+              :label="t('job.salary-from')"
+            />
           </div>
+          <div class="form-original">
+            <vs-input
+              v-model="job.salary_to"
+              class="form-control"
+              label-float
+              :label="t('job.salary-to')"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-original">
+            <vs-select
+              class="form-control"
+              allow-create
+              :label="t('job.type')"
+              v-model="job.type"
+            >
+              <vs-option
+                v-for="(type, index) in jobTypes"
+                :key="index"
+                :value="type.name"
+              />
+            </vs-select>
+          </div>
+          <div class="form-original">
+            <vs-select
+              class="form-control"
+              allow-create
+              :label="t('job.position')"
+              v-model="job.position"
+            >
+              <vs-option
+                v-for="(position, index) in jobPositions"
+                :key="index"
+                :value="position.name"
+              />
+            </vs-select>
+          </div>
+        </div>
+        <div class="form-group is-ep">
+          <div class="form-original">
+            <el-date-picker
+              v-model="job.start_date"
+              :popper-options="{
+                strategy: 'absolute',
+              }"
+              type="date"
+              format="YYYY/MM/DD"
+              value-format="YYYY-MM-DD"
+              style="width: 100%"
+              :disabled-date="disabledDate"
+              placeholder="Ngày bắt đầu"
+            />
+          </div>
+          <div class="form-original">
+            <el-date-picker
+              v-model="job.expired_date"
+              type="date"
+              format="YYYY/MM/DD"
+              value-format="YYYY-MM-DD"
+              style="width: 100%"
+              :disabled-date="disabledDate"
+              placeholder="Ngày kết thúc"
+            />
+          </div>
+        </div>
 
-          <div class="form-group is-ep">
-            <div class="form-original">
-              <h2 class="form-label">{{ t('job.description') }}</h2>
-              <tiny-editor
-                class="form-control"
-                api-key="no-api-key"
-                v-model="job.description"
-                :init="{
-                  plugins:
-                    'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount checklist casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-                  toolbar:
-                    'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-                  height: 250,
-                  skin: isDark ? 'oxide-dark' : 'oxide',
-                  content_css: isDark ? 'dark' : 'default',
-                }"
-              />
-            </div>
+        <div class="form-group is-ep">
+          <div class="form-original">
+            <h2 class="form-label">{{ t('job.description') }}</h2>
+            <tiny-editor
+              class="form-control"
+              api-key="no-api-key"
+              v-model="job.description"
+              :init="{
+                plugins:
+                  'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount checklist casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+                toolbar:
+                  'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                height: 250,
+                skin: isDark ? 'oxide-dark' : 'oxide',
+                content_css: isDark ? 'dark' : 'default',
+              }"
+            />
           </div>
+        </div>
 
-          <div class="job-button">
-            <vs-button @click="createJob" block style="margin: 20px 0 0 0">
-              {{ t('job.create') }}
-            </vs-button>
+        <div class="job-button">
+          <vs-button @click="createJob" block style="margin: 20px 0 0 0">
+            {{ t('job.create') }}
+          </vs-button>
+        </div>
+      </vs-dialog>
+
+      <vs-dialog v-model="isEditJob">
+        <template #header>
+          <h4>{{ t('job.update') }}</h4>
+        </template>
+        <div class="form-group">
+          <div class="form-original">
+            <vs-input
+              v-model="jobEditting.title"
+              class="job-control"
+              label-float
+              :label="t('job.title')"
+            />
           </div>
-        </vs-dialog>
-      </keep-alive>
+          <div class="form-original">
+            <vs-input
+              v-model="jobEditting.age"
+              class="job-control"
+              label-float
+              :label="t('job.age')"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-original">
+            <vs-input
+              v-model="jobEditting.experience"
+              class="form-control"
+              label-float
+              :label="t('job.experience')"
+            />
+          </div>
+          <div class="form-original">
+            <vs-input
+              v-model="jobEditting.no_of_vacancies"
+              class="form-control"
+              label-float
+              :label="t('job.quantity')"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-original">
+            <vs-input
+              v-model="jobEditting.salary_from"
+              class="form-control"
+              label-float
+              :label="t('job.salary-from')"
+            />
+          </div>
+          <div class="form-original">
+            <vs-input
+              v-model="jobEditting.salary_to"
+              class="form-control"
+              label-float
+              :label="t('job.salary-to')"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-original">
+            <vs-select
+              class="form-control"
+              allow-create
+              :label="t('job.type')"
+              v-model="jobEditting.type"
+            >
+              <vs-option
+                v-for="(type, index) in jobTypes"
+                :key="index"
+                :value="type.name"
+              />
+            </vs-select>
+          </div>
+          <div class="form-original">
+            <vs-select
+              class="form-control"
+              allow-create
+              :label="t('job.position')"
+              v-model="jobEditting.position"
+            >
+              <vs-option
+                v-for="(position, index) in jobPositions"
+                :key="index"
+                :value="position.name"
+              />
+            </vs-select>
+          </div>
+        </div>
+        <div class="form-group is-ep">
+          <div class="form-original">
+            <el-date-picker
+              v-model="jobEditting.start_date"
+              :popper-options="{
+                strategy: 'absolute',
+              }"
+              type="date"
+              format="YYYY/MM/DD"
+              value-format="YYYY-MM-DD"
+              style="width: 100%"
+              :disabled-date="disabledDate"
+              placeholder="Ngày bắt đầu"
+            />
+          </div>
+          <div class="form-original">
+            <el-date-picker
+              v-model="jobEditting.expired_date"
+              type="date"
+              format="YYYY/MM/DD"
+              value-format="YYYY-MM-DD"
+              style="width: 100%"
+              :disabled-date="disabledDate"
+              placeholder="Ngày kết thúc"
+            />
+          </div>
+        </div>
+
+        <div class="form-group is-ep">
+          <div class="form-original">
+            <h2 class="form-label">{{ t('job.description') }}</h2>
+            <tiny-editor
+              class="form-control"
+              api-key="no-api-key"
+              v-model="jobEditting.description"
+              :init="{
+                plugins:
+                  'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount checklist casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+                toolbar:
+                  'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                height: 250,
+                skin: isDark ? 'oxide-dark' : 'oxide',
+                content_css: isDark ? 'dark' : 'default',
+              }"
+            />
+          </div>
+        </div>
+
+        <div class="job-button">
+          <vs-button @click="updateJob" block style="margin: 20px 0 0 0">
+            {{ t('job.update') }}
+          </vs-button>
+        </div>
+      </vs-dialog>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TinyEditor from '@tinymce/tinymce-vue'
 import { saveAs } from 'file-saver'
+import { storeToRefs } from 'pinia'
+import { notification } from 'vuesax-old'
+import { cloneDeep } from 'lodash-unified'
 
 import JobsService from '~/services/jobs-service'
-import { isDark } from '~/composables'
+import { getResponseError, isDark } from '~/composables'
 import { formatTime } from '~/utils'
 import {
-  useDepartmentStore,
   useJobsStore,
   useApplicantsStore,
   useUsersStore,
@@ -348,14 +508,10 @@ import {
 } from '~/store'
 import ApplicantServices from '~/services/applicant-services'
 
-import type { JobCreate, JobTypes, JobPosition } from '~/types/job'
+import type { Job, JobCreate, JobTypes, JobPosition } from '~/types/job'
 import type { Applicant } from '~/types'
-import { storeToRefs } from 'pinia'
 
 const { t } = useI18n()
-
-const departmentsStore = useDepartmentStore()
-const { departments } = storeToRefs(departmentsStore)
 
 const jobsStore = useJobsStore()
 const { jobs } = storeToRefs(jobsStore)
@@ -379,7 +535,6 @@ const applicantSearch = ref<string>('')
 
 const job = ref<JobCreate>({
   title: '',
-  department: '',
   salary_from: 1,
   salary_to: 1,
   age: 18,
@@ -438,6 +593,30 @@ const getJobPositions = async () => {
     jobPositions.value = []
   }
 }
+
+const updateJobPublishStatus = async (job_id: number, status: boolean) => {
+  try {
+    console.log('123')
+    await JobsService.updateJobPublishStatus(job_id, status)
+
+    notification({
+      text: status ? 'Job published' : 'Job unpublished',
+      duration: 3000,
+      border: 'success',
+      position: 'top-center',
+    })
+
+    jobsStore.refetch()
+  } catch (error) {
+    const _e = getResponseError(error)
+    notification({
+      text: _e.message,
+      duration: 3000,
+      border: 'danger',
+      position: 'top-center',
+    })
+  }
+}
 const getApplicantsOffered = async () => {
   try {
     applicantsOffered.value = await ApplicantServices.applicantOffered()
@@ -464,24 +643,47 @@ const createJob = async () => {
   }
 }
 
-// const archiveJob = async ({ id, status }: { id: number; status: string }) => {
-//   try {
-//     const response = await JobsService.archiveJob({ id, status })
+const isEditJob = ref(false)
+const jobEditting = ref<JobCreate & { id: number }>({
+  id: NaN,
+  title: '',
+  salary_from: 1,
+  salary_to: 1,
+  age: 18,
+  description: '',
+  experience: '',
+  expired_date: '',
+  no_of_vacancies: 1,
+  position: '',
+  start_date: '',
+  type: '',
+})
 
-//     ElMessage({
-//       message: response.message || 'Lưu trữ công việc tuyển dụng thành công',
-//       duration: 3 * 1000,
-//       type: 'success',
-//     })
-//   } catch (error) {
-//     ElMessage({
-//       message: `${(error as any).message}`,
-//       type: 'error',
-//       duration: 3 * 1000,
-//     })
-//     console.log(error)
-//   }
-// }
+const updateJob = async () => {
+  try {
+    const response = await JobsService.updateJob(jobEditting.value)
+
+    ElMessage({
+      message: response.message,
+      type: 'success',
+      duration: 3000,
+    })
+
+    jobsStore.refetch()
+  } catch (error) {
+    ElMessage({
+      message: `${(error as any).message}`,
+      type: 'error',
+      duration: 8000,
+    })
+  }
+}
+const openEditJob = async (job: Job) => {
+  isEditJob.value = true
+  await nextTick()
+
+  jobEditting.value = cloneDeep(job)
+}
 
 const downloadCv = async (applicant: Applicant) => {
   try {
@@ -568,23 +770,11 @@ getApplicantsOffered()
         width: unset;
       }
     }
-    .job-item {
-      width: 100%;
-      text-align: left;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      background: getColor(theme-layout);
-      border: 1px solid transparent;
-      border-bottom-color: getColor(color, 0.2);
-      display: flex;
-      justify-content: space-between;
-
-      &:last-of-type {
-        border-bottom-color: transparent;
-      }
-    }
   }
 
+  .job-item {
+    background: getColor(theme-layout);
+  }
   .job-form {
     background: getColor(theme-layout);
     padding: 24px;

@@ -37,11 +37,13 @@ watch(online, () => {
 </script>
 
 <template>
-  <transition name="slide-left" appear>
-    <keep-alive>
-      <component class="layout-loader" :is="route.meta.layout" />
-    </keep-alive>
-  </transition>
+  <el-config-provider :z-index="9000">
+    <transition name="slide-left" appear>
+      <keep-alive>
+        <component class="layout-loader" :is="route.meta.layout" />
+      </keep-alive>
+    </transition>
+  </el-config-provider>
 </template>
 
 <style>

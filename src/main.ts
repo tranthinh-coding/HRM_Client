@@ -28,7 +28,7 @@ import i18n from '~/plugins/i18n'
 // import './registerServiceWorker.ts'
 
 /** Boxicons */
-import '~/assets/boxicons-2.1.2/css/boxicons.min.css'
+// import '~/assets/boxicons-2.1.2/css/boxicons.min.css'
 
 import '~/styles/index.scss'
 

@@ -58,6 +58,7 @@ export default {
   job: {
     findAJob: 'Find a job',
     create: 'Create a job',
+    update: 'Update job',
     apply: 'Apply',
     'mark-favorite': 'Mark as favorite',
     detail: 'See detail',
