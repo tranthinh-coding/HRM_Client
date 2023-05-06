@@ -3,6 +3,8 @@ import { JobPosition } from './job'
 import { User } from './user'
 
 export interface Employee {
+  id: number
+
   name: string
   email: string
   employee_id: string
