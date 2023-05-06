@@ -10,27 +10,40 @@
     <div
       class="transition-all flex gap-10px scale-80 transform absolute opacity0 group-hover:scale-100 group-hover:opacity100 group-hover:visible"
     >
-      <vs-tooltip v-if="!isNested">
-        <template #content>Thêm</template>
-        <vs-button
-          color="danger"
-          icon
-          type="floating"
-          @click="openTimekeepingForm"
-        >
-          <el-icon size="14">
-            <add />
-          </el-icon>
-        </vs-button>
-      </vs-tooltip>
-      <vs-tooltip>
-        <template #content>Sửa</template>
-        <vs-button color="danger" icon type="floating" @click="openEditForm">
-          <el-icon size="14">
-            <edit />
-          </el-icon>
-        </vs-button>
-      </vs-tooltip>
+      <vs-button
+        v-if="isHR(user.user?.role)"
+        color="danger"
+        icon
+        type="floating"
+        @click="openTimekeepingForm"
+      >
+        <el-icon size="14">
+          <add />
+        </el-icon>
+      </vs-button>
+
+      <vs-button
+        v-if="isHR(user.user?.role)"
+        color="danger"
+        icon
+        type="floating"
+        @click="openEditForm"
+      >
+        <el-icon size="14">
+          <edit />
+        </el-icon>
+      </vs-button>
+
+      <vs-button
+        v-if="isEmployee(user.user?.role)"
+        icon
+        type="floating"
+        @click="seeDetail"
+      >
+        <el-icon size="14">
+          <info-circle-broken />
+        </el-icon>
+      </vs-button>
     </div>
   </button>
 </template>
@@ -39,6 +52,8 @@
 import { PropType } from 'vue'
 import { Employee, Timekeeping } from '~/types'
 import { Dayjs } from 'dayjs'
+import { isEmployee, isHR } from '~/config'
+import { useUserStore } from '~/store'
 
 const props = defineProps({
   employee: {
@@ -62,7 +77,10 @@ const props = defineProps({
 const emit = defineEmits<{
   (event: 'openEditForm', timekeeping: Timekeeping): void
   (event: 'openTimekeepingForm', employee: Employee, date: Dayjs): void
+  (event: 'seeDetail', timekeeping: Timekeeping): void
 }>()
+
+const user = useUserStore()
 
 const openEditForm = () => {
   emit('openEditForm', props.timekeeping)
@@ -70,5 +88,9 @@ const openEditForm = () => {
 
 const openTimekeepingForm = () => {
   emit('openTimekeepingForm', props.employee, props.date)
+}
+
+const seeDetail = () => {
+  emit('seeDetail', props.timekeeping)
 }
 </script>
