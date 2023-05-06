@@ -68,8 +68,8 @@ dependencies:
     specifier: ^4.1.6
     version: 4.1.6(vue@3.2.47)
   vuesax-alpha:
-    specifier: 0.2.0-beta.1
-    version: 0.2.0-beta.1(vue@3.2.47)
+    specifier: 0.2.0-beta.3
+    version: 0.2.0-beta.3(vue@3.2.47)
   vuesax-old:
     specifier: npm:vuesax-alpha@0.0.1-alpha.3
     version: /vuesax-alpha@0.0.1-alpha.3
@@ -7215,8 +7215,8 @@ packages:
       - '@vue/composition-api'
     dev: false
 
-  /vuesax-alpha@0.2.0-beta.1(vue@3.2.47):
-    resolution: {integrity: sha512-Dg0oNra6jWof4lJ1Sh/Di5HI3QCe6DLkPxDXlMzrv45wlICuI+qVw+BUiMTH6I5GtUOlcgwweTRDKYAjNkbLuA==}
+  /vuesax-alpha@0.2.0-beta.3(vue@3.2.47):
+    resolution: {integrity: sha512-cWUD10VbzYYI/zx1kqZ2IDXGgWd/0IgvHrTU0jXkD+9b+hCKGXpX5qbAPmUCuiMRzUKg4BVylnVJAoPKqF/v2Q==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
