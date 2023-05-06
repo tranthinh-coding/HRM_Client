@@ -8,34 +8,34 @@
       <template v-if="salaryPeriod">
         -
         <el-tag size="large">
-          <span class="text-xl">{{ salaryPeriod.name }}</span>
+          <span class="text-lg">{{ salaryPeriod.name }}</span>
         </el-tag>
       </template>
     </h1>
 
-    <div class="mt-4">
+    <!-- <div class="mt-4">
       <vs-button color="dribbble" type="flat">
-        <div class="flex items-center gap-1 text-lg">
+        <div class="flex items-center gap-1">
           <el-icon>
             <export />
           </el-icon>
           Xuat xlsx
         </div>
       </vs-button>
-    </div>
+    </div> -->
     <div class="box my-8">
       <el-table :data="salaryPeriod?.salaries">
         <el-table-column fixed type="expand">
           <template #default="{ row }: { row: Salary }">
             <div class="pl-8">
-              <vs-button color="dribbble" type="flat">
+              <!-- <vs-button color="dribbble" type="flat">
                 <div class="flex items-center gap-1 text-lg">
                   <el-icon>
                     <export />
                   </el-icon>
                   Xuat xlsx
                 </div>
-              </vs-button>
+              </vs-button> -->
 
               <div class="flex gap-50px items-start justify-between">
                 <div class="my-4 max-w-300px">

@@ -1,32 +1,5 @@
 <template>
   <div class="bg-theme-layout p-4 rounded-xl">
-    <div class="mt-4 flex justify-start gap-8">
-      <el-statistic :value="98500">
-        <template #title>
-          <div class="flex items-center">
-            Số giờ làm trong tháng
-            <el-tooltip
-              effect="dark"
-              content="Tính từ lần cuối thanh toán lương"
-              placement="top"
-            >
-              <el-icon class="ml-1" :size="12">
-                <info-circle-broken />
-              </el-icon>
-            </el-tooltip>
-          </div>
-        </template>
-
-        content
-      </el-statistic>
-
-      <el-statistic :value="30">
-        <template #title>
-          <div>Số giờ nghỉ trong tháng</div>
-        </template>
-      </el-statistic>
-    </div>
-
     <div class="mt-6">
       <el-tabs>
         <el-tab-pane label="Thông tin chấm công" value="1">
