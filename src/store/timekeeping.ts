@@ -7,6 +7,8 @@ import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { MaybeRef } from '@vueuse/core'
 import { isArray } from 'lodash-unified'
+import { useUserStore } from './user'
+import { isHR } from '~/config'
 
 type QueryResponse = {
   timekeepings: Timekeeping[]
@@ -15,6 +17,7 @@ type QueryResponse = {
 type QueryParams = {
   from?: string
   to?: string
+  user_id?: string
 }
 
 type TimekeepingRefetchOptions = RefetchOptions & {
@@ -25,6 +28,8 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
   const timekeepingsWeekCached = new Set()
   const timekeepingsCached = reactive<Map<number, Timekeeping>>(new Map())
 
+  const user = useUserStore()
+
   const {
     result,
     refetch: _refetch,
@@ -33,8 +38,8 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
     start,
   } = useQuery<QueryResponse, QueryParams>(
     gql`
-      query TIMEKEEPINGS($from: Date!, $to: Date!) {
-        timekeepings(date: { from: $from, to: $to }) {
+      query TIMEKEEPINGS($from: Date!, $to: Date!, $user_id: String) {
+        timekeepings(date: { from: $from, to: $to }, user_id: $user_id) {
           id
           name
           date
@@ -69,6 +74,7 @@ export const useEmployeeTimekeepingStore = defineStore('TIMEKEEPING', () => {
     () => ({
       from: lastDayOfTheWeek(),
       to: dayjs(lastDayOfTheWeek()).add(6, 'days').format('YYYY-MM-DD'),
+      user_id: isHR(user.user?.role) ? undefined : user.user?.user_id,
     }),
     {
       pollInterval: 40000,
