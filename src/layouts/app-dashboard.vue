@@ -8,19 +8,14 @@
       <el-scrollbar class="main">
         <div class="main-container">
           <!-- Applicant Dashboard -->
-          <template v-if="isGuest(user?.role)">
-            <component :is="ApplicantDashboard" />
-          </template>
+          <applicant-dashboard v-if="isGuest(user?.role)" />
 
           <!-- Employee Dashboard -->
-          <template v-else-if="isEmployee(user?.role)">
-            <component :is="EmployeeDashboard" />
-          </template>
+
+          <employee-dashboard v-else-if="isEmployee(user?.role)" />
 
           <!-- HR Dashboard -->
-          <template v-else-if="isHR(user?.role)">
-            <component :is="HrDashboard" />
-          </template>
+          <hr-dashboard v-else-if="isHR(user?.role)" />
         </div>
       </el-scrollbar>
     </div>
