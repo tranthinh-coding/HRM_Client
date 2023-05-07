@@ -63,7 +63,36 @@ $--table: (
 );
 
 // if you want to import all
-@use 'element-plus/theme-chalk/src/index.scss' as *;
+// @use 'element-plus/theme-chalk/src/index.scss' as *;
+@use 'element-plus/theme-chalk/src/base.scss' as *;
+@use 'element-plus/theme-chalk/src/input.scss' as *;
+@use 'element-plus/theme-chalk/src/button.scss' as *;
+@use 'element-plus/theme-chalk/src/table.scss' as *;
+@use 'element-plus/theme-chalk/src/checkbox.scss' as *;
+@use 'element-plus/theme-chalk/src/col.scss' as *;
+@use 'element-plus/theme-chalk/src/row.scss' as *;
+@use 'element-plus/theme-chalk/src/date-picker.scss' as *;
+@use 'element-plus/theme-chalk/src/divider.scss' as *;
+@use 'element-plus/theme-chalk/src/link.scss' as *;
+@use 'element-plus/theme-chalk/src/message.scss' as *;
+@use 'element-plus/theme-chalk/src/switch.scss' as *;
+@use 'element-plus/theme-chalk/src/tabs.scss' as *;
+@use 'element-plus/theme-chalk/src/tab-pane.scss' as *;
+@use 'element-plus/theme-chalk/src/icon.scss' as *;
+@use 'element-plus/theme-chalk/src/scrollbar.scss' as *;
+@use 'element-plus/theme-chalk/src/tag.scss' as *;
+@use 'element-plus/theme-chalk/src/statistic.scss' as *;
+@use 'element-plus/theme-chalk/src/select.scss' as *;
+@use 'element-plus/theme-chalk/src/popper.scss' as *;
+@use 'element-plus/theme-chalk/src/tooltip.scss' as *;
+@use 'element-plus/theme-chalk/src/skeleton.scss' as *;
+@use 'element-plus/theme-chalk/src/skeleton-item.scss' as *;
+@use 'element-plus/theme-chalk/src/empty.scss' as *;
+@use 'element-plus/theme-chalk/src/collapse.scss' as *;
+@use 'element-plus/theme-chalk/src/upload.scss' as *;
+@use 'element-plus/theme-chalk/src/tree.scss' as *;
+@use 'element-plus/theme-chalk/src/tree-select.scss' as *;
+// @use 'element-plus/dist/index.css' as *;
 
 // You can comment it to hide debug info.
 // @debug $--colors;

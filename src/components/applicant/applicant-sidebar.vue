@@ -1,6 +1,5 @@
 <template>
   <menu class="menu">
-    <h2 class="menu-title">Filter</h2>
     <div class="option">
       <vs-select
         allow-create
@@ -56,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import JobsServices from '~/services/jobs-service'
 import { useJobsStore } from '~/store'
@@ -80,13 +79,16 @@ const filterPosition = ref<string>()
 const jobTypes = ref<JobTypes[]>([])
 const positions = ref<JobPosition[]>()
 
-watchEffect(() => {
-  refetch({
-    salary_to: filterSalary.value,
-    position: filterPosition.value,
-    type: filterJobType.value,
-  })
-})
+watch(
+  [filterSalary, filterJobType, filterPosition],
+  ([salary_to, position, type]) => {
+    refetch({
+      salary_to,
+      position,
+      type,
+    })
+  }
+)
 
 const getJobTypes = async () => {
   try {

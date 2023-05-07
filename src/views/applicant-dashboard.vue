@@ -21,10 +21,13 @@
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import dayjs from 'dayjs'
+
 import JobDetail from '~/components/applicant/job-detail.vue'
 import JobList from '~/components/applicant/job-list.vue'
 import { useJobsStore } from '~/store/job'
-import { Job } from '~/types'
+
+import type { Job } from '~/types'
 
 const { t } = useI18n()
 const search = ref('')
@@ -38,6 +41,8 @@ const handleOpenJob = (_job: Job) => {
   job.value = _job
 }
 
+const currDate = dayjs()
+
 const handleCloseJob = () => {
   job.value = null
 }
@@ -46,7 +51,9 @@ const filterJobs = computed(
   () =>
     jobs.value?.filter(
       (job) =>
-        !search.value ||
+        job.published &&
+        currDate.isAfter(job.start_date) &&
+        currDate.isBefore(job.expired_date) &&
         job.title.toLowerCase().includes(search.value.toLowerCase())
     ) || []
 )
