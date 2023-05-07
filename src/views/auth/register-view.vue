@@ -1,67 +1,76 @@
 <template>
-  <el-form
-    ref="formRef"
-    status-icon
-    scroll-to-error
-    :model="form"
-    :rules="formRules"
-    class="form rounded-xl"
-  >
-    <el-form-item>
-      <h1 class="form-header">{{ t('pages.getStarted') }}</h1>
-    </el-form-item>
-    <el-form-item prop="name" :error="formErrors.name">
-      <el-input
-        v-model="form.name"
-        label="name"
-        icon=""
-        :placeholder="t('form.name')"
-        clearable
-      ></el-input>
-    </el-form-item>
-    <el-form-item prop="email" :error="formErrors.email">
-      <el-input
-        v-model="form.email"
-        label="email"
-        :placeholder="t('form.email')"
-        clearable
-      ></el-input>
-    </el-form-item>
-    <el-form-item prop="password" :error="formErrors.password">
-      <el-input
-        type="password"
-        v-model="form.password"
-        label="password"
-        :placeholder="t('form.password')"
-        clearable
-        show-password
-      ></el-input>
-    </el-form-item>
-    <el-form-item
-      prop="password_confirmation"
-      :error="formErrors.password_confirmation"
+  <div class="flex items-center justify-center">
+    <div
+      class="w100 relative theme-layout rounded-30px p4 mx-auto my-auto flex flex-col gap4"
     >
-      <el-input
-        type="password"
-        v-model="form.password_confirmation"
-        label="password_confirmation"
-        :placeholder="t('form.passwordConfirmation')"
-        clearable
-        show-password
+      <h1
+        class="absolute bottom-full translate-y-7 text-lg px-7 l-10 theme-layout p2 rounded-40px"
       >
-      </el-input>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        type="primary"
-        class="form-submit"
-        :disabled="isFetching"
-        @click.prevent="submit"
-      >
+        Welcome to <b>{{ APP_NAME }}</b>
+      </h1>
+
+      <div class="con-form mt-6 flex flex-col gap2">
+        <vs-input v-model="form.name" :label="t('form.name')" label-float>
+          <template #icon> <i class="bx bx-user"></i> </template>
+          <template v-if="!form.name" #message-danger>
+            Dien day du ho ten
+          </template>
+        </vs-input>
+
+        <vs-input v-model="form.email" :label="t('form.email')" label-float>
+          <template #icon> @ </template>
+          <template v-if="!form.email" #message-danger>
+            Dien day du email
+          </template>
+        </vs-input>
+
+        <vs-input
+          type="password"
+          v-model="form.password"
+          :label="t('form.password')"
+          label-float
+          show-password
+        >
+          <template #icon>
+            <i class="bx bxs-lock"></i>
+          </template>
+
+          <template v-if="!form.password" #message-danger>
+            Dien mat khau
+          </template>
+        </vs-input>
+
+        <vs-input
+          type="password"
+          v-model="form.password_confirmation"
+          :label="t('form.passwordConfirmation')"
+          label-float
+          show-password
+        >
+          <template #icon>
+            <i class="bx bxs-lock"></i>
+          </template>
+
+          <template
+            v-if="
+              !form.password_confirmation ||
+              form.password_confirmation !== form.password
+            "
+            #message-danger
+          >
+            {{
+              !form.password_confirmation
+                ? 'Dien mat khau'
+                : 'Mat khau nhap lai khong dung'
+            }}
+          </template>
+        </vs-input>
+      </div>
+
+      <vs-button :disabled="isFetching" block @click="submit">
         {{ t('auth.register') }}
-      </el-button>
-    </el-form-item>
-    <el-form-item size="large">
+      </vs-button>
+
       <span>
         {{ t('auth.haveAnAccount') }}
         <el-link type="primary">
@@ -70,8 +79,8 @@
           </router-link>
         </el-link>
       </span>
-    </el-form-item>
-  </el-form>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -79,7 +88,6 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { notification } from 'vuesax-old'
-import type { FormRules, FormInstance } from 'element-plus'
 import UserService from '~/services/user-service'
 import { getResponseError } from '~/composables'
 import {
@@ -94,6 +102,7 @@ import {
   useHourlyWageCoefficientsStore,
   useEmployeesStore,
 } from '~/store'
+import { APP_NAME } from '~/config'
 
 interface FormState {
   name: string
@@ -115,140 +124,83 @@ const usersStore = useUsersStore()
 
 const { t } = useI18n()
 const router = useRouter()
-const formRef = ref<FormInstance>()
+
 const form = reactive<FormState>({
   name: 'think',
   email: 'tranthinh.own@gmail.com',
   password: '123123123',
   password_confirmation: '123123123',
 })
+
 const isFetching = ref<boolean>(false)
-const formErrors = reactive<FormState>({
-  email: '',
-  name: '',
-  password: '',
-  password_confirmation: '',
-})
-const formRules = reactive<FormRules>({
-  name: [
-    {
-      required: true,
-      message: t('validate.required'),
-      trigger: 'blur',
-    },
-  ],
-  email: [
-    {
-      required: true,
-      message: t('validate.required'),
-      trigger: 'blur',
-    },
-    {
-      type: 'email',
-      message: t('validate.email'),
-      trigger: 'blur',
-    },
-  ],
-  password: [
-    {
-      required: true,
-      message: t('validate.required'),
-      trigger: 'blur',
-    },
-  ],
-  password_confirmation: [
-    {
-      required: true,
-      message: t('validate.required'),
-      trigger: 'blur',
-    },
-    {
-      validator: formRule_validatePass2,
-      trigger: 'blur',
-    },
-  ],
-})
 
-function formRule_validatePass2(
-  _: any,
-  value: any,
-  callback: (error?: string | Error | undefined) => void
-) {
-  if (value === form.password) {
-    return callback()
+const submit = async () => {
+  if (
+    !form.email ||
+    !form.password ||
+    !form.password_confirmation ||
+    !form.name
+  ) {
+    return
   }
-  // validate confirmation: {param} need to confirm.: Call t('path', [param])
-  return callback(t('validate.confirmation', [t('validate.password')]))
-}
 
-const submit = () => {
-  if (!formRef.value) return
-  formRef.value.validate(async (valid: Boolean) => {
-    if (!valid) return
-    isFetching.value = true
+  isFetching.value = true
 
-    try {
-      const usr = await UserService.register(form)
+  try {
+    const usr = await UserService.register(form)
 
-      if (!usr) {
-        notification({
-          title: t('auth.register'),
-          text: t('request.response.noData'),
-          border: 'danger',
-          duration: 8 * 1000,
-          position: 'top-center',
-          progress: true,
-        })
-        return
-      }
-
-      // need to restart the graphql query
-      applicationStore.restart()
-      departmentsStore.restart()
-      employeeStore.restart()
-      hourlyWageCoefficientStore.restart()
-      jobStore.restart()
-      positionStore.restart()
-      rewardStore.restart()
-      timekeepingStore.restart()
-      timeoffStore.restart()
-      usersStore.restart()
-
-      console.log('[GRAPHQL] restarted')
-
+    if (!usr) {
       notification({
         title: t('auth.register'),
-        text: t('auth.registerSuccess'),
-        border: 'success',
-        duration: 1.5 * 1000,
+        text: t('request.response.noData'),
+        border: 'danger',
+        duration: 8 * 1000,
         position: 'top-center',
         progress: true,
       })
-      return router.push({ name: 'home' })
-    } catch (error) {
-      const _error = getResponseError<FormState>(error)
-
-      if (_error.errors) {
-        formErrors.email = _error.errors.email?.[0] || ''
-        formErrors.name = _error.errors.name?.[0] || ''
-        formErrors.password = _error.errors.password?.[0] || ''
-        formErrors.password_confirmation =
-          _error.errors.password_confirmation?.[0] || ''
-      }
-      if (_error.message) {
-        notification({
-          title: t('auth.register'),
-          text: _error.message,
-          border: 'danger',
-          duration: 8 * 1000,
-          position: 'top-center',
-          progress: true,
-        })
-      }
+      return
     }
 
+    // need to restart the graphql query
+    applicationStore.restart()
+    departmentsStore.restart()
+    employeeStore.restart()
+    hourlyWageCoefficientStore.restart()
+    jobStore.restart()
+    positionStore.restart()
+    rewardStore.restart()
+    timekeepingStore.restart()
+    timeoffStore.restart()
+    usersStore.restart()
+
+    console.log('[GRAPHQL] restarted')
+
+    notification({
+      title: t('auth.register'),
+      text: t('auth.registerSuccess'),
+      border: 'success',
+      duration: 1.5 * 1000,
+      position: 'top-center',
+      progress: true,
+    })
+
     isFetching.value = false
-  })
+    return router.push({ name: 'home' })
+  } catch (error) {
+    const _error = getResponseError<FormState>(error)
+
+    if (_error.message) {
+      notification({
+        title: t('auth.register'),
+        text: _error.message,
+        border: 'danger',
+        duration: 8 * 1000,
+        position: 'top-center',
+        progress: true,
+      })
+    }
+    isFetching.value = false
+  }
 }
 </script>
 
