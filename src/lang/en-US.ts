@@ -15,6 +15,7 @@ export default {
       request: 'Request',
       reward: 'Reward',
       discipline: 'Discipline',
+      profile: 'Profile',
     },
     reward: 'Reward',
     discipline: 'Discipline',

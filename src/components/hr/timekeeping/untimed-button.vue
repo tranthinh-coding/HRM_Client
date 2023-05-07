@@ -1,6 +1,5 @@
 <template>
   <button
-    v-bind="$attrs"
     class="w-1/2 rounded-xl py-2 px-5 flex items-center justify-center border-dashed border-2"
     @click="openTimekeepingForm"
   >

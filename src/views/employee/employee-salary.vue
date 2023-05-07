@@ -41,12 +41,14 @@ import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
-import { useSalariesStore } from '~/store'
+import { useSalariesStore, useUserStore } from '~/store'
 
 import type { SalaryPeriod } from '~/types'
 
 const router = useRouter()
 const { t } = useI18n()
+
+const user = useUserStore()
 
 const employeeSalariesStore = useSalariesStore()
 const { salaryPeriods } = storeToRefs(employeeSalariesStore)
@@ -57,14 +59,14 @@ const filterTableSalaryPeriods = computed(
   () =>
     salaryPeriods.value?.filter(
       (salaryPeriod) =>
-        !search.value ||
+        salaryPeriod.salaries.some((e) => e.user_id === user.user?.user_id) &&
         salaryPeriod.name.toLowerCase().includes(search.value.toLowerCase())
     ) || []
 )
 
 const seeDetail = (ePeriod: SalaryPeriod) => {
   router.push({
-    name: 'hr/employee-salary/period',
+    name: 'employee-salary/period',
     params: {
       id: ePeriod.id,
     },

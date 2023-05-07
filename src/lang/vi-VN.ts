@@ -15,6 +15,7 @@ export default {
       request: 'Yêu cầu',
       reward: 'Khen thưởng',
       discipline: 'Kỷ luật',
+      profile: 'Trang ca nhan',
     },
     reward: 'Khen thưởng',
     discipline: 'Kỷ luật',

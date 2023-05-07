@@ -1,17 +1,17 @@
 <template>
   <v-sidebar ref="sidebarInstance">
-    <sidebar-item
+    <!-- <sidebar-item
       @active="sidebarInstance?.activeItem"
       id="1"
       :to="{ name: 'employee/dashboard' }"
     >
       <el-icon size="26"> <command-square /> </el-icon>
       {{ t('page.sidebar.dashboard') }}
-    </sidebar-item>
+    </sidebar-item> -->
     <sidebar-item
       @active="sidebarInstance?.activeItem"
       id="2"
-      :to="{ name: 'employee/salary' }"
+      :to="{ name: 'employee-salary' }"
     >
       <el-icon size="26"> <empty-wallet /> </el-icon>
       {{ t('page.sidebar.salary') }}
@@ -31,6 +31,14 @@
     >
       <el-icon size="26"> <medal-star /> </el-icon>
       {{ t('page.sidebar.reward') }} - {{ t('page.sidebar.discipline') }}
+    </sidebar-item>
+    <sidebar-item
+      @active="sidebarInstance?.activeItem"
+      id="5"
+      :to="{ name: 'employee/profile-detail' }"
+    >
+      <el-icon size="26"> <user-profile /> </el-icon>
+      {{ t('page.sidebar.profile') }}
     </sidebar-item>
   </v-sidebar>
 </template>

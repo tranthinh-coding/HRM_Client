@@ -12,7 +12,7 @@
       >
         <el-table-column
           fixed
-          width="250"
+          min-width="150"
           prop="department"
           :label="t('page.department')"
         >

@@ -20,8 +20,14 @@ export const employeeRoutes: RouteRecordRaw = {
     },
     {
       path: 'salary',
-      name: 'employee/salary',
+      name: 'employee-salary',
       component: () => import('~/views/employee/employee-salary.vue'),
+    },
+    {
+      path: 'employee-salary/period/:id',
+      name: 'employee-salary/period',
+      component: () => import('~/views/employee/salary-period.vue'),
+      props: (route) => ({ id: route.params.id }),
     },
     {
       path: 'time',
@@ -33,6 +39,11 @@ export const employeeRoutes: RouteRecordRaw = {
       name: 'employee/reward-discipline',
       component: () =>
         import('~/views/employee/employee-reward-discipline.vue'),
+    },
+    {
+      path: 'profile',
+      name: 'employee/profile-detail',
+      component: () => import('~/views/employee/employee-profile.vue'),
     },
   ],
 }

@@ -59,12 +59,12 @@
 
         <el-table
           lazy
+          :data="filterTableApplicants"
           table-layout="fixed"
-          :data="applicants"
           style="width: 100%"
         >
-          <el-table-column fixed min-width="200" prop="user.name" label="Tên" />
-          <el-table-column min-width="200" prop="user.email" label="Email" />
+          <el-table-column fixed min-width="160" prop="user.name" label="Tên" />
+          <el-table-column min-width="160" prop="user.email" label="Email" />
 
           <el-table-column min-width="230" label="Lời nhắn" prop="message" />
 
@@ -88,8 +88,10 @@
           >
             <template #default="{ row }">
               <vs-select
-                v-model="row.status"
-                @change="updateApplicantStatus(row)"
+                :model-value="row.status"
+                @update:model-value="
+                  (status) => updateApplicantStatus(row, status)
+                "
               >
                 <vs-option
                   v-for="(status, index) in applicantStatus"
@@ -135,10 +137,8 @@
               :lg="12"
               class="mt3"
             >
-              <div class="rounded-2xl overflow-hidden text-left">
-                <div
-                  class="p4 theme-layout flex flex-col items-start justify-start"
-                >
+              <div class="rounded-2xl theme-layout overflow-hidden text-left">
+                <div class="p4 flex flex-col items-start justify-start">
                   <div class="relative w-full mb-2">
                     <h2 class="line-clamp-1">
                       {{ job.title }}
@@ -161,7 +161,7 @@
                     {{ formatTime(new Date(job.created_at).getTime()) }}
                   </h3>
                 </div>
-                <div class="p2 px4 bg-gray-1 flex items-center gap-2">
+                <div class="p2 px4 flex items-center gap-2">
                   <el-switch
                     :model-value="!!job.published"
                     @update:model-value="
@@ -182,7 +182,7 @@
               <h3>Offered</h3>
             </div>
             <div
-              class="job-item"
+              class="job-item flex w-full justify-between"
               v-for="(applicant, index) in applicantsOffered"
               :key="index"
             >
@@ -547,6 +547,22 @@ const job = ref<JobCreate>({
   type: '',
 })
 
+const filterTableApplicants = computed(
+  () =>
+    applicants.value?.filter(
+      (applicant) =>
+        applicant.user.name
+          .toLowerCase()
+          .includes(applicantSearch.value.toLowerCase()) ||
+        applicant.user.email
+          .toLowerCase()
+          .includes(applicantSearch.value.toLowerCase()) ||
+        applicant.job.title
+          .toLowerCase()
+          .includes(applicantSearch.value.toLowerCase())
+    ) || []
+)
+
 const jobSortCreatedTime = computed(() => {
   const _jobs = [...jobs.value]
   _jobs.sort((a, b) => b.id - a.id)
@@ -705,9 +721,9 @@ const downloadCv = async (applicant: Applicant) => {
   }
 }
 
-const updateApplicantStatus = async (applicant: Applicant) => {
+const updateApplicantStatus = async (applicant: Applicant, status: string) => {
   try {
-    const response = await ApplicantServices.update(applicant)
+    const response = await ApplicantServices.update({ ...applicant, status })
     ElMessage({
       message: response.message || 'Cập nhật trạng thái thành công',
       type: 'success',

@@ -2,15 +2,6 @@
   <menu class="menu">
     <sidebar-item
       class="menu-item"
-      id="1"
-      :to="{ name: 'hr/dashboard' }"
-      @active="activeItem"
-    >
-      <el-icon size="26"> <command-square /> </el-icon>
-      {{ t('page.sidebar.dashboard') }}
-    </sidebar-item>
-    <sidebar-item
-      class="menu-item"
       id="2"
       :to="{ name: 'hr/recruitment' }"
       @active="activeItem"
@@ -72,15 +63,7 @@
       <el-icon size="26"> <calender /> </el-icon>
       {{ t('page.sidebar.timekeeping') }}
     </sidebar-item>
-    <!-- <sidebar-item
-      class="menu-item"
-      id="9"
-      :to="{ name: 'hr/request' }"
-      @active="activeItem"
-    >
-      <el-icon size="26"> <sms-notification /> </el-icon>
-      {{ t('page.sidebar.request') }}
-    </sidebar-item> -->
+
     <sidebar-item
       class="menu-item"
       id="9"
@@ -89,6 +72,16 @@
     >
       <el-icon size="26"> <medal-star /> </el-icon>
       {{ t('page.sidebar.reward') }} / {{ t('page.sidebar.discipline') }}
+    </sidebar-item>
+
+    <sidebar-item
+      class="menu-item"
+      id="1"
+      :to="{ name: 'hr/dashboard' }"
+      @active="activeItem"
+    >
+      <el-icon size="26"> <command-square /> </el-icon>
+      INFO
     </sidebar-item>
   </menu>
 </template>

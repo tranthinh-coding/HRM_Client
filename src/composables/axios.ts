@@ -3,7 +3,9 @@ import { getToken } from '~/utils/auth'
 import { ACCESS_TOKEN, API_V1 } from '~/config/app'
 import { ErrorResponse } from '~/types/request'
 
-// import nProgress from 'nprogress'
+import nProgress from 'nprogress'
+
+nProgress.done()
 
 export const useAxios = axios.create({
   baseURL: API_V1,
@@ -17,34 +19,30 @@ export const useAxios = axios.create({
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
 
-  // onUploadProgress: function (
-  //   {
-  // loaded,
-  // total,
-  // progress,
-  // bytes,
-  // estimated,
-  // rate,
-  // upload = true,
-  //   }
-  // ) {
-  // Do whatever you want with the Axios progress event
-  // progress && nProgress.set(progress)
-  // },
+  onUploadProgress: function ({
+    loaded,
+    total,
+    progress,
+    bytes,
+    estimated,
+    rate,
+    upload = true,
+  }) {
+    progress && nProgress.set(progress)
+  },
 
-  // onDownloadProgress: function ({
-  //   loaded,
-  //   total,
-  //   progress,
-  //   bytes,
-  //   estimated,
-  //   rate,
-  //   download = true,
-  // }) {
-  //   // Do whatever you want with the Axios progress event
-  // },
-
-  // transformResponse: [(data) => JSON.parse(data)],
+  onDownloadProgress: function ({
+    loaded,
+    total,
+    progress,
+    bytes,
+    estimated,
+    rate,
+    download = true,
+  }) {
+    // Do whatever you want with the Axios progress event
+    progress && nProgress.set(progress)
+  },
 })
 
 // always refesh token before send request

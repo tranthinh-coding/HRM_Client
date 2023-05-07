@@ -30,6 +30,7 @@ export const useApplicantsStore = defineStore('APPLICANTS', () => {
             id
             title
             description
+            position
           }
         }
       }

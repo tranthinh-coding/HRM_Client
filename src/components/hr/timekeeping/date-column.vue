@@ -1,7 +1,7 @@
 <template>
   <template v-if="!timekeeping">
     <div
-      v-if="isHR(user.user?.user_id)"
+      v-if="isHR(user.user?.role)"
       class="w-full h-full flex items-center justify-center"
     >
       <untimed-button

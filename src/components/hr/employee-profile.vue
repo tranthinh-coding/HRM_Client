@@ -106,7 +106,7 @@
           v-if="isEmployee(currentUser?.role)"
           class="info-content"
           disabled
-          :model-value="profile.department.name"
+          :model-value="profile?.department?.name"
         />
         <vs-select
           v-else
@@ -126,7 +126,7 @@
         <vs-input
           v-if="isEmployee(currentUser?.role)"
           class="info-content"
-          :model-value="profile.position.name"
+          :model-value="profile?.position?.name"
           disabled
         />
         <vs-select
