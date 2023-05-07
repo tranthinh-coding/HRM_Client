@@ -53,15 +53,6 @@
                 <div class="general-infor-item">
                   <el-icon size="20"></el-icon>
                   <div>
-                    <div class="property">Phòng ban</div>
-                    <div class="value">{{ job.department }}</div>
-                  </div>
-                </div>
-              </el-col>
-              <el-col :xs="12" :sm="12" :md="8">
-                <div class="general-infor-item">
-                  <el-icon size="20"></el-icon>
-                  <div>
                     <div class="property">Hình thức làm việc</div>
                     <div class="value">{{ job.type }}</div>
                   </div>
